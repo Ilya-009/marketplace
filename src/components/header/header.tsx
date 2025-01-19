@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {AppBar, Typography, Button, TextField, IconButton, Stack} from '@mui/material';
+import {AppBar, Button, TextField, IconButton, Stack, Box, Link} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -8,12 +8,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import {SmallLinkActive, SmallLinkPassive} from "../common";
 import LinkWithIcon from "./header-link.tsx";
-
-const Logo = styled(Typography)`
-    flex-grow: 1;
-    font-weight: bold;
-    font-size: 24px;
-`;
+import {useUnit} from "effector-react";
+import {$properties} from "../../api";
+import {getProperty} from "../../services";
 
 const SearchField = styled(TextField)`
     margin-left: 20px;
@@ -21,6 +18,9 @@ const SearchField = styled(TextField)`
 `;
 
 const Header: React.FC = () => {
+    const properties = useUnit($properties);
+    const logoImageSrc = getProperty(properties, 'logo.image');
+
     return (
         <AppBar position="static" sx={{padding: 2, borderRadius: '0 0 10px 10px'}} color='transparent'>
             <Stack direction="row" spacing={1} padding='0 .5rem' alignItems="center" justifyContent='space-between'>
@@ -35,11 +35,24 @@ const Header: React.FC = () => {
             </Stack>
 
             <Stack direction="row" sx={{paddingTop: '1rem'}} spacing={1} alignItems="center" justifyContent='space-around'>
-                <Logo variant="h6">Логотип</Logo>
+                <Link href='/'>
+                    <Box
+                        component="img"
+                        sx={{
+                            height: 44,
+                            width: 200,
+                            // maxHeight: { xs: 233, md: 167 },
+                            // maxWidth: { xs: 350, md: 250 },
+                        }}
+                        alt="Лого"
+                        src={logoImageSrc}
+                    />
+                </Link>
+
                 <Button variant="contained" startIcon={<ListAltIcon/>}>
                     Каталог
                 </Button>
-                <SearchField variant="outlined" color='primary' placeholder="Поиск товаров" size="small" InputProps={{
+                <SearchField variant="outlined" sx={{ input: { color: 'black' } }} placeholder="Поиск товаров" size="small" InputProps={{
                     endAdornment: (
                         <IconButton>
                             <SearchIcon/>
@@ -48,7 +61,6 @@ const Header: React.FC = () => {
                 }}/>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent='space-around'>
                     <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='#'/>
-                    <LinkWithIcon icon={<ListAltIcon/>} label='Заказы' href='#'/>
                     <LinkWithIcon icon={<FavoriteIcon/>} label='Избранное' href='#'/>
                     <LinkWithIcon icon={<ShoppingCartIcon/>} label='Корзина' href='#'/>
                 </Stack>
