@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                     ),
                 }}/>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent='space-around'>
-                    <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='#'/>
+                    <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='/signIn'/>
                     <LinkWithIcon icon={<FavoriteIcon/>} label='Избранное' href='#'/>
                     <LinkWithIcon icon={<ShoppingCartIcon/>} label='Корзина' href='#'/>
                 </Stack>
