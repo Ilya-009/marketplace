@@ -13,6 +13,8 @@ import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import {useState} from "react";
 import {validateSignUpInputs} from "../components";
+import {registerUser} from "../api/models/authentication.ts";
+import {useNavigate} from "react-router-dom";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -69,20 +71,27 @@ export default function SignUp() {
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || passwordError) {
+    const navigate = useNavigate();
+
+    const handleSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
+        const validationResult = validateSignUpInputs({
+            email, password, phone,
+            setEmailError, setPhoneError, setEmailErrorMessage,
+            setPasswordError, setPasswordErrorMessage, setPhoneErrorMessage
+        });
+
+        if (!validationResult) {
             event.preventDefault();
-            return;
+            return false;
         }
 
-        const data = new FormData(event.currentTarget);
-
-        console.log({
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
+        registerUser({
+            email: email,
+            phone: phone,
+            password: password
         });
+
+        navigate('/');
     };
 
     return (
@@ -99,7 +108,6 @@ export default function SignUp() {
                     </Typography>
                     <Box
                         component="form"
-                        onSubmit={handleSubmit}
                         sx={{display: 'flex', flexDirection: 'column', gap: 2}}
                     >
                         <FormControl>
@@ -155,16 +163,9 @@ export default function SignUp() {
                             />
                         </FormControl>
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
-                            onClick={() => {
-                                return validateSignUpInputs({
-                                    email, password, phone,
-                                    setEmailError, setPhoneError, setEmailErrorMessage,
-                                    setPasswordError, setPasswordErrorMessage, setPhoneErrorMessage
-                                });
-                            }}
+                            onClick={handleSubmit}
                         >
                             Регистрация
                         </Button>

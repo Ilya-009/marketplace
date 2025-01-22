@@ -16,6 +16,8 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
 import {validateSignInInputs} from "../components";
+import {useNavigate} from "react-router-dom";
+import {loginUser} from "../api/models/authentication.ts";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -69,6 +71,7 @@ export default function SignIn() {
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -78,16 +81,24 @@ export default function SignIn() {
         setOpen(false);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || passwordError) {
+    const handleSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
+        const validationResult = validateSignInInputs({
+            email, password,
+            setEmailError, setEmailErrorMessage,
+            setPasswordError, setPasswordErrorMessage
+        });
+
+        if (!validationResult) {
             event.preventDefault();
-            return;
+            return false;
         }
 
-        console.log({
+        loginUser({
             email: email,
-            password: password,
+            password: password
         });
+
+        navigate('/');
     };
 
     return (
@@ -104,7 +115,6 @@ export default function SignIn() {
                     </Typography>
                     <Box
                         component="form"
-                        onSubmit={handleSubmit}
                         noValidate
                         sx={{
                             display: 'flex',
@@ -158,16 +168,9 @@ export default function SignIn() {
                         />
                         <ForgotPassword open={open} handleClose={handleClose} />
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
-                            onClick={() => {
-                                return validateSignInInputs({
-                                    email, password,
-                                    setEmailError, setEmailErrorMessage,
-                                    setPasswordError, setPasswordErrorMessage
-                                });
-                            }}
+                            onClick={handleSubmit}
                         >
                             Войти
                         </Button>
