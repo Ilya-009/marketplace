@@ -16,14 +16,9 @@ function App() {
         <ThemeProvider theme={MainTheme}>
             <BrowserRouter>
                 <Routes>
-                    {/*<Route path="dashboard" element={<Dashboard />}>*/}
-                    {/*    <Route index element={<RecentActivity />} />*/}
-                    {/*    <Route path="project/:id" element={<Project />} />*/}
-                    {/*</Route>*/}
                     <Route path="/signUp" element={<SignUp />} />
                     <Route path="/signIn" element={<SignIn />} />
                     <Route path="/" element={<MainPage />} />
-
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

@@ -15,7 +15,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
-import {validateInputs} from "../components";
+import {validateSignInInputs} from "../components";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -67,6 +67,7 @@ export default function SignIn() {
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -161,8 +162,10 @@ export default function SignIn() {
                             fullWidth
                             variant="contained"
                             onClick={() => {
-                                return validateInputs({
-                                    email, password, setEmailError, setEmailErrorMessage, setPasswordError, setPasswordErrorMessage
+                                return validateSignInInputs({
+                                    email, password,
+                                    setEmailError, setEmailErrorMessage,
+                                    setPasswordError, setPasswordErrorMessage
                                 });
                             }}
                         >

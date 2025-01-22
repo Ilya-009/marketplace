@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import {useState} from "react";
-import {validateInputs} from "../components";
+import {validateSignUpInputs} from "../components";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -60,6 +60,10 @@ export default function SignUp() {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+    const [phone, setPhone] = useState('');
+    const [phoneError, setPhoneError] = useState(false);
+    const [phoneErrorMessage, setPhoneErrorMessage] = useState('');
 
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
@@ -116,6 +120,23 @@ export default function SignUp() {
                             />
                         </FormControl>
                         <FormControl>
+                            <FormLabel htmlFor="email">Номер телефона</FormLabel>
+                            <TextField
+                                required
+                                fullWidth
+                                placeholder="+7 999 999 99 99"
+                                name="email"
+                                value={phone}
+                                type="tel"
+                                variant="outlined"
+                                error={phoneError}
+                                helperText={phoneErrorMessage}
+                                color={passwordError ? 'error' : 'primary'}
+                                sx={{ input: { color: 'black' } }}
+                                onInput={e => setPhone((e.target as HTMLInputElement).value)}
+                            />
+                        </FormControl>
+                        <FormControl>
                             <FormLabel htmlFor="password">Пароль</FormLabel>
                             <TextField
                                 required
@@ -138,8 +159,10 @@ export default function SignUp() {
                             fullWidth
                             variant="contained"
                             onClick={() => {
-                                return validateInputs({
-                                    email, password, setEmailError, setEmailErrorMessage, setPasswordError, setPasswordErrorMessage
+                                return validateSignUpInputs({
+                                    email, password, phone,
+                                    setEmailError, setPhoneError, setEmailErrorMessage,
+                                    setPasswordError, setPasswordErrorMessage, setPhoneErrorMessage
                                 });
                             }}
                         >

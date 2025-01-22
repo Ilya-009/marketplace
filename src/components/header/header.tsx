@@ -41,8 +41,6 @@ const Header: React.FC = () => {
                         sx={{
                             height: 44,
                             width: 200,
-                            // maxHeight: { xs: 233, md: 167 },
-                            // maxWidth: { xs: 350, md: 250 },
                         }}
                         alt="Лого"
                         src={logoImageSrc}
