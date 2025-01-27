@@ -6,10 +6,12 @@ import {useEffect} from "react";
 import {loadProperties} from "./api";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
+import {loadCategories} from "./api";
 
 function App() {
     useEffect(() => {
         loadProperties();
+        loadCategories();
     }, []);
 
     return (
