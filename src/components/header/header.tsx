@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {AppBar, Button, TextField, IconButton, Stack, Box, Link} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,6 +11,7 @@ import LinkWithIcon from "./header-link.tsx";
 import {useUnit} from "effector-react";
 import {$properties} from "../../api";
 import {getProperty} from "../../services";
+import CategoryCatalog from "../catalog/catalog.tsx";
 
 const SearchField = styled(TextField)`
     margin-left: 20px;
@@ -20,6 +21,15 @@ const SearchField = styled(TextField)`
 const Header: React.FC = () => {
     const properties = useUnit($properties);
     const logoImageSrc = getProperty(properties, 'logo.image');
+
+    const [open, setOpen] = useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <AppBar position="static" sx={{padding: 2, borderRadius: '0 0 10px 10px'}} color='transparent'>
@@ -47,7 +57,7 @@ const Header: React.FC = () => {
                     />
                 </Link>
 
-                <Button variant="contained" startIcon={<ListAltIcon/>}>
+                <Button variant="contained" startIcon={<ListAltIcon/>} onClick={handleClickOpen}>
                     Каталог
                 </Button>
                 <SearchField variant="outlined" sx={{ input: { color: 'black' } }} placeholder="Поиск товаров" size="small" InputProps={{
@@ -63,6 +73,8 @@ const Header: React.FC = () => {
                     <LinkWithIcon icon={<ShoppingCartIcon/>} label='Корзина' href='#'/>
                 </Stack>
             </Stack>
+
+            <CategoryCatalog isOpen={open} handleClose={handleClose}/>
         </AppBar>
     );
 };
