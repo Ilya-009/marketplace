@@ -17,6 +17,7 @@ import {useUnit} from "effector-react";
 import {$categories, GoodCategory} from "../../api";
 import styled from "styled-components";
 import {SmallMenuLinkActive, SmallMenuLinkPassive} from "../common";
+import {primaryTextColor} from "../../ui/theme.ts";
 
 type CatalogProps = {
     isOpen: boolean;
@@ -37,9 +38,9 @@ const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
 
     return (
         <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="xl" sx={{minHeight: 600}}>
-            <DialogTitle sx={{color: 'black'}}>Каталог</DialogTitle>
+            <DialogTitle sx={{color: primaryTextColor}}>Каталог</DialogTitle>
             <DialogContent>
-                <Stack direction="row" spacing={2} sx={{color: 'black'}}>
+                <Stack direction="row" spacing={2} sx={{color: primaryTextColor}}>
                     <Stack
                         spacing={1}
                         style={{overflowY: 'auto', width: '200px'}}
@@ -61,8 +62,8 @@ const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
                                 </Typography>
                                 <Grid2 container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                                     {selectedCategory?.childCategories?.map((childCategory, index) => (
-                                        <Grid2 item key={index} size={{ xs: 2, sm: 4, md: 4 }}>
-                                            <SmallMenuLinkActive>{childCategory.name}</SmallMenuLinkActive>
+                                        <Grid2 key={index} size={{ xs: 2, sm: 4, md: 4 }}>
+                                            <SmallMenuLinkActive href={`/catalog/${childCategory.id}`}>{childCategory.name}</SmallMenuLinkActive>
 
                                             {childCategory?.childCategories !== undefined
                                                 ?

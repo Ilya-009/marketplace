@@ -6,6 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import {primaryTextColor} from "../../ui/theme.ts";
 
 interface ForgotPasswordProps {
     open: boolean;
@@ -42,7 +43,7 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
                     placeholder="Арес эл. почты"
                     type="email"
                     fullWidth
-                    sx={{ color: 'black' }}
+                    sx={{ color: primaryTextColor }}
                 />
             </DialogContent>
             <DialogActions sx={{ pb: 3, px: 3 }}>

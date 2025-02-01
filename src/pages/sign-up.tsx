@@ -15,6 +15,7 @@ import {useState} from "react";
 import {validateSignUpInputs} from "../components";
 import {registerUser} from "../api/models/authentication.ts";
 import {useNavigate} from "react-router-dom";
+import {primaryTextColor} from "../ui/theme.ts";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -123,7 +124,7 @@ export default function SignUp() {
                                 error={emailError}
                                 helperText={emailErrorMessage}
                                 color={passwordError ? 'error' : 'primary'}
-                                sx={{ input: { color: 'black' } }}
+                                sx={{ input: { color: primaryTextColor } }}
                                 onInput={e => setEmail((e.target as HTMLInputElement).value)}
                             />
                         </FormControl>
@@ -140,7 +141,7 @@ export default function SignUp() {
                                 error={phoneError}
                                 helperText={phoneErrorMessage}
                                 color={passwordError ? 'error' : 'primary'}
-                                sx={{ input: { color: 'black' } }}
+                                sx={{ input: { color: primaryTextColor } }}
                                 onInput={e => setPhone((e.target as HTMLInputElement).value)}
                             />
                         </FormControl>
@@ -157,7 +158,7 @@ export default function SignUp() {
                                 variant="outlined"
                                 error={passwordError}
                                 helperText={passwordErrorMessage}
-                                sx={{ input: { color: 'black' } }}
+                                sx={{ input: { color: primaryTextColor } }}
                                 color={passwordError ? 'error' : 'primary'}
                                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
                             />
@@ -174,7 +175,7 @@ export default function SignUp() {
                         <Typography sx={{color: 'text.secondary'}}>или</Typography>
                     </Divider>
                     <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-                        <Typography sx={{textAlign: 'center', color: 'black'}}>
+                        <Typography sx={{textAlign: 'center', color: primaryTextColor}}>
                             Уже имеете аккаунт?{' '}
                             <Link
                                 href="/signIn"

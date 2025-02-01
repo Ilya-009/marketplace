@@ -18,6 +18,7 @@ import {useState} from "react";
 import {validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
 import {loginUser} from "../api/models/authentication.ts";
+import {primaryTextColor} from "../ui/theme.ts";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -137,7 +138,7 @@ export default function SignIn() {
                                 required
                                 fullWidth
                                 variant="outlined"
-                                sx={{ input: { color: 'black' } }}
+                                sx={{ input: { color: primaryTextColor } }}
                                 color={emailError ? 'error' : 'primary'}
                                 onInput={e => setEmail((e.target as HTMLInputElement).value)}
                             />
@@ -156,14 +157,14 @@ export default function SignIn() {
                                 required
                                 fullWidth
                                 variant="outlined"
-                                sx={{ input: { color: 'black' } }}
+                                sx={{ input: { color: primaryTextColor } }}
                                 color={passwordError ? 'error' : 'primary'}
                                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
                             />
                         </FormControl>
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
-                            sx={{ color: 'black' }}
+                            sx={{ color: primaryTextColor }}
                             label="Запомнить меня"
                         />
                         <ForgotPassword open={open} handleClose={handleClose} />
@@ -186,7 +187,7 @@ export default function SignIn() {
                     </Box>
                     <Divider>или</Divider>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Typography sx={{ textAlign: 'center', color: 'black' }}>
+                        <Typography sx={{ textAlign: 'center', color: primaryTextColor }}>
                             Не имеете аккаунта?{' '}
                             <Link
                                 href="/signUp"

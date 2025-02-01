@@ -12,6 +12,7 @@ import {useUnit} from "effector-react";
 import {$properties} from "../../api";
 import {getProperty} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
+import {primaryTextColor} from "../../ui/theme.ts";
 
 const SearchField = styled(TextField)`
     margin-left: 20px;
@@ -60,7 +61,7 @@ const Header: React.FC = () => {
                 <Button variant="contained" startIcon={<ListAltIcon/>} onClick={handleClickOpen}>
                     Каталог
                 </Button>
-                <SearchField variant="outlined" sx={{ input: { color: 'black' } }} placeholder="Поиск товаров" size="small" InputProps={{
+                <SearchField variant="outlined" sx={{ input: { color: primaryTextColor } }} placeholder="Поиск товаров" size="small" InputProps={{
                     endAdornment: (
                         <IconButton>
                             <SearchIcon/>
