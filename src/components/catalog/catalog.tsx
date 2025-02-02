@@ -17,7 +17,7 @@ import {useUnit} from "effector-react";
 import {$categories, GoodCategory} from "../../api";
 import styled from "styled-components";
 import {SmallMenuLinkActive, SmallMenuLinkPassive} from "../common";
-import {primaryTextColor} from "../../ui/theme.ts";
+import {primaryTextColor} from "../../ui";
 
 type CatalogProps = {
     isOpen: boolean;

@@ -7,6 +7,8 @@ import {loadProperties} from "./api";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
 import {loadCategories} from "./api";
+import {CategoryPage} from "./pages/category-page.tsx";
+import {NotFoundPage} from "./pages/not-found.tsx";
 
 function App() {
     useEffect(() => {
@@ -20,7 +22,9 @@ function App() {
                 <Routes>
                     <Route path="/signUp" element={<SignUp />} />
                     <Route path="/signIn" element={<SignIn />} />
+                    <Route path="/catalog/:id" element={<CategoryPage />} />
                     <Route path="/" element={<MainPage />} />
+                    <Route path="/404" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

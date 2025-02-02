@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {Link} from '@mui/material';
-import {MainTheme, primaryTextColor} from "../../ui/theme.ts";
+import {MainTheme, primaryTextColor} from "../../ui";
 
 export const SmallLinkActive = styled(Link) `
     color: ${MainTheme.palette.text.primary} !important;
@@ -28,4 +28,13 @@ export const SmallMenuLinkPassive = styled(Link)`
 export const SmallMenuLinkActive = styled(Link)`
     color: ${primaryTextColor} !important;
     transition: .5s;
+    
+    &:hover {
+        color: ${MainTheme.palette.text.primary} !important;
+    }
+`;
+
+export const BackwardLink = styled(SmallMenuLinkActive)`
+    display: flex;
+    align-content: center;
 `;

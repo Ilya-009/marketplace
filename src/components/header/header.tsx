@@ -12,7 +12,7 @@ import {useUnit} from "effector-react";
 import {$properties} from "../../api";
 import {getProperty} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
-import {primaryTextColor} from "../../ui/theme.ts";
+import {primaryTextColor} from "../../ui";
 
 const SearchField = styled(TextField)`
     margin-left: 20px;

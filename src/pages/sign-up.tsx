@@ -15,7 +15,7 @@ import {useState} from "react";
 import {validateSignUpInputs} from "../components";
 import {registerUser} from "../api/models/authentication.ts";
 import {useNavigate} from "react-router-dom";
-import {primaryTextColor} from "../ui/theme.ts";
+import {primaryTextColor} from "../ui";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
