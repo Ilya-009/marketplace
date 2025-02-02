@@ -1,0 +1,135 @@
+import { useState } from 'react';
+import {
+    Card,
+    CardContent,
+    Typography,
+    Box,
+    IconButton,
+    Rating,
+    Chip
+} from '@mui/material';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { styled } from '@mui/material/styles';
+import {Good} from "../../api/models/goods.ts";
+
+const StyledCard = styled(Card)(() => ({
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+    transition: 'transform 0.2s ease-in-out',
+    '&:hover': {
+        transform: 'translateY(-4px)',
+    }
+}));
+
+const ImageContainer = styled(Box)({
+    position: 'relative',
+    paddingTop: '100%',
+    '& img': {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain'
+    }
+});
+
+const FavoriteButton = styled(IconButton)({
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1
+});
+
+interface ProductCardProps {
+    good: Good;
+}
+
+const ProductCard = ({ good }: ProductCardProps) => {
+    const [isFavorite, setIsFavorite] = useState(false);
+    const rating = good.reviews.length ?
+        good.reviews.reduce((acc, curr) => acc + curr.mark, 0)
+        / good.reviews.length
+    : 0;
+
+    return (
+        <StyledCard elevation={1}>
+            <FavoriteButton
+                onClick={() => setIsFavorite(!isFavorite)}
+                sx={{ color: isFavorite ? 'error.main' : 'grey.400' }}
+            >
+                {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            </FavoriteButton>
+
+            <ImageContainer>
+                <img src={good.images[0].image} alt={good.name} loading="lazy" />
+            </ImageContainer>
+            <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                <Box sx={{ mb: 1 }}>
+                    {/*{product.isOriginal && (*/}
+                    {/*    <Chip*/}
+                    {/*        label="Original"*/}
+                    {/*        size="small"*/}
+                    {/*        sx={{*/}
+                    {/*            bgcolor: 'success.light',*/}
+                    {/*            color: 'success.contrastText',*/}
+                    {/*            mb: 1*/}
+                    {/*        }}*/}
+                    {/*    />*/}
+                    {/*)}*/}
+                    {good.discount && (
+                        <Chip
+                            label={`-${good.discount}%`}
+                            size="small"
+                            sx={{
+                                bgcolor: 'error.light',
+                                color: 'error.contrastText',
+                                ml: 0,
+                                mb: 1
+                            }}
+                        />
+                    )}
+                </Box>
+                <Typography variant="h6" component="div" sx={{ fontWeight: 500 }}>
+                    {good.price} ₽
+                    {/*{product.originalPrice && (*/}
+                    {/*    <Typography*/}
+                    {/*        component="span"*/}
+                    {/*        sx={{*/}
+                    {/*            ml: 1,*/}
+                    {/*            color: 'text.secondary',*/}
+                    {/*            textDecoration: 'line-through',*/}
+                    {/*            fontSize: '0.875rem'*/}
+                    {/*        }}*/}
+                    {/*    >*/}
+                    {/*        {product.originalPrice} ₽*/}
+                    {/*    </Typography>*/}
+                    {/*)}*/}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                        mb: 1,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden'
+                    }}
+                >
+                    {good.name}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Rating value={rating} precision={0.1} readOnly size="small" />
+                    <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                        {rating} ({good.reviews.length})
+                    </Typography>
+                </Box>
+            </CardContent>
+        </StyledCard>
+    );
+};
+export default ProductCard;
