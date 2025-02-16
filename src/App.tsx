@@ -1,7 +1,7 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {MainPage} from "./pages";
 import {ThemeProvider} from "@mui/material";
-import {MainTheme} from "./ui/theme.ts";
+import {MainTheme} from "./ui";
 import {useEffect} from "react";
 import {loadProperties} from "./api";
 import SignUp from "./pages/sign-up.tsx";

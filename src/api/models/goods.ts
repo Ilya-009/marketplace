@@ -1,4 +1,6 @@
 import {Review} from "./reviews.ts";
+import {createEffect, createEvent, createStore, sample} from "effector";
+import {AxiosError} from "axios";
 
 export interface Good {
     id: number;
@@ -42,14 +44,45 @@ export interface GoodImage {
 export type SortOption = 'popular' | 'newest' | 'priceAsc' | 'priceDesc' | 'ratingHigh' | 'discountHigh';
 export type DiscountType = 'percentage' | 'amount';
 
-export const mockProducts: Good[] = [
+// MOCK API
+const getGoodsMock: () => Array<Good> = () => {
+    return mockProducts;
+};
+// MOCK API
+
+type LoadAllGoodsByCategoryParam = {
+    categoryId: number;
+};
+type LoadGoodsByCategoryResult = Good[];
+export const loadGoodsByCategory = createEvent<LoadAllGoodsByCategoryParam>();
+export const $goodsByCategory = createStore<LoadGoodsByCategoryResult>([]);
+
+const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
+    async handler({categoryId}) {
+        const alLGoods = getGoodsMock();
+        return alLGoods.filter(good => good.categoryId === categoryId);
+        // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
+    }
+});
+
+sample({
+    clock: loadGoodsByCategory,
+    target: loadGoodsByCategoryFx
+});
+
+sample({
+    clock: loadGoodsByCategoryFx.doneData,
+    target: $goodsByCategory
+})
+
+const mockProducts: Good[] = [
     {
         id: 1,
         name: 'Товар 1',
         description: 'Товар 1',
         price: 3000,
         storeId: 1,
-        categoryId: 2,
+        categoryId: 12,
         reviews: [
             {
                 id: 1,
@@ -77,7 +110,7 @@ export const mockProducts: Good[] = [
         description: 'Товар 2',
         price: 6000,
         storeId: 1,
-        categoryId: 2,
+        categoryId: 12,
         reviews: [
             {
                 id: 3,
@@ -105,7 +138,7 @@ export const mockProducts: Good[] = [
         description: 'Товар 3',
         price: 1000,
         storeId: 1,
-        categoryId: 2,
+        categoryId: 12,
         reviews: [
             {
                 id: 5,
@@ -131,7 +164,7 @@ export const mockProducts: Good[] = [
         description: 'Товар 4',
         price: 6000,
         storeId: 1,
-        categoryId: 2,
+        categoryId: 13,
         reviews: [],
         images: [{
             id: 4,

@@ -3,7 +3,7 @@ import {
     List,
     ListItem,
     Typography,
-    Divider, TextField, SelectChangeEvent
+    Divider, TextField
 } from '@mui/material';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { styled } from '@mui/material/styles';
@@ -11,6 +11,8 @@ import {$categories, findParentCategory, GoodCategory} from "../../api";
 import {useUnit} from "effector-react";
 import {BackwardLink, SmallMenuLinkActive} from "../common";
 import {ChangeEventHandler} from "react";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
     width: 280,
@@ -28,13 +30,20 @@ type FilterSidebarPriceRange = {
 };
 
 type FilterSidebarProps = {
-    goodCategory?: GoodCategory;
+    goodCategory: GoodCategory | null;
     handleMinPriceChange: (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => void;
     handleMaxPriceChange: (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => void;
+    handleHighRatingCheckChange: (checked: boolean) => void;
     priceRange: FilterSidebarPriceRange;
 };
 
-const FilterSidebar = ({goodCategory, priceRange, handleMinPriceChange, handleMaxPriceChange}: FilterSidebarProps) => {
+const FilterSidebar = ({
+                           goodCategory,
+                           priceRange,
+                           handleMinPriceChange,
+                           handleMaxPriceChange,
+                           handleHighRatingCheckChange
+                       }: FilterSidebarProps) => {
     const categories = useUnit($categories);
     const parentCategory = findParentCategory(categories, goodCategory?.id as number);
 
@@ -93,22 +102,12 @@ const FilterSidebar = ({goodCategory, priceRange, handleMinPriceChange, handleMa
                 <Typography variant="h6" gutterBottom>
                     Рейтинг
                 </Typography>
-                {/*<List disablePadding>*/}
-                {/*    <ListItem disablePadding>*/}
-                {/*        <FormControlLabel*/}
-                {/*            control={<Checkbox />}*/}
-                {/*            label="4★ и выше"*/}
-                {/*            sx={{ width: '100%' }}*/}
-                {/*        />*/}
-                {/*    </ListItem>*/}
-                {/*    <ListItem disablePadding>*/}
-                {/*        <FormControlLabel*/}
-                {/*            control={<Checkbox />}*/}
-                {/*            label="3★ и выше"*/}
-                {/*            sx={{ width: '100%' }}*/}
-                {/*        />*/}
-                {/*    </ListItem>*/}
-                {/*</List>*/}
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Высокий рейтинг"
+                    onChange={(_, checked) => handleHighRatingCheckChange(checked)}
+                    sx={{ width: '100%' }}
+                />
             </FilterSection>
         </SidebarContainer>
     );

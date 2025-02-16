@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, useState} from "react";
+import React, {ChangeEventHandler, useEffect, useMemo, useState} from "react";
 import {
     Box,
     Container,
@@ -15,8 +15,9 @@ import {useUnit} from "effector-react";
 import {$categories, findCategoryById} from "../api";
 import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
-import {Good, mockProducts, SortOption} from "../api/models/goods.ts";
+import {$goodsByCategory, Good, loadGoodsByCategory, SortOption} from "../api/models/goods.ts";
 import ProductCard from "../components/good/ProductCard.tsx";
+import {getGoodRating} from "../services";
 
 const MainContainer = styled(Box)(() => ({
     display: 'flex',
@@ -41,28 +42,49 @@ export const CategoryPage: React.FC = () => {
     const categoryId = match?.params?.id != null ? parseInt(match?.params?.id) : null;
     const selectedCategory = findCategoryById(categories, categoryId as number);
 
+    useEffect(() => {
+        if (categoryId != null) {
+            loadGoodsByCategory({categoryId: categoryId});
+        }
+    }, [categoryId]);
+
     const [sortBy, setSortBy] = useState<SortOption>('popular');
-    const [goods, setGoods] = useState<Array<Good>>(mockProducts);
+    const goods = useUnit($goodsByCategory);
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(100);
+    const [maxPrice, setMaxPrice] = useState(0);
+    const [useHighRating, setUseHighRating] = useState(false);
+
+    useEffect(() => {
+        setMinPrice(getMinPrice(goods));
+        setMaxPrice(getMaxPrice(goods));
+    }, [goods]);
+
+    const filteredGoods = useMemo(() => {
+        if (minPrice === 0 && maxPrice === 0) {
+            return goods;
+        }
+
+        const filteredByPrice = goods.filter(good => good.price >= minPrice && good.price <= maxPrice);
+
+        if (useHighRating) {
+            return filteredByPrice.filter(good => getGoodRating(good) >= 4.5);
+        }
+
+        return goods.filter(good => good.price >= minPrice && good.price <= maxPrice);
+    }, [goods, minPrice, maxPrice, useHighRating]);
 
     const handleSortChange = (event: SelectChangeEvent<SortOption>) => {
         setSortBy(event.target.value as SortOption);
     };
 
     const handleMinPriceChange = (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => {
-        const value = Math.min(Number(event.target.value), maxPrice - 1);
-        setMinPrice(value);
-        onPriceChange(minPrice, maxPrice);
+        setMinPrice(Number(event.target.value));
     };
     const handleMaxPriceChange = (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => {
-        const value = Math.max(Number(event.target.value), minPrice + 1);
-        setMaxPrice(value);
-        onPriceChange(minPrice, maxPrice);
+        setMaxPrice(Number(event.target.value));
     };
-
-    const onPriceChange = (startPrice: number, endPrice: number) => {
-        setGoods(goods.filter(good => good.price >= startPrice && good.price <= endPrice));
+    const handleHighRatingCheckChange = (checked: boolean) => {
+        setUseHighRating(checked);
     };
 
     return (
@@ -73,13 +95,14 @@ export const CategoryPage: React.FC = () => {
                                priceRange={{startRange: minPrice, endRange: maxPrice}}
                                handleMinPriceChange={handleMinPriceChange}
                                handleMaxPriceChange={handleMaxPriceChange}
+                               handleHighRatingCheckChange={handleHighRatingCheckChange}
                 />
 
                 <ContentContainer>
                     <Container maxWidth="xl">
                         <CustomHeader>
                             <Typography variant="h5" component="h1">
-                                {selectedCategory?.name} ({mockProducts.length} товаров)
+                                {selectedCategory?.name} ({filteredGoods.length} товаров)
                             </Typography>
                             <FormControl sx={{ minWidth: 200 }}>
                                 <Select
@@ -96,7 +119,7 @@ export const CategoryPage: React.FC = () => {
                         </CustomHeader>
 
                         <Grid2 container spacing={3}>
-                            {goods.map((product) => (
+                            {filteredGoods.map((product) => (
                                 <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
                                     <ProductCard good={product} />
                                 </Grid2>
@@ -109,7 +132,18 @@ export const CategoryPage: React.FC = () => {
     );
 };
 
-// const findCategoryById = (categories: Array<GoodCategory>, id: number | null) => {
-//     return categories.flatMap(category => [category, ...category.childCategories ?? []])
-//         .find(category => category.id === id) as GoodCategory;
-// };
+const getMinPrice = (goods: Good[]) => {
+    if (!goods.length) {
+        return 0;
+    }
+
+    return goods.reduce((min, curr) => curr.price < min ? curr.price : min, 100000);
+}
+
+const getMaxPrice = (goods: Good[]) => {
+    if (!goods.length) {
+        return 0;
+    }
+
+    return goods.reduce((max, curr) => curr.price > max ? curr.price : max, 0);
+}

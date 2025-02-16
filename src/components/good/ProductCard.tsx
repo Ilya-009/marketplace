@@ -12,6 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { styled } from '@mui/material/styles';
 import {Good} from "../../api/models/goods.ts";
+import {getGoodRating} from "../../services";
 
 const StyledCard = styled(Card)(() => ({
     height: '100%',
@@ -50,10 +51,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ good }: ProductCardProps) => {
     const [isFavorite, setIsFavorite] = useState(false);
-    const rating = good.reviews.length ?
-        good.reviews.reduce((acc, curr) => acc + curr.mark, 0)
-        / good.reviews.length
-    : 0;
+    const rating = getGoodRating(good);
 
     return (
         <StyledCard elevation={1}>
