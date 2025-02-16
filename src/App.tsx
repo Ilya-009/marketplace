@@ -1,5 +1,5 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {MainPage} from "./pages";
+import {MainPage, ProductCardPage} from "./pages";
 import {ThemeProvider} from "@mui/material";
 import {MainTheme} from "./ui";
 import {useEffect} from "react";
@@ -23,6 +23,7 @@ function App() {
                     <Route path="/signUp" element={<SignUp />} />
                     <Route path="/signIn" element={<SignIn />} />
                     <Route path="/catalog/:id" element={<CategoryPage />} />
+                    <Route path="/goods/:id" element={<ProductCardPage />} />
                     <Route path="/" element={<MainPage />} />
                     <Route path="/404" element={<NotFoundPage />} />
                 </Routes>

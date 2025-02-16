@@ -13,6 +13,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { styled } from '@mui/material/styles';
 import {Good} from "../../api/models/goods.ts";
 import {getGoodRating} from "../../services";
+import {useNavigate} from "react-router-dom";
 
 const StyledCard = styled(Card)(() => ({
     height: '100%',
@@ -52,9 +53,14 @@ interface ProductCardProps {
 const ProductCard = ({ good }: ProductCardProps) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const rating = getGoodRating(good);
+    const navigate = useNavigate();
+
+    const onGoodCardClick = () => {
+        navigate(`/goods/${good.id}`);
+    };
 
     return (
-        <StyledCard elevation={1}>
+        <StyledCard elevation={1} onClick={onGoodCardClick}>
             <FavoriteButton
                 onClick={() => setIsFavorite(!isFavorite)}
                 sx={{ color: isFavorite ? 'error.main' : 'grey.400' }}
@@ -131,3 +137,8 @@ const ProductCard = ({ good }: ProductCardProps) => {
     );
 };
 export default ProductCard;
+//    const images = [
+//         'https://ir.ozone.ru/s3/multimedia-1-4/wc350/7155132256.jpg',
+//         'https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7154751816.jpg',
+//         'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg',
+//     ];
