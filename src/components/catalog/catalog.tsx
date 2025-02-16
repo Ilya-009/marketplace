@@ -70,7 +70,7 @@ const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
                                                 <List>
                                                     {childCategory?.childCategories.map((category) => (
                                                         <ListItemText>
-                                                            <SmallMenuLinkPassive>{category.name}</SmallMenuLinkPassive>
+                                                            <SmallMenuLinkPassive href={`/catalog/${category.id}`}>{category.name}</SmallMenuLinkPassive>
                                                         </ListItemText>
                                                     ))}
                                                 </List>

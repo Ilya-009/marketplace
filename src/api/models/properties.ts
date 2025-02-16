@@ -1,4 +1,3 @@
-import {apiClient} from "../lib/http-client.ts";
 import {createEffect, createEvent, createStore, sample} from 'effector';
 import {AxiosError} from "axios";
 
@@ -24,7 +23,7 @@ type LoadPropertiesResult = Property[];
 export const loadProperties = createEvent<LoadPropertiesParam>();
 export const $properties = createStore<LoadPropertiesResult>([]);
 
-export const loadPropertiesFx = createEffect<LoadPropertiesParam, LoadPropertiesResult, AxiosError>({
+const loadPropertiesFx = createEffect<LoadPropertiesParam, LoadPropertiesResult, AxiosError>({
     async handler() {
         return getPropertiesMock();
         // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
