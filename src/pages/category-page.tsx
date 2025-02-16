@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {ChangeEventHandler, useState} from "react";
 import {
     Box,
     Container,
@@ -12,10 +12,10 @@ import {
 import Header from "../components/header/header.tsx";
 import {useMatch} from "react-router-dom";
 import {useUnit} from "effector-react";
-import {$categories, GoodCategory} from "../api";
+import {$categories, findCategoryById} from "../api";
 import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
-import {mockProducts, SortOption} from "../api/models/goods.ts";
+import {Good, mockProducts, SortOption} from "../api/models/goods.ts";
 import ProductCard from "../components/good/ProductCard.tsx";
 
 const MainContainer = styled(Box)(() => ({
@@ -36,21 +36,44 @@ const CustomHeader = styled(Box)(() => ({
 
 export const CategoryPage: React.FC = () => {
     const categories = useUnit($categories);
-    const match = useMatch('/catalog/:id');
 
+    const match = useMatch('/catalog/:id');
     const categoryId = match?.params?.id != null ? parseInt(match?.params?.id) : null;
-    const selectedCategory = findCategoryById(categories, categoryId);
+    const selectedCategory = findCategoryById(categories, categoryId as number);
 
     const [sortBy, setSortBy] = useState<SortOption>('popular');
+    const [goods, setGoods] = useState<Array<Good>>(mockProducts);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(100);
+
     const handleSortChange = (event: SelectChangeEvent<SortOption>) => {
         setSortBy(event.target.value as SortOption);
+    };
+
+    const handleMinPriceChange = (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => {
+        const value = Math.min(Number(event.target.value), maxPrice - 1);
+        setMinPrice(value);
+        onPriceChange(minPrice, maxPrice);
+    };
+    const handleMaxPriceChange = (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => {
+        const value = Math.max(Number(event.target.value), minPrice + 1);
+        setMaxPrice(value);
+        onPriceChange(minPrice, maxPrice);
+    };
+
+    const onPriceChange = (startPrice: number, endPrice: number) => {
+        setGoods(goods.filter(good => good.price >= startPrice && good.price <= endPrice));
     };
 
     return (
         <Box sx={{marginLeft: 10, marginRight: 10}}>
             <Header />
             <MainContainer>
-                <FilterSidebar goodCategory={selectedCategory} />
+                <FilterSidebar goodCategory={selectedCategory}
+                               priceRange={{startRange: minPrice, endRange: maxPrice}}
+                               handleMinPriceChange={handleMinPriceChange}
+                               handleMaxPriceChange={handleMaxPriceChange}
+                />
 
                 <ContentContainer>
                     <Container maxWidth="xl">
@@ -73,7 +96,7 @@ export const CategoryPage: React.FC = () => {
                         </CustomHeader>
 
                         <Grid2 container spacing={3}>
-                            {mockProducts.map((product) => (
+                            {goods.map((product) => (
                                 <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
                                     <ProductCard good={product} />
                                 </Grid2>
@@ -86,7 +109,7 @@ export const CategoryPage: React.FC = () => {
     );
 };
 
-const findCategoryById = (categories: Array<GoodCategory>, id: number | null) => {
-    return categories.flatMap(category => [category, ...category.childCategories ?? []])
-        .find(category => category.id === id) as GoodCategory;
-};
+// const findCategoryById = (categories: Array<GoodCategory>, id: number | null) => {
+//     return categories.flatMap(category => [category, ...category.childCategories ?? []])
+//         .find(category => category.id === id) as GoodCategory;
+// };

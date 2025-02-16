@@ -3,14 +3,14 @@ import {
     List,
     ListItem,
     Typography,
-    Divider
+    Divider, TextField, SelectChangeEvent
 } from '@mui/material';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { styled } from '@mui/material/styles';
-import {$categories, GoodCategory} from "../../api";
+import {$categories, findParentCategory, GoodCategory} from "../../api";
 import {useUnit} from "effector-react";
-import {useMemo} from "react";
 import {BackwardLink, SmallMenuLinkActive} from "../common";
+import {ChangeEventHandler} from "react";
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
     width: 280,
@@ -22,20 +22,21 @@ const FilterSection = styled(Box)(({ theme }) => ({
     marginBottom: theme.spacing(3)
 }));
 
+type FilterSidebarPriceRange = {
+    startRange: number;
+    endRange: number;
+};
+
 type FilterSidebarProps = {
     goodCategory?: GoodCategory;
+    handleMinPriceChange: (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => void;
+    handleMaxPriceChange: (event: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>) => void;
+    priceRange: FilterSidebarPriceRange;
 };
 
-const findParentCategoryForSelected = (categories: GoodCategory[], search?: GoodCategory) => {
-    return categories.find(category => category.childCategories?.some(subCategory => subCategory.id === search?.id));
-};
-
-const FilterSidebar = ({goodCategory}: FilterSidebarProps) => {
+const FilterSidebar = ({goodCategory, priceRange, handleMinPriceChange, handleMaxPriceChange}: FilterSidebarProps) => {
     const categories = useUnit($categories);
-
-    const parentCategory = useMemo(() => findParentCategoryForSelected(categories, goodCategory),
-        [categories, goodCategory?.id]);
-    console.log(categories, goodCategory);
+    const parentCategory = findParentCategory(categories, goodCategory?.id as number);
 
     return (
         <SidebarContainer>
@@ -43,7 +44,7 @@ const FilterSidebar = ({goodCategory}: FilterSidebarProps) => {
                 <Typography variant="h6" gutterBottom>
                     Категория
                 </Typography>
-                {findParentCategoryForSelected(categories, parentCategory) != null
+                {findParentCategory(categories, goodCategory?.id as number) != null
                     ? <BackwardLink href={`/catalog/${parentCategory?.id}`}>
                         <ArrowLeftIcon/>
                         {parentCategory?.name}
@@ -68,29 +69,24 @@ const FilterSidebar = ({goodCategory}: FilterSidebarProps) => {
                 <Typography variant="h6" gutterBottom>
                     Цена
                 </Typography>
-                {/*<List disablePadding>*/}
-                {/*    <ListItem disablePadding>*/}
-                {/*        <FormControlLabel*/}
-                {/*            control={<Checkbox />}*/}
-                {/*            label="Under ₽1000"*/}
-                {/*            sx={{ width: '100%' }}*/}
-                {/*        />*/}
-                {/*    </ListItem>*/}
-                {/*    <ListItem disablePadding>*/}
-                {/*        <FormControlLabel*/}
-                {/*            control={<Checkbox />}*/}
-                {/*            label="₽1000 - ₽5000"*/}
-                {/*            sx={{ width: '100%' }}*/}
-                {/*        />*/}
-                {/*    </ListItem>*/}
-                {/*    <ListItem disablePadding>*/}
-                {/*        <FormControlLabel*/}
-                {/*            control={<Checkbox />}*/}
-                {/*            label="Over ₽5000"*/}
-                {/*            sx={{ width: '100%' }}*/}
-                {/*        />*/}
-                {/*    </ListItem>*/}
-                {/*</List>*/}
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <TextField
+                        type="number"
+                        value={priceRange.startRange}
+                        onChange={handleMinPriceChange}
+                        InputProps={{ inputProps: { min: 0, max: priceRange.endRange - 1 } }}
+                        variant="outlined"
+                        fullWidth
+                    />
+                    <TextField
+                        type="number"
+                        value={priceRange.endRange}
+                        onChange={handleMaxPriceChange}
+                        InputProps={{ inputProps: { min: priceRange.startRange + 1 } }}
+                        variant="outlined"
+                        fullWidth
+                    />
+                </Box>
             </FilterSection>
             <Divider sx={{ my: 2 }} />
             <FilterSection>
