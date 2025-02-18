@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, styled } from '@mui/material';
 import FullScreenGallery from "./full-screen-gallery.tsx";
+import {GoodImage} from "../../../api/models/goods.ts";
 
 const GalleryContainer = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -48,7 +49,7 @@ const MainImage = styled('img')({
 });
 
 interface GalleryProps {
-    images: string[];
+    images: GoodImage[];
 }
 
 const Gallery: React.FC<GalleryProps> = ({ images }) => {
@@ -77,13 +78,13 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 {images.map((img, index) => (
                     <Thumbnail
                         key={index}
-                        src={img}
+                        src={img.image}
                         onClick={() => handleThumbnailClick(index)}
                     />
                 ))}
             </ThumbnailList>
             <MainImageContainer>
-                <MainImage src={images[selectedImage]} onClick={handleFullScreen} />
+                <MainImage src={images[selectedImage]?.image} onClick={handleFullScreen} />
             </MainImageContainer>
             {isFullScreen && (
                 <FullScreenGallery

@@ -3,4 +3,6 @@ export interface Review {
     mark: number;
     text: string;
     creationTime: Date;
+    creatorName: string;
+    creatorSurname: string;
 }

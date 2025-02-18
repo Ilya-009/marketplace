@@ -5,4 +5,8 @@ export const getGoodRating = (good: Good) => {
         good.reviews.reduce((acc, curr) => acc + curr.mark, 0)
         / good.reviews.length
         : 0;
-}
+};
+
+export const findGoodById = (goods: Good[], id: number) => {
+    return goods.find(good => good.id === id);
+};

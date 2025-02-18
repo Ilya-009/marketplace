@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, IconButton, Modal, styled } from '@mui/material';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import {GoodImage} from "../../../api/models/goods.ts";
 
 const FullScreenGalleryContainer = styled(Box)({
     display: 'flex',
@@ -70,7 +71,7 @@ const RightButton = styled(NavigationButton)({
 });
 
 interface FullScreenGalleryProps {
-    images: string[];
+    images: GoodImage[];
     selectedImage: number;
     onClose: () => void;
     onNext: () => void;
@@ -112,14 +113,14 @@ const FullScreenGallery: React.FC<FullScreenGalleryProps> = ({
                     {images.map((img, index) => (
                         <Thumbnail
                             key={index}
-                            src={img}
+                            src={img.image}
                             onClick={() => onThumbnailClick(index)}
                             className={index === selectedImage ? 'active' : ''}
                         />
                     ))}
                 </ThumbnailList>
                 <MainImageContainer>
-                    <MainImage src={images[selectedImage]} />
+                    <MainImage src={images[selectedImage]?.image} />
                     <LeftButton onClick={onPrev}>
                         <ChevronLeft />
                     </LeftButton>

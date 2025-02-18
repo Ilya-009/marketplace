@@ -17,7 +17,7 @@ import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
 import {$goodsByCategory, Good, loadGoodsByCategory, SortOption} from "../api/models/goods.ts";
 import ProductCard from "../components/good/ProductCard.tsx";
-import {getGoodRating} from "../services";
+import {extractIdFromPath, getGoodRating} from "../services";
 
 const MainContainer = styled(Box)(() => ({
     display: 'flex',
@@ -39,20 +39,20 @@ export const CategoryPage: React.FC = () => {
     const categories = useUnit($categories);
 
     const match = useMatch('/catalog/:id');
-    const categoryId = match?.params?.id != null ? parseInt(match?.params?.id) : null;
+    const categoryId = extractIdFromPath(match);
     const selectedCategory = findCategoryById(categories, categoryId as number);
-
-    useEffect(() => {
-        if (categoryId != null) {
-            loadGoodsByCategory({categoryId: categoryId});
-        }
-    }, [categoryId]);
 
     const [sortBy, setSortBy] = useState<SortOption>('popular');
     const goods = useUnit($goodsByCategory);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(0);
     const [useHighRating, setUseHighRating] = useState(false);
+
+    useEffect(() => {
+        if (categoryId != null) {
+            loadGoodsByCategory({categoryId: categoryId});
+        }
+    }, [categoryId]);
 
     useEffect(() => {
         setMinPrice(getMinPrice(goods));

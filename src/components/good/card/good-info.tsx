@@ -23,7 +23,7 @@ interface ProductInfoProps {
     name: string;
     rating: number;
     reviewsCount: number;
-    questionsCount: number;
+    // questionsCount: number;
     shopName: string;
     shopIcon: string;
     color: string;
@@ -36,7 +36,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                                                      name,
                                                      rating,
                                                      reviewsCount,
-                                                     questionsCount,
+                                                     // questionsCount,
                                                      shopName,
                                                      shopIcon,
                                                      color,
@@ -47,7 +47,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     return (
         <ProductInfoContainer>
             <Typography variant="h4">{name}</Typography>
-            <Typography variant="body1">Rating: {rating} ({reviewsCount} отзывов, {questionsCount} вопросов)</Typography>
+            {/*<Typography variant="body1">Rating: {rating} ({reviewsCount} отзывов, {questionsCount} вопросов)</Typography>*/}
+            <Typography variant="body1">Rating: {rating} ({reviewsCount} отзывов)</Typography>
             <ShopInfo>
                 <img src={shopIcon} alt={shopName} width="20" height="20" />
                 <Typography variant="body1">{shopName}</Typography>

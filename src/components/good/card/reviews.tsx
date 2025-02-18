@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Typography, styled } from '@mui/material';
+import {Review} from "../../../api/models/reviews.ts";
+import {formatDate} from "../../../services/type-utils.ts";
 
 export const ReviewsContainer = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -30,25 +32,21 @@ const Avatar = styled(Box)({
 });
 
 interface ReviewProps {
-    name: string;
-    surname: string;
-    date: string;
-    rating: number;
-    comment: string;
+    review: Review;
 }
 
-const Review: React.FC<ReviewProps> = ({ name, surname, date, rating, comment }) => {
+const ReviewCard: React.FC<ReviewProps> = ({review}) => {
     return (
         <>
             <ReviewHeader>
-                <Avatar>{name[0]}{surname[0]}</Avatar>
-                <Typography variant="body1">{name} {surname}</Typography>
-                <Typography variant="body2">{date}</Typography>
+                <Avatar>{review.creatorName[0]}{review.creatorSurname[0]}</Avatar>
+                <Typography variant="body1">{review.creatorName} {review.creatorSurname}</Typography>
+                <Typography variant="body2">{formatDate(review.creationTime)}</Typography>
             </ReviewHeader>
-            <Typography variant="body1">Rating: {rating}/5</Typography>
-            <Typography variant="body1">{comment}</Typography>
+            <Typography variant="body1">Оценка: {review.mark}/5</Typography>
+            <Typography variant="body1">{review.text}</Typography>
         </>
     );
 };
 
-export default Review;
+export default ReviewCard;

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Button, Typography, styled } from '@mui/material';
+import {Box, Button, Typography, styled} from '@mui/material';
 
-const PriceDeliveryContainer = styled(Box)(({ theme }) => ({
+const PriceDeliveryContainer = styled(Box)(({theme}) => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '10px',
@@ -44,17 +44,17 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
                                                          oldPrice,
                                                          deliveryMethods,
                                                      }) => {
-    return (
-        <PriceDeliveryContainer>
+    return <PriceDeliveryContainer>
+        <Box sx={{display: 'flex'}}>
             <Price>{price} ₽</Price>
             {oldPrice && <OldPrice>{oldPrice} ₽</OldPrice>}
-            <ButtonsContainer>
-                <Button variant="contained">Добавить в корзину</Button>
-                <Button variant="outlined">Купить в один клик</Button>
-            </ButtonsContainer>
-            <DeliveryInfo>Способы доставки: {deliveryMethods.join(', ')}</DeliveryInfo>
-        </PriceDeliveryContainer>
-    );
+        </Box>
+        <ButtonsContainer>
+            <Button variant="contained">Добавить в корзину</Button>
+            <Button variant="outlined">Купить в один клик</Button>
+        </ButtonsContainer>
+        <DeliveryInfo>Способы доставки: {deliveryMethods.join(', ')}</DeliveryInfo>
+    </PriceDeliveryContainer>;
 };
 
 export default PriceDelivery;

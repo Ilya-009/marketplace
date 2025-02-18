@@ -55,6 +55,11 @@ type LoadAllGoodsByCategoryParam = {
 };
 type LoadGoodsByCategoryResult = Good[];
 export const loadGoodsByCategory = createEvent<LoadAllGoodsByCategoryParam>();
+
+type LoadGoodByIdParam = {id: number};
+export const loadGoodById = createEvent<LoadGoodByIdParam>();
+export const $allGoods = createStore<Array<Good>>([]);
+
 export const $goodsByCategory = createStore<LoadGoodsByCategoryResult>([]);
 
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
@@ -65,15 +70,42 @@ const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGood
     }
 });
 
+const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosError>({
+    async handler({id}) {
+        // TODO: Добавить просмотр
+
+        const allGoods = getGoodsMock();
+        return allGoods.find(good => good.id === id);
+        // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
+    }
+});
+
 sample({
     clock: loadGoodsByCategory,
     target: loadGoodsByCategoryFx
 });
-
 sample({
     clock: loadGoodsByCategoryFx.doneData,
     target: $goodsByCategory
-})
+});
+
+sample({
+    clock: loadGoodById,
+    target: loadGoodByIdFx
+});
+
+$allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {
+    if (good == null) {
+        return goods;
+    }
+
+    const hasInStore = goods.some(g => g.id === good.id);
+    if (hasInStore) {
+        return goods;
+    }
+
+    return [...goods, good];
+});
 
 const mockProducts: Good[] = [
     {
@@ -88,13 +120,17 @@ const mockProducts: Good[] = [
                 id: 1,
                 mark: 4.0,
                 text: '',
-                creationTime: new Date()
+                creationTime: new Date(),
+                creatorName: 'Светлана',
+                creatorSurname: 'Иконникова'
             },
             {
                 id: 2,
                 mark: 3.0,
                 text: '',
-                creationTime: new Date()
+                creationTime: new Date(),
+                creatorName: 'Сергей',
+                creatorSurname: 'Рудько'
             },
         ],
         images: [
@@ -102,6 +138,7 @@ const mockProducts: Good[] = [
                 id: 1,
                 image: 'https://ir.ozone.ru/s3/multimedia-1-4/wc350/7155132256.jpg'
             }
+
         ]
     },
     {
@@ -116,13 +153,17 @@ const mockProducts: Good[] = [
                 id: 3,
                 mark: 5,
                 text: '',
-                creationTime: new Date()
+                creationTime: new Date(),
+                creatorName: 'Иван',
+                creatorSurname: 'Иванов'
             },
             {
                 id: 4,
                 mark: 4,
                 text: '',
-                creationTime: new Date()
+                creationTime: new Date(),
+                creatorName: 'Влад',
+                creatorSurname: 'Соколов'
             },
         ],
         images: [
@@ -144,19 +185,37 @@ const mockProducts: Good[] = [
                 id: 5,
                 mark: 3,
                 text: '',
-                creationTime: new Date()
+                creationTime: new Date(),
+                creatorName: 'Максим',
+                creatorSurname: 'Перепелица'
             },
             {
                 id: 6,
                 mark: 2,
                 text: '',
-                creationTime: new Date()
+                creationTime: new Date(),
+                creatorName: 'Женя',
+                creatorSurname: 'Савочкин'
             },
         ],
-        images: [{
-            id: 3,
-            image: 'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg'
-        }]
+        images: [
+            {
+                id: 3,
+                image: 'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg'
+            },
+            {
+                id: 5,
+                image: 'https://ir.ozone.ru/s3/multimedia-1-7/wc1000/7141227763.jpg'
+            },
+            {
+                id: 6,
+                image: 'https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7154751816.jpg'
+            },
+            {
+                id: 7,
+                image: 'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg'
+            },
+        ]
     },
     {
         id: 4,
