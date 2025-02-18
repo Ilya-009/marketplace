@@ -13,6 +13,8 @@ import {$properties} from "../../api";
 import {getProperty} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
 import {primaryTextColor} from "../../ui";
+import {isUserAuthenticated} from "../../services/authentication.ts";
+import {AccountBox} from "@mui/icons-material";
 
 const SearchField = styled(TextField)`
     margin-left: 20px;
@@ -69,7 +71,10 @@ const Header: React.FC = () => {
                     ),
                 }}/>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent='space-around'>
-                    <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='/signIn'/>
+                    {isUserAuthenticated()
+                        ? <LinkWithIcon icon={<AccountBox/>} label='Профиль' href='/profile'/>
+                        : <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='/signIn'/>
+                    }
                     <LinkWithIcon icon={<FavoriteIcon/>} label='Избранное' href='#'/>
                     <LinkWithIcon icon={<ShoppingCartIcon/>} label='Корзина' href='#'/>
                 </Stack>
