@@ -1,5 +1,6 @@
 import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
+import {apiClient, baseUrl} from "../lib";
 
 export type GoodCategory = {
     id: number;
@@ -160,8 +161,8 @@ export const $categories = createStore<LoadCategoriesResult>([]);
 
 export const loadCategoriesFx = createEffect<LoadCategoriesParam, LoadCategoriesResult, AxiosError>({
     async handler() {
-        return getCategoriesMock();
-        // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
+        return apiClient.get(`${baseUrl}/goods/categories`).then(({ data }) => data);
+        // return getCategoriesMock();
     }
 });
 

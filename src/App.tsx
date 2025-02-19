@@ -3,10 +3,9 @@ import {MainPage, ProductCardPage} from "./pages";
 import {ThemeProvider} from "@mui/material";
 import {MainTheme} from "./ui";
 import {useEffect} from "react";
-import {loadProperties} from "./api";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
-import {loadCategories} from "./api";
+import {loadProperties, loadCategories} from "./api";
 import {CategoryPage} from "./pages/category-page.tsx";
 import {NotFoundPage} from "./pages/not-found.tsx";
 

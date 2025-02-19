@@ -36,12 +36,10 @@ const isTokenValid = (token: string): boolean => {
 
 export const isUserAuthenticated = () : boolean => {
     const token = localStorage.getItem('token');
-    console.log(token);
     if (token == null) {
         return false;
     }
 
     const isValid = isTokenValid(token);
-    console.log(isValid);
     return isValid;
 };

@@ -1,6 +1,7 @@
 import {Review} from "./reviews.ts";
 import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
+import {apiClient, baseUrl} from "../lib";
 
 export interface Good {
     id: number;
@@ -9,7 +10,7 @@ export interface Good {
     price: number;
     storeId: number;
     categoryId: number;
-    images: Array<GoodImage>;
+    goodImages: Array<GoodImage>;
     reviews: Array<Review>;
     discount?: GoodDiscount;
     options?: Array<GoodOption>;
@@ -64,9 +65,9 @@ export const $goodsByCategory = createStore<LoadGoodsByCategoryResult>([]);
 
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
-        const alLGoods = getGoodsMock();
-        return alLGoods.filter(good => good.categoryId === categoryId);
-        // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
+        // const alLGoods = getGoodsMock();
+        // return alLGoods.filter(good => good.categoryId === categoryId);
+        return await apiClient.get(`${baseUrl}/goods/byCategory?categoryId=${categoryId}`).then(({ data }) => data);
     }
 });
 
@@ -74,9 +75,9 @@ const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosEr
     async handler({id}) {
         // TODO: Добавить просмотр
 
-        const allGoods = getGoodsMock();
-        return allGoods.find(good => good.id === id);
-        // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
+        // const allGoods = getGoodsMock();
+        // return allGoods.find(good => good.id === id);
+        return await apiClient.get(`${baseUrl}/goods/${id}`).then(({ data }) => data);
     }
 });
 

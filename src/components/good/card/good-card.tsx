@@ -50,13 +50,13 @@ const ProductCard = ({good}: ProductCardProps) => {
     return <ProductCardContainer>
         <MainContent>
             <GallerySection>
-                <Gallery images={good.images}/>
+                <Gallery images={good.goodImages}/>
             </GallerySection>
             <InfoSection>
                 <ProductInfo
                     name={good.name}
                     rating={getGoodRating(good)}
-                    reviewsCount={good.reviews.length}
+                    reviewsCount={good.reviews?.length ?? 0}
                     shopName="Xiaomi"
                     shopIcon="shop-icon.jpg"
                     color="зеленый"
@@ -72,9 +72,9 @@ const ProductCard = ({good}: ProductCardProps) => {
             </InfoSection>
         </MainContent>
         <ReviewsContainer>
-            {good.reviews.map((review, index) => (
+            {good.reviews?.map((review, index) => (
                 <ReviewCard key={index} review={review} />
-            ))}
+            )) ?? ''}
         </ReviewsContainer>
     </ProductCardContainer>;
 };

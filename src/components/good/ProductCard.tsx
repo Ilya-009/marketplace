@@ -69,7 +69,11 @@ const ProductCard = ({ good }: ProductCardProps) => {
             </FavoriteButton>
 
             <ImageContainer>
-                <img src={good.images[0].image} alt={good.name} loading="lazy" />
+                {good.goodImages.length !== 0
+                    ? <img src={good.goodImages[0].image} alt={good.name} loading="lazy"/>
+                    : <img src='https://svetolok.ru/img/no-photo.jpg' alt={good.name} loading="lazy"/>
+                }
+
             </ImageContainer>
             <CardContent sx={{ flexGrow: 1, p: 2 }}>
                 <Box sx={{ mb: 1 }}>
@@ -129,7 +133,7 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <Rating value={rating} precision={0.1} readOnly size="small" />
                     <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                        {rating} ({good.reviews.length})
+                        {rating} ({good.reviews?.length})
                     </Typography>
                 </Box>
             </CardContent>

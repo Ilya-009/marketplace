@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 export const apiClient = axios.create({});
-export const baseUrl = 'http://localhost:8080';
+export const baseUrl = 'http://localhost:8080/api/v1';
 
 apiClient.interceptors.request.use(function (config) {
     const token = localStorage.getItem('token');

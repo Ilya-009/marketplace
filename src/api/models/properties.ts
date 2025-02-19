@@ -1,20 +1,23 @@
 import {createEffect, createEvent, createStore, sample} from 'effector';
 import {AxiosError} from "axios";
+import {apiClient, baseUrl} from "../lib";
 
 export type Property = {
+    id: number;
     key: string;
     value: string;
 };
 
 // MOCK API
-const getPropertiesMock: () => Array<Property> = () => {
-    return [
-        {
-            key: 'logo.image',
-            value: 'https://ir.ozone.ru/s3/cms/eb/t8d/wc200/logo-logo-ozon-blue-png.png'
-        },
-    ];
-};
+// const getPropertiesMock: () => Array<Property> = () => {
+//     return [
+//         {
+//             id: 1,
+//             key: 'logo.image',
+//             value: 'https://ir.ozone.ru/s3/cms/eb/t8d/wc200/logo-logo-ozon-blue-png.png'
+//         },
+//     ];
+// };
 // MOCK API
 
 type LoadPropertiesParam = void;
@@ -25,8 +28,7 @@ export const $properties = createStore<LoadPropertiesResult>([]);
 
 const loadPropertiesFx = createEffect<LoadPropertiesParam, LoadPropertiesResult, AxiosError>({
     async handler() {
-        return getPropertiesMock();
-        // return await apiClient.get(`/api/properties/getAll`).then(({ data }) => data.data);
+        return await apiClient.get(`${baseUrl}/properties`).then(({ data }) => data);
     }
 });
 
