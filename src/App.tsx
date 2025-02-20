@@ -8,6 +8,9 @@ import SignIn from "./pages/sign-in.tsx";
 import {loadProperties, loadCategories} from "./api";
 import {CategoryPage} from "./pages/category-page.tsx";
 import {NotFoundPage} from "./pages/not-found.tsx";
+import ProfilePage from "./pages/profile/profile-page.tsx";
+import ProfileMainPage from "./pages/profile/profile-main-page.tsx";
+import EditProfile from "./pages/profile/personal-info-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -23,8 +26,12 @@ function App() {
                     <Route path="/signIn" element={<SignIn />} />
                     <Route path="/catalog/:id" element={<CategoryPage />} />
                     <Route path="/goods/:id" element={<ProductCardPage />} />
+                    <Route path="/profile" element={<ProfilePage />}>
+                        <Route path="main" element={<ProfileMainPage />} />
+                        <Route path="personalInfo" element={<EditProfile />} />
+                    </Route>
                     <Route path="/" element={<MainPage />} />
-                    <Route path="/404" element={<NotFoundPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

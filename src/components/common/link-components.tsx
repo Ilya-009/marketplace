@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Link} from '@mui/material';
+import {Link as MuiLink, Link} from '@mui/material';
 import {MainTheme, primaryTextColor} from "../../ui";
 
 export const SmallLinkActive = styled(Link) `
@@ -37,4 +37,14 @@ export const SmallMenuLinkActive = styled(Link)`
 export const BackwardLink = styled(SmallMenuLinkActive)`
     display: flex;
     align-content: center;
+`;
+
+export const EditProfileLink = styled(MuiLink)`
+    font-size: 14px;
+    color: #1976d2;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
 `;

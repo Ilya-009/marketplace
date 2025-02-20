@@ -72,7 +72,7 @@ const Header: React.FC = () => {
                 }}/>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent='space-around'>
                     {isUserAuthenticated()
-                        ? <LinkWithIcon icon={<AccountBox/>} label='Профиль' href='/profile'/>
+                        ? <LinkWithIcon icon={<AccountBox/>} label='Профиль' href='/profile/main'/>
                         : <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='/signIn'/>
                     }
                     <LinkWithIcon icon={<FavoriteIcon/>} label='Избранное' href='#'/>
