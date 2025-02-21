@@ -13,13 +13,6 @@ export interface Good {
     goodImages: Array<GoodImage>;
     reviews: Array<Review>;
     discount?: GoodDiscount;
-    // options?: Array<GoodOption>;
-
-    // reviews: Array<Review>;
-    // originalPrice?: number;
-    // image: string;
-    // delivery: string;
-    // isOriginal?: boolean;
 }
 
 export interface GoodDiscount {
@@ -28,15 +21,6 @@ export interface GoodDiscount {
     discountValue: number;
 }
 
-// export interface GoodOption {
-//     id: number;
-//     name: string;
-//     description: string;
-//     price: number;
-//     goodImage: GoodImage;
-//     discount?: GoodDiscount;
-// }
-
 export interface GoodImage {
     id: number;
     image: string;
@@ -44,12 +28,6 @@ export interface GoodImage {
 
 export type SortOption = 'popular' | 'newest' | 'priceAsc' | 'priceDesc' | 'ratingHigh' | 'discountHigh';
 export type DiscountType = 'percentage' | 'amount';
-
-// MOCK API
-const getGoodsMock: () => Array<Good> = () => {
-    return mockProducts;
-};
-// MOCK API
 
 type LoadAllGoodsByCategoryParam = {
     categoryId: number;
@@ -73,8 +51,6 @@ const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGood
 
 const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosError>({
     async handler({id}) {
-        // TODO: Добавить просмотр
-
         // const allGoods = getGoodsMock();
         // return allGoods.find(good => good.id === id);
         return await apiClient.get(`${baseUrl}/goods/${id}`).then(({ data }) => data);

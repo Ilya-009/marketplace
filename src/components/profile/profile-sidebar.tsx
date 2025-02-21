@@ -38,7 +38,7 @@ const UserName = styled(Typography)`
 `;
 
 const sections = [
-    {id: 'main', label: '+Мои данные', path: 'main'},
+    {id: 'main', label: 'Мои данные', path: 'main'},
     // {id: 'payment-methods', label: 'Способы оплаты', path: 'payment-methods'},
     {id: 'my-cart', label: 'Моя корзина', path: '/cart'},
     {id: 'my-orders', label: 'Мои заказы', path: 'orders'},

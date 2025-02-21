@@ -4,10 +4,9 @@ import ProductInfo from "./good-info.tsx";
 import PriceDelivery from "./delivery.tsx";
 import {ReviewsContainer} from "./reviews.tsx";
 import ReviewCard from "./reviews.tsx";
-import {Good} from "../../../api/models/goods.ts";
+import {Good} from "../../../api";
 import {getGoodRating} from "../../../services";
-import * as React from "react";
-import {addToCart} from "../../../api/models/cart.ts";
+import {addToCart} from "../../../api";
 
 const ProductCardContainer = styled(Box)(() => ({
     display: 'flex',
