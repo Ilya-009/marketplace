@@ -76,7 +76,7 @@ const Header: React.FC = () => {
                         : <LinkWithIcon icon={<LoginIcon/>} label='Войти' href='/signIn'/>
                     }
                     <LinkWithIcon icon={<FavoriteIcon/>} label='Избранное' href='#'/>
-                    <LinkWithIcon icon={<ShoppingCartIcon/>} label='Корзина' href='#'/>
+                    <LinkWithIcon icon={<ShoppingCartIcon/>} label='Корзина' href='/cart'/>
                 </Stack>
             </Stack>
 

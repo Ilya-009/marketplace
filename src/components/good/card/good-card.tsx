@@ -6,6 +6,8 @@ import {ReviewsContainer} from "./reviews.tsx";
 import ReviewCard from "./reviews.tsx";
 import {Good} from "../../../api/models/goods.ts";
 import {getGoodRating} from "../../../services";
+import * as React from "react";
+import {addToCart} from "../../../api/models/cart.ts";
 
 const ProductCardContainer = styled(Box)(() => ({
     display: 'flex',
@@ -47,6 +49,15 @@ const ProductCard = ({good}: ProductCardProps) => {
     const deliveryMethods = ['Pickup', 'Post', 'Courier'];
     // TODO заменить способы доставки с сервера (+ сделать кастомизируемыми)
 
+    const onAddToCartBtnClick = () => {
+        addToCart({
+                goodId: good.id,
+                categoryId: good.categoryId,
+                storeId: good.storeId
+            }
+        );
+    };
+
     return <ProductCardContainer>
         <MainContent>
             <GallerySection>
@@ -68,6 +79,7 @@ const ProductCard = ({good}: ProductCardProps) => {
                     price={10743}
                     oldPrice={11076}
                     deliveryMethods={deliveryMethods}
+                    addToCart={onAddToCartBtnClick}
                 />
             </InfoSection>
         </MainContent>

@@ -13,7 +13,7 @@ export interface Good {
     goodImages: Array<GoodImage>;
     reviews: Array<Review>;
     discount?: GoodDiscount;
-    options?: Array<GoodOption>;
+    // options?: Array<GoodOption>;
 
     // reviews: Array<Review>;
     // originalPrice?: number;
@@ -28,14 +28,14 @@ export interface GoodDiscount {
     discountValue: number;
 }
 
-export interface GoodOption {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    goodImage: GoodImage;
-    discount?: GoodDiscount;
-}
+// export interface GoodOption {
+//     id: number;
+//     name: string;
+//     description: string;
+//     price: number;
+//     goodImage: GoodImage;
+//     discount?: GoodDiscount;
+// }
 
 export interface GoodImage {
     id: number;
@@ -134,7 +134,7 @@ const mockProducts: Good[] = [
                 creatorSurname: 'Рудько'
             },
         ],
-        images: [
+        goodImages: [
             {
                 id: 1,
                 image: 'https://ir.ozone.ru/s3/multimedia-1-4/wc350/7155132256.jpg'
@@ -167,7 +167,7 @@ const mockProducts: Good[] = [
                 creatorSurname: 'Соколов'
             },
         ],
-        images: [
+        goodImages: [
             {
                 id: 2,
                 image: 'https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7154751816.jpg'
@@ -199,7 +199,7 @@ const mockProducts: Good[] = [
                 creatorSurname: 'Савочкин'
             },
         ],
-        images: [
+        goodImages: [
             {
                 id: 3,
                 image: 'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg'
@@ -226,7 +226,7 @@ const mockProducts: Good[] = [
         storeId: 1,
         categoryId: 13,
         reviews: [],
-        images: [{
+        goodImages: [{
             id: 4,
             image: 'https://ir.ozone.ru/s3/multimedia-1-7/wc1000/7141227763.jpg'
         }]

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography, Link as MuiLink} from '@mui/material';
+import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
@@ -37,12 +37,11 @@ const UserName = styled(Typography)`
     font-size: 18px;
 `;
 
-
 const sections = [
     {id: 'main', label: '+Мои данные', path: 'main'},
     // {id: 'payment-methods', label: 'Способы оплаты', path: 'payment-methods'},
-    {id: 'my-cart', label: 'Моя корзина', path: 'my-cart'},
-    {id: 'my-orders', label: 'Мои заказы', path: 'my-orders'},
+    {id: 'my-cart', label: 'Моя корзина', path: '/cart'},
+    {id: 'my-orders', label: 'Мои заказы', path: 'orders'},
     {id: 'purchased-items', label: 'Купленные товары', path: 'purchased-items'},
     {id: 'my-reviews', label: 'Мои отзывы', path: 'my-reviews'},
     {id: 'become-seller', label: 'Стать продавцом', path: 'become-seller'},

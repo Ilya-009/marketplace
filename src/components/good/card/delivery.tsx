@@ -37,12 +37,14 @@ interface PriceDeliveryProps {
     price: number;
     oldPrice?: number;
     deliveryMethods: string[];
+    addToCart: (event: React.FormEvent<HTMLButtonElement>) => void;
 }
 
 const PriceDelivery: React.FC<PriceDeliveryProps> = ({
                                                          price,
                                                          oldPrice,
                                                          deliveryMethods,
+                                                         addToCart
                                                      }) => {
     return <PriceDeliveryContainer>
         <Box sx={{display: 'flex'}}>
@@ -50,7 +52,7 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
             {oldPrice && <OldPrice>{oldPrice} ₽</OldPrice>}
         </Box>
         <ButtonsContainer>
-            <Button variant="contained">Добавить в корзину</Button>
+            <Button variant="contained" onClick={addToCart}>Добавить в корзину</Button>
             <Button variant="outlined">Купить в один клик</Button>
         </ButtonsContainer>
         <DeliveryInfo>Способы доставки: {deliveryMethods.join(', ')}</DeliveryInfo>
