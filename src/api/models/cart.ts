@@ -1,4 +1,5 @@
-import {createEvent, createStore} from "effector";
+import {createEffect, createEvent, createStore, sample} from "effector";
+import {AxiosError} from "axios";
 
 export interface CartItem {
     goodId: number;
@@ -12,6 +13,8 @@ type AddGoodToCartParam = {
     categoryId: number;
     storeId: number;
 };
+
+type UpdateCartQuantityParam = { goodId: number; quantity: number };
 
 const loadCartFromLocalStorage = (): CartItem[] => {
     const cartData = localStorage.getItem('cart');
@@ -36,9 +39,41 @@ const doAddGoodToCart = (cart: CartItem[], newItem: AddGoodToCartParam) => {
 export const $cart = createStore<CartItem[]>(loadCartFromLocalStorage());
 
 // События для управления корзиной
-export const removeFromCart = createEvent<number>(); // Удаление товара по goodId
 export const addToCart = createEvent<AddGoodToCartParam>();
-export const updateQuantity = createEvent<{ goodId: number; quantity: number }>(); // Изменение количества
+export const removeFromCart = createEvent<number>(); // Удаление товара по goodId
+export const updateQuantity = createEvent<UpdateCartQuantityParam>(); // Изменение количества
+
+const addGoodToCartFx = createEffect<AddGoodToCartParam, void, AxiosError>({
+    async handler(addToCartParam) {
+        // TODO: Отправлять POST запрос на создание записи
+    }
+});
+
+const removeGoodFromCartFx = createEffect<number, void, AxiosError>({
+    async handler(goodId) {
+        // TODO: Отправлять DELETE запрос на удаление записи
+
+    }
+});
+
+const updateCartItemQuantityFx = createEffect<UpdateCartQuantityParam, void, AxiosError>({
+    async handler({goodId, quantity}) {
+        // TODO: Отправлять PATCH запрос на удаление записи
+    }
+});
+
+sample({
+    clock: addToCart,
+    target: addGoodToCartFx
+});
+sample({
+    clock: removeFromCart,
+    target: removeGoodFromCartFx
+});
+sample({
+    clock: updateQuantity,
+    target: updateCartItemQuantityFx
+});
 
 // Обработчики для событий
 $cart

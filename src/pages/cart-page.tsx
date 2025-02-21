@@ -47,122 +47,115 @@ const CartPage: React.FC = () => {
         navigate(`/goods/${goodId}`);
     };
 
-    return (
-        <Box sx={{marginLeft: 10, marginRight: 10}}>
-            <Header/>
-            <Typography variant="h4" gutterBottom>
-                Корзина
+    return <Box sx={{marginLeft: 10, marginRight: 10}}>
+        <Header/>
+        <Typography variant="h4" gutterBottom>
+            Корзина
+        </Typography>
+
+        {/* Список товаров */}
+        {!cart.length
+            ? <Typography variant="h5">
+                Корзина пуста
             </Typography>
+            : ''}
+        {!!cart.length && (
+            <>
+                <Card>
+                    <CardContent>
+                        {cart.map((item) => {
+                            const good = getGoodById(item.goodId);
+                            if (!good) return null;
 
-            {/* Список товаров */}
-            {!cart.length
-                ? <Typography variant="h5">
-                    Корзина пуста
-                </Typography>
-                : ''}
-            {!!cart.length && (
-                <>
-                    <Card>
-                        <CardContent>
-                            {cart.map((item) => {
-                                const good = getGoodById(item.goodId);
-                                if (!good) return null;
+                            const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
 
-                                const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
-
-                                return (
-                                    <React.Fragment key={item.goodId}>
-                                        <Grid container alignItems="center" spacing={2} sx={{marginBottom: 2}}>
-                                            {/* Чекбокс и фото */}
-                                            <Grid item xs={2}>
-                                                <Checkbox/>
-                                                <img
-                                                    src={good.goodImages[0].image}
-                                                    alt={good.name}
-                                                    style={{width: 50, height: 50, marginLeft: 10}}
-                                                />
-                                            </Grid>
-
-                                            {/* Название товара */}
-                                            <Grid item xs={3}>
-                                                <Typography
-                                                    variant="body1"
-                                                    sx={{cursor: 'pointer', '&:hover': {textDecoration: 'underline'}}}
-                                                    onClick={() => handleNavigateToGood(good.id)}
-                                                >
-                                                    {good.name}
-                                                </Typography>
-                                            </Grid>
-
-                                            {/* Цена и цена без скидки */}
-                                            <Grid item xs={3}>
-                                                <Typography variant="body1"
-                                                            sx={{textDecoration: 'line-through', color: 'gray'}}>
-                                                    {good.price} ₽
-                                                </Typography>
-                                                <Typography variant="body1" sx={{fontWeight: 'bold'}}>
-                                                    {discountedPrice} ₽
-                                                </Typography>
-                                            </Grid>
-
-                                            {/* Блок изменения количества */}
-                                            <Grid item xs={3}>
-                                                <Box sx={{display: 'flex', alignItems: 'center'}}>
-                                                    <IconButton
-                                                        onClick={() => handleQuantityChange(item.goodId, item.quantity - 1)}
-                                                    >
-                                                        <RemoveIcon/>
-                                                    </IconButton>
-                                                    <TextField
-                                                        value={item.quantity}
-                                                        onChange={(e) =>
-                                                            handleQuantityChange(item.goodId, parseInt(e.target.value, 10))
-                                                        }
-                                                        type="number"
-                                                        inputProps={{min: 1}}
-                                                        sx={{width: 60, textAlign: 'center'}}
-                                                    />
-                                                    <IconButton
-                                                        onClick={() => handleQuantityChange(item.goodId, item.quantity + 1)}
-                                                    >
-                                                        <AddIcon/>
-                                                    </IconButton>
-                                                </Box>
-                                            </Grid>
-
-                                            {/* Иконка удаления */}
-                                            <Grid item xs={1}>
-                                                <IconButton onClick={() => handleRemoveProduct(item.goodId)}
-                                                            color="error">
-                                                    <DeleteIcon/>
-                                                </IconButton>
-                                            </Grid>
+                            return (
+                                <React.Fragment key={item.goodId}>
+                                    <Grid container alignItems="center" spacing={2} sx={{marginBottom: 2}}>
+                                        {/* Чекбокс и фото */}
+                                        <Grid item xs={2}>
+                                            <Checkbox/>
+                                            <img
+                                                src={good.goodImages[0].image}
+                                                alt={good.name}
+                                                style={{width: 100, height: 100, marginLeft: 10}}
+                                            />
                                         </Grid>
-                                        <Divider sx={{marginBottom: 2}}/>
-                                    </React.Fragment>
-                                );
-                            })}
-                        </CardContent>
-                    </Card>
-                    <Box sx={{marginTop: 3, textAlign: 'right'}}>
-                        <Typography variant="h6">
-                            Итого:{' '}
-                            {cart.reduce((sum, item) => {
-                                const good = getGoodById(item.goodId);
-                                if (!good) return sum;
-                                const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
-                                return sum + discountedPrice * item.quantity;
-                            }, 0)}{' '}
-                            ₽
-                        </Typography>
-                        <Button variant="contained" color="primary" sx={{marginTop: 2}}>
-                            Оформить заказ
-                        </Button>
-                    </Box>
-                </>
-            )}
-        </Box>
-    );
+
+                                        <Grid item xs={3}>
+                                            <Typography
+                                                variant="body1"
+                                                sx={{cursor: 'pointer', '&:hover': {textDecoration: 'underline'}}}
+                                                onClick={() => handleNavigateToGood(good.id)}
+                                            >
+                                                {good.name}
+                                            </Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Typography variant="body1"
+                                                        sx={{textDecoration: 'line-through', color: 'gray'}}>
+                                                {good.price} ₽
+                                            </Typography>
+                                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>
+                                                {discountedPrice} ₽
+                                            </Typography>
+                                        </Grid>
+
+                                        <Grid item xs={3}>
+                                            <Box sx={{display: 'flex', alignItems: 'center'}}>
+                                                <IconButton
+                                                    onClick={() => handleQuantityChange(item.goodId, item.quantity - 1)}
+                                                >
+                                                    <RemoveIcon/>
+                                                </IconButton>
+                                                <TextField
+                                                    value={item.quantity}
+                                                    onChange={(e) =>
+                                                        handleQuantityChange(item.goodId, parseInt(e.target.value, 10))
+                                                    }
+                                                    type="number"
+                                                    inputProps={{min: 1}}
+                                                    sx={{width: 60, textAlign: 'center'}}
+                                                />
+                                                <IconButton
+                                                    onClick={() => handleQuantityChange(item.goodId, item.quantity + 1)}>
+                                                    <AddIcon/>
+                                                </IconButton>
+                                            </Box>
+                                        </Grid>
+
+                                        <Grid item xs={1}>
+                                            <IconButton onClick={() => handleRemoveProduct(item.goodId)}
+                                                        color="error">
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
+                                    <Divider sx={{marginBottom: 2}}/>
+                                </React.Fragment>
+                            );
+                        })}
+                    </CardContent>
+                </Card>
+                <Box sx={{marginTop: 3, textAlign: 'right'}}>
+                    <Typography variant="h6">
+                        Итого:{' '}
+                        {cart.reduce((sum, item) => {
+                            const good = getGoodById(item.goodId);
+                            if (!good) return sum;
+                            const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
+                            return sum + discountedPrice * item.quantity;
+                        }, 0)}{' '}
+                        ₽
+                    </Typography>
+                    <Button variant="contained" color="primary" sx={{marginTop: 2}}>
+                        Оформить заказ
+                    </Button>
+                </Box>
+            </>
+        )}
+    </Box>;
 };
 
 export default CartPage;
