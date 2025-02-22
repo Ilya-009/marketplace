@@ -12,6 +12,7 @@ import ProfilePage from "./pages/profile/profile-page.tsx";
 import ProfileMainPage from "./pages/profile/profile-main-page.tsx";
 import EditProfile from "./pages/profile/personal-info-page.tsx";
 import CartPage from "./pages/cart-page.tsx";
+import OrdersPage from "./pages/orders-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -31,6 +32,7 @@ function App() {
                     <Route path="/profile" element={<ProfilePage />}>
                         <Route path="main" element={<ProfileMainPage />} />
                         <Route path="personalInfo" element={<EditProfile />} />
+                        <Route path="orders" element={<OrdersPage />} />
                     </Route>
                     <Route path="/" element={<MainPage />} />
                     <Route path="*" element={<NotFoundPage />} />
