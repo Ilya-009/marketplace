@@ -3,6 +3,7 @@ import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} f
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
+import {logOut} from "../../api";
 
 const Sidebar = styled(Box)`
     width: 250px;
@@ -44,7 +45,6 @@ const sections = [
     {id: 'my-orders', label: 'Мои заказы', path: 'orders'},
     {id: 'purchased-items', label: 'Купленные товары', path: 'purchased-items'},
     {id: 'my-reviews', label: 'Мои отзывы', path: 'my-reviews'},
-    {id: 'become-seller', label: 'Стать продавцом', path: 'become-seller'},
 ];
 
 const ProfileSidebar: React.FC = () => {
@@ -73,6 +73,12 @@ const ProfileSidebar: React.FC = () => {
                         </ListItemButton>
                     </ListItem>
                 ))}
+
+                <ListItem key='logout' disablePadding>
+                    <ListItemButton component={Link} onClick={() => logOut()}>
+                        <ListItemText primary='Выйти из аккаунта'/>
+                    </ListItemButton>
+                </ListItem>
             </List>
         </Sidebar>
         <Content>
