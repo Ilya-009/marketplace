@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {
     Box,
     Typography,
-    Checkbox,
     TextField,
     Card,
     CardContent,
@@ -18,11 +17,14 @@ import {$cart, removeFromCart, updateQuantity} from "../api";
 import {useUnit} from "effector-react/effector-react.mjs";
 import Header from "../components/header/header.tsx";
 import {$allGoods, loadGoodById} from "../api";
+import {ConfirmModal} from "../components/common/confirm-modal.tsx";
 
 const CartPage: React.FC = () => {
     const cart = useUnit($cart);
     const allGoods = useUnit($allGoods);
     const navigate = useNavigate();
+    const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
+    const [confirmModalPayload, setConfirmModalPayload] = useState<any>();
 
     useEffect(() => {
         cart.forEach(cartItem => loadGoodById({id: cartItem.goodId}));
@@ -39,7 +41,9 @@ const CartPage: React.FC = () => {
 
     // Обработчик удаления товара
     const handleRemoveProduct = (goodId: number) => {
-        removeFromCart(goodId);
+        setConfirmModalPayload(goodId);
+        setConfirmModalOpen(true);
+        // removeFromCart(goodId);
     };
 
     // Обработчик перехода на страницу товара
@@ -53,7 +57,6 @@ const CartPage: React.FC = () => {
             Корзина
         </Typography>
 
-        {/* Список товаров */}
         {!cart.length
             ? <Typography variant="h5">
                 Корзина пуста
@@ -74,7 +77,6 @@ const CartPage: React.FC = () => {
                                     <Grid container alignItems="center" spacing={2} sx={{marginBottom: 2}}>
                                         {/* Чекбокс и фото */}
                                         <Grid item xs={2}>
-                                            <Checkbox/>
                                             <img
                                                 src={good.goodImages[0].image}
                                                 alt={good.name}
@@ -155,6 +157,20 @@ const CartPage: React.FC = () => {
                 </Box>
             </>
         )}
+
+        <ConfirmModal
+            isOpen={confirmModalOpen}
+            title='Удалить товар?'
+            content='Вы точно хотите удалить выбранный товар? Отменить данное действие будет невозможно.'
+            cancelBtnText='Отмена'
+            submitBtnText='Удалить'
+            onCancel={() => setConfirmModalOpen(false)}
+            onSubmit={(goodId) => {
+                removeFromCart(goodId);
+                setConfirmModalOpen(false);
+            }}
+            payload={confirmModalPayload}
+        />
     </Box>;
 };
 
