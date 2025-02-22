@@ -1,7 +1,7 @@
 import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
 import {apiClient, baseUrl} from "../lib";
-import {isUserAuthenticated} from "../../services/authentication.ts";
+import {isUserAuthenticated} from "../../services";
 
 type RegisterUserParam = {
     email: string;

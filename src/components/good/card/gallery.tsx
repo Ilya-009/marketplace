@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, styled } from '@mui/material';
 import FullScreenGallery from "./full-screen-gallery.tsx";
-import {GoodImage} from "../../../api/models/goods.ts";
+import {GoodImage} from "../../../api";
 
 const GalleryContainer = styled(Box)(({ theme }) => ({
     display: 'flex',

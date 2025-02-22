@@ -1,4 +1,4 @@
-import {Good} from "../api/models/goods.ts";
+import {Good} from "../api";
 
 export const getGoodRating = (good: Good) => {
     if (!good.reviews?.length) {

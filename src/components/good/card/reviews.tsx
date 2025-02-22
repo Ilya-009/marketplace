@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, styled } from '@mui/material';
-import {Review} from "../../../api/models/reviews.ts";
+import {Review} from "../../../api";
 import {formatDate} from "../../../services/type-utils.ts";
 
 export const ReviewsContainer = styled(Box)(({ theme }) => ({

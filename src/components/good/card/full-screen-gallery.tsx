@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, IconButton, Modal, styled } from '@mui/material';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import {GoodImage} from "../../../api/models/goods.ts";
+import {GoodImage} from "../../../api";
 
 const FullScreenGalleryContainer = styled(Box)({
     display: 'flex',

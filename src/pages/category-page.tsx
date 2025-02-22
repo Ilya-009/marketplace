@@ -15,7 +15,7 @@ import {useUnit} from "effector-react";
 import {$categories, findCategoryById} from "../api";
 import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
-import {$goodsByCategory, Good, loadGoodsByCategory, SortOption} from "../api/models/goods.ts";
+import {$goodsByCategory, Good, loadGoodsByCategory, SortOption} from "../api";
 import ProductCard from "../components/good/ProductCard.tsx";
 import {extractIdFromPath, getGoodRating} from "../services";
 

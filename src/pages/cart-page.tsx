@@ -14,10 +14,10 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {$cart, removeFromCart, updateQuantity} from "../api/models/cart.ts";
+import {$cart, removeFromCart, updateQuantity} from "../api";
 import {useUnit} from "effector-react/effector-react.mjs";
 import Header from "../components/header/header.tsx";
-import {$allGoods, loadGoodById} from "../api/models/goods.ts";
+import {$allGoods, loadGoodById} from "../api";
 
 const CartPage: React.FC = () => {
     const cart = useUnit($cart);

@@ -11,7 +11,7 @@ import {
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { styled } from '@mui/material/styles';
-import {Good} from "../../api/models/goods.ts";
+import {Good} from "../../api";
 import {getGoodRating} from "../../services";
 import {useNavigate} from "react-router-dom";
 

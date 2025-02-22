@@ -4,7 +4,7 @@ import Header from "../components/header/header.tsx";
 import styled from "styled-components";
 import {useMatch, useNavigate} from "react-router-dom";
 import {useEffect, useMemo} from "react";
-import {$allGoods, loadGoodById} from "../api/models/goods.ts";
+import {$allGoods, loadGoodById} from "../api";
 import {extractIdFromPath, findGoodById} from "../services";
 import {useUnit} from "effector-react";
 

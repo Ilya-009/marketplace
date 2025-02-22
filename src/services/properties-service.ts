@@ -1,4 +1,4 @@
-import {Property} from "../api/models/properties.ts";
+import {Property} from "../api";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const getProperty = (properties: Array<Property>, key: string, defaultValue? : any) => {

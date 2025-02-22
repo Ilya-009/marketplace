@@ -13,7 +13,7 @@ import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import {useState} from "react";
 import {validateSignUpInputs} from "../components";
-import {registerUser} from "../api/models/authentication.ts";
+import {registerUser} from "../api";
 import {useNavigate} from "react-router-dom";
 import {primaryTextColor} from "../ui";
 

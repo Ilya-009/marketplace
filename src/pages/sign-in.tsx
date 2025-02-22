@@ -17,7 +17,7 @@ import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
 import {validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
-import {loginUser} from "../api/models/authentication.ts";
+import {loginUser} from "../api";
 import {primaryTextColor} from "../ui";
 
 const Card = styled(MuiCard)(({ theme }) => ({
