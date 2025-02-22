@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
+import {useUnit} from "effector-react";
+import {$loggedUser, getLoggedUser} from "../../api";
 
 const EditProfile: React.FC = () => {
+    const loggedUserInfo = useUnit($loggedUser);
+
+    useEffect(() => {
+        getLoggedUser();
+    }, []);
+
     // Состояния для личных данных
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -15,6 +23,11 @@ const EditProfile: React.FC = () => {
     const [oldPasswordError, setOldPasswordError] = useState('');
     const [newPasswordError, setNewPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+    useEffect(() => {
+        setEmail(loggedUserInfo.email);
+        setPhone(loggedUserInfo.phone);
+    }, [loggedUserInfo]);
 
     // Валидация email
     const validateEmail = (email: string) => {

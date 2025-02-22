@@ -63,12 +63,6 @@ const OrdersPage: React.FC = () => {
                                     ))}
                                 </Box>
                             </Grid>
-
-                            {/* Кнопки для оценки */}
-                            <Grid item xs={12} sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
-                                <Button variant="outlined">Оценить заказ</Button>
-                                <Button variant="outlined">Оценить товар</Button>
-                            </Grid>
                         </Grid>
                     </CardContent>
                 </Card>
