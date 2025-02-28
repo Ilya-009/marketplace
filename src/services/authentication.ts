@@ -1,3 +1,5 @@
+import {clearAuthentication} from "../api";
+
 const isTokenValid = (token: string): boolean => {
     try {
         // Разделяем токен на части
@@ -40,6 +42,11 @@ export const isUserAuthenticated = () : boolean => {
         return false;
     }
 
-    const isValid = isTokenValid(token);
-    return isValid;
+    const tokenValid = isTokenValid(token);
+
+    if (!tokenValid) {
+        clearAuthentication();
+    }
+
+    return tokenValid;
 };

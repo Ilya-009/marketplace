@@ -43,12 +43,17 @@ const clearAuthenticationSession = createEffect({
     }
 });
 
+export const clearAuthentication = createEvent();
+
 export const registerUser = createEvent<RegisterUserParam>();
 const registerUserFx = createEffect<RegisterUserParam, AuthenticateUserResult, AxiosError>({
     async handler(param) {
         const result = await apiClient.post(`${baseUrl}/auth/sign-up`, param).then((response) => response.data);
         const token = result.token;
-        localStorage.setItem('token', token);
+
+        if (token) {
+            localStorage.setItem('token', token);
+        }
 
         return result;
     }
@@ -112,6 +117,11 @@ sample({
 sample({
     clock: changePassword,
     target: changePasswordFx
+});
+
+sample({
+    clock: clearAuthentication,
+    target: clearAuthenticationSession
 });
 
 sample({
