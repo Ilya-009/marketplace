@@ -21,11 +21,11 @@ const purchaseData = [
 ];
 
 const reviewData = [
-    {name: 'Положительные', value: 75},
-    {name: 'Отрицательные', value: 25},
+    {name: 'Положительные', value: 15},
+    {name: 'Отрицательные', value: 3},
 ];
 
-const COLORS = ['#0088FE', '#00C49F']; // Цвета для PieChart
+const COLORS = ['#128a00', '#ff0000']; // Цвета для PieChart
 
 const ProfileMainPage: React.FC = () => {
     return <DashboardContainer>
@@ -80,7 +80,6 @@ const ProfileMainPage: React.FC = () => {
                             <XAxis dataKey="name"/>
                             <YAxis/>
                             <Tooltip/>
-                            <Legend/>
                             <Bar dataKey="value" fill="#8884d8"/>
                         </BarChart>
                     </CardContent>

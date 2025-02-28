@@ -13,7 +13,7 @@ import {$properties} from "../../api";
 import {getProperty} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
 import {primaryTextColor} from "../../ui";
-import {isUserAuthenticated} from "../../services/authentication.ts";
+import {isUserAuthenticated} from "../../services";
 import {AccountBox} from "@mui/icons-material";
 
 const SearchField = styled(TextField)`
@@ -52,8 +52,8 @@ const Header: React.FC = () => {
                     <Box
                         component="img"
                         sx={{
-                            height: 44,
-                            width: 200,
+                            maxHeight: 44,
+                            maxWidth: 200
                         }}
                         alt="Лого"
                         src={logoImageSrc}
