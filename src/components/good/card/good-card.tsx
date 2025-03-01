@@ -49,12 +49,7 @@ const ProductCard = ({good}: ProductCardProps) => {
     // TODO заменить способы доставки с сервера (+ сделать кастомизируемыми)
 
     const onAddToCartBtnClick = () => {
-        addToCart({
-                goodId: good.id,
-                categoryId: good.categoryId,
-                storeId: good.storeId
-            }
-        );
+        addToCart({goodId: good.id});
     };
 
     return <ProductCardContainer>

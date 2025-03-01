@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
 import {useUnit} from "effector-react";
-import {$loggedUser, getLoggedUser} from "../../api";
+import {$loggedUser, changePassword, changeUserPersonalData, loadLoggedUser} from "../../api";
 
 const EditProfile: React.FC = () => {
     const loggedUserInfo = useUnit($loggedUser);
 
     useEffect(() => {
-        getLoggedUser();
+        loadLoggedUser();
     }, []);
 
     // Состояния для личных данных
@@ -105,7 +105,7 @@ const EditProfile: React.FC = () => {
         const isPhoneValid = validatePhone(phone);
 
         if (isEmailValid && isPhoneValid) {
-            console.log('Личные данные обновлены:', { email, phone });
+            changeUserPersonalData({email: email, phone: phone});
         }
     };
 
@@ -117,7 +117,7 @@ const EditProfile: React.FC = () => {
         const isConfirmPasswordValid = validateConfirmPassword(confirmPassword, newPassword);
 
         if (isOldPasswordValid && isNewPasswordValid && isConfirmPasswordValid) {
-            console.log('Пароль изменен:', { oldPassword, newPassword });
+            changePassword({oldPassword: oldPassword, newPassword: newPassword });
         }
     };
 

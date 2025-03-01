@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
-import {logOut} from "../../api";
+import {$customer, $loggedUser, defaultUserInfo, loadCustomer, logOut} from "../../api";
+import {useUnit} from "effector-react";
 
 const Sidebar = styled(Box)`
     width: 250px;
@@ -16,7 +17,6 @@ const Sidebar = styled(Box)`
 `;
 
 const Content = styled(Box)`
-    //flex: 1;
     padding: 20px;
 `;
 
@@ -49,12 +49,20 @@ const sections = [
 
 const ProfileSidebar: React.FC = () => {
     const location = useLocation();
+    const user = useUnit($loggedUser);
+    const customer = useUnit($customer);
+
+    useEffect(() => {
+        if (user !== defaultUserInfo) {
+            loadCustomer({userId: user.id});
+        }
+    }, [user, user.id]);
 
     return <>
         <Sidebar>
             <UserInfo>
                 <UserAvatar alt="User Avatar" src="/path/to/avatar.jpg"/>
-                <UserName>Иван Иванов</UserName>
+                <UserName>{customer.firstName} {customer.lastName}</UserName>
                 <EditProfileLink component={Link} to="personalInfo">
                     Редактировать профиль
                 </EditProfileLink>

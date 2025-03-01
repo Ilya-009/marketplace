@@ -166,7 +166,7 @@ const CartPage: React.FC = () => {
             submitBtnText='Удалить'
             onCancel={() => setConfirmModalOpen(false)}
             onSubmit={(goodId) => {
-                removeFromCart(goodId);
+                removeFromCart({goodId: goodId});
                 setConfirmModalOpen(false);
             }}
             payload={confirmModalPayload}

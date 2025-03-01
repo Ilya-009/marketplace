@@ -2,6 +2,7 @@ import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
 import {apiClient, baseUrl} from "../lib";
 import {isUserAuthenticated} from "../../services";
+import {loadCustomer} from "./customer.ts";
 
 type RegisterUserParam = {
     email: string;
@@ -17,23 +18,35 @@ type LoginUserParam = {
     password: string;
 };
 
+export enum UserRole {
+    USER = 'ROLE_USER',
+    ADMIN = 'ROLE_ADMIN',
+    CUSTOMER = 'ROLE_CUSTOMER',
+    SELLER = 'ROLE_SELLER',
+}
+
 export type UserInfo = {
     id: number;
     email: string;
     phone: string;
+    roles: UserRole[];
 };
-const defaultUserInfo: UserInfo = {
-    id: 0,
+export const defaultUserInfo: UserInfo = {
+    id: -1,
     email: '',
-    phone: ''
+    phone: '',
+    roles: [UserRole.USER]
 };
 
-type LoadLoggedUserParam = void;
 type LoadLoggedUserResult = UserInfo;
-
 type ChangePasswordParam = {
     oldPassword: string;
     newPassword: string;
+};
+
+type ChangeUserPersonalDataRequest = {
+    email: string;
+    phone: string;
 };
 
 const clearAuthenticationSession = createEffect({
@@ -70,9 +83,9 @@ export const loginUserFx = createEffect<LoginUserParam, AuthenticateUserResult, 
     }
 });
 
-export const getLoggedUser = createEvent<LoadLoggedUserParam>();
+export const loadLoggedUser = createEvent();
 export const $loggedUser = createStore<UserInfo>(defaultUserInfo);
-export const getLoggedUserFx = createEffect<LoadLoggedUserParam, LoadLoggedUserResult, AxiosError>({
+const loadLoggedUserFx = createEffect<void, LoadLoggedUserResult, AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/auth/user`).then(({data}) => data);
     }
@@ -81,7 +94,14 @@ export const getLoggedUserFx = createEffect<LoadLoggedUserParam, LoadLoggedUserR
 export const changePassword = createEvent<ChangePasswordParam>();
 export const changePasswordFx = createEffect<ChangePasswordParam, void, AxiosError>({
     async handler(param) {
-        await apiClient.patch(`${baseUrl}/auth/user`, param);
+        await apiClient.patch(`${baseUrl}/auth/change-password`, param);
+    }
+});
+
+export const changeUserPersonalData = createEvent<ChangeUserPersonalDataRequest>();
+export const changeUserPersonalDataFx = createEffect<ChangeUserPersonalDataRequest, void, AxiosError>({
+    async handler(param) {
+        await apiClient.patch(`${baseUrl}/auth`, param);
     }
 });
 
@@ -104,14 +124,23 @@ sample({
 });
 
 sample({
-    clock: getLoggedUser,
+    clock: loadLoggedUser,
     filter: () => isUserAuthenticated(),
-    target: getLoggedUserFx
+    target: loadLoggedUserFx
 });
 
 sample({
-    clock: getLoggedUserFx.doneData,
+    clock: loadLoggedUserFx.doneData,
     target: $loggedUser
+});
+sample({
+    clock: loadLoggedUserFx.doneData,
+    fn: (user) => {
+        return {
+            userId: user.id
+        };
+    },
+    target: loadCustomer
 });
 
 sample({
@@ -120,13 +149,13 @@ sample({
 });
 
 sample({
-    clock: clearAuthentication,
+    clock: [clearAuthentication, changePasswordFx.done, changeUserPersonalDataFx.done],
     target: clearAuthenticationSession
 });
 
 sample({
-    clock: changePasswordFx.done,
-    target: clearAuthenticationSession
+    clock: changeUserPersonalData,
+    target: changeUserPersonalDataFx
 });
 
 sample({

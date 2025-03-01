@@ -5,7 +5,7 @@ import {MainTheme} from "./ui";
 import {useEffect} from "react";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
-import {loadProperties, loadCategories} from "./api";
+import {loadProperties, loadCategories, loadLoggedUser} from "./api";
 import {CategoryPage} from "./pages";
 import {NotFoundPage} from "./pages";
 import ProfilePage from "./pages/profile/profile-page.tsx";
@@ -16,6 +16,7 @@ import OrdersPage from "./pages/orders-page.tsx";
 
 function App() {
     useEffect(() => {
+        loadLoggedUser();
         loadProperties();
         loadCategories();
     }, []);

@@ -43,16 +43,12 @@ export const $goodsByCategory = createStore<LoadGoodsByCategoryResult>([]);
 
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
-        // const alLGoods = getGoodsMock();
-        // return alLGoods.filter(good => good.categoryId === categoryId);
         return await apiClient.get(`${baseUrl}/goods/byCategory?categoryId=${categoryId}`).then(({ data }) => data);
     }
 });
 
 const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosError>({
     async handler({id}) {
-        // const allGoods = getGoodsMock();
-        // return allGoods.find(good => good.id === id);
         return await apiClient.get(`${baseUrl}/goods/${id}`).then(({ data }) => data);
     }
 });
@@ -83,128 +79,3 @@ $allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {
 
     return [...goods, good];
 });
-
-const mockProducts: Good[] = [
-    {
-        id: 1,
-        name: 'Товар 1',
-        description: 'Товар 1',
-        price: 3000,
-        storeId: 1,
-        categoryId: 12,
-        reviews: [
-            {
-                id: 1,
-                mark: 4.0,
-                text: '',
-                creationTime: new Date(),
-                creatorName: 'Светлана',
-                creatorSurname: 'Иконникова'
-            },
-            {
-                id: 2,
-                mark: 3.0,
-                text: '',
-                creationTime: new Date(),
-                creatorName: 'Сергей',
-                creatorSurname: 'Рудько'
-            },
-        ],
-        goodImages: [
-            {
-                id: 1,
-                image: 'https://ir.ozone.ru/s3/multimedia-1-4/wc350/7155132256.jpg'
-            }
-
-        ]
-    },
-    {
-        id: 2,
-        name: 'Товар 2',
-        description: 'Товар 2',
-        price: 6000,
-        storeId: 1,
-        categoryId: 12,
-        reviews: [
-            {
-                id: 3,
-                mark: 5,
-                text: '',
-                creationTime: new Date(),
-                creatorName: 'Иван',
-                creatorSurname: 'Иванов'
-            },
-            {
-                id: 4,
-                mark: 4,
-                text: '',
-                creationTime: new Date(),
-                creatorName: 'Влад',
-                creatorSurname: 'Соколов'
-            },
-        ],
-        goodImages: [
-            {
-                id: 2,
-                image: 'https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7154751816.jpg'
-            }
-        ]
-    },
-    {
-        id: 3,
-        name: 'Товар 3',
-        description: 'Товар 3',
-        price: 1000,
-        storeId: 1,
-        categoryId: 12,
-        reviews: [
-            {
-                id: 5,
-                mark: 3,
-                text: '',
-                creationTime: new Date(),
-                creatorName: 'Максим',
-                creatorSurname: 'Перепелица'
-            },
-            {
-                id: 6,
-                mark: 2,
-                text: '',
-                creationTime: new Date(),
-                creatorName: 'Женя',
-                creatorSurname: 'Савочкин'
-            },
-        ],
-        goodImages: [
-            {
-                id: 3,
-                image: 'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg'
-            },
-            {
-                id: 5,
-                image: 'https://ir.ozone.ru/s3/multimedia-1-7/wc1000/7141227763.jpg'
-            },
-            {
-                id: 6,
-                image: 'https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7154751816.jpg'
-            },
-            {
-                id: 7,
-                image: 'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg'
-            },
-        ]
-    },
-    {
-        id: 4,
-        name: 'Товар 4',
-        description: 'Товар 4',
-        price: 6000,
-        storeId: 1,
-        categoryId: 13,
-        reviews: [],
-        goodImages: [{
-            id: 4,
-            image: 'https://ir.ozone.ru/s3/multimedia-1-7/wc1000/7141227763.jpg'
-        }]
-    },
-];
