@@ -18,6 +18,7 @@ import {useUnit} from "effector-react/effector-react.mjs";
 import Header from "../components/header/header.tsx";
 import {$allGoods, loadGoodById} from "../api";
 import {ConfirmModal} from "../components/common/confirm-modal.tsx";
+import {MainPageBox} from "../components";
 
 const CartPage: React.FC = () => {
     const cart = useUnit($cart);
@@ -51,7 +52,7 @@ const CartPage: React.FC = () => {
         navigate(`/goods/${goodId}`);
     };
 
-    return <Box sx={{marginLeft: 10, marginRight: 10}}>
+    return <MainPageBox>
         <Header/>
         <Typography variant="h4" gutterBottom>
             Корзина
@@ -171,7 +172,7 @@ const CartPage: React.FC = () => {
             }}
             payload={confirmModalPayload}
         />
-    </Box>;
+    </MainPageBox>;
 };
 
 export default CartPage;

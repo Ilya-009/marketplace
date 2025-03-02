@@ -18,6 +18,7 @@ import FilterSidebar from "../components/good/filter-sidebar.tsx";
 import {$goodsByCategory, Good, loadGoodsByCategory, SortOption} from "../api";
 import ProductCard from "../components/good/ProductCard.tsx";
 import {extractIdFromPath, getGoodRating} from "../services";
+import {MainPageBox} from "../components";
 
 const MainContainer = styled(Box)(() => ({
     display: 'flex',
@@ -88,7 +89,7 @@ export const CategoryPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{marginLeft: 10, marginRight: 10}}>
+        <MainPageBox>
             <Header />
             <MainContainer>
                 <FilterSidebar goodCategory={selectedCategory}
@@ -128,7 +129,7 @@ export const CategoryPage: React.FC = () => {
                     </Container>
                 </ContentContainer>
             </MainContainer>
-        </Box>
+        </MainPageBox>
     );
 };
 

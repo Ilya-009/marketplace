@@ -7,6 +7,7 @@ import {useEffect, useMemo} from "react";
 import {$allGoods, loadGoodById} from "../api";
 import {extractIdFromPath, findGoodById} from "../services";
 import {useUnit} from "effector-react";
+import {MainPageBox} from "../components";
 
 const CardContainer = styled(Box)(() => ({
     minHeight: '100vh',
@@ -48,11 +49,11 @@ export const ProductCardPage = () => {
     }
 
     return (
-        <Box sx={{ marginLeft: 10, marginRight: 10 }}>
+        <MainPageBox>
             <Header />
             <CardContainer>
                 <ProductCard good={good} />
             </CardContainer>
-        </Box>
+        </MainPageBox>
     );
 };

@@ -1,15 +1,8 @@
 import React from 'react';
 import {Box, Typography, Card, CardContent, Grid, TextField, Button} from '@mui/material';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell} from 'recharts';
-import styled from 'styled-components';
-import {EditProfileLink} from "../../components";
+import {EditProfileLink, SidebarPageBox} from "../../components";
 import {Link} from "react-router-dom";
-
-// Стилизованный контейнер
-const DashboardContainer = styled(Box)`
-    padding: 20px;
-    //max-width: 70%;
-`;
 
 // Данные для графиков
 const purchaseData = [
@@ -25,10 +18,10 @@ const reviewData = [
     {name: 'Отрицательные', value: 3},
 ];
 
-const COLORS = ['#128a00', '#ff0000']; // Цвета для PieChart
+const COLORS = ['#128a00', '#ff0000'];
 
 const ProfileMainPage: React.FC = () => {
-    return <DashboardContainer>
+    return <SidebarPageBox>
         <Typography variant="h5" gutterBottom>
             Мои данные
         </Typography>
@@ -151,7 +144,7 @@ const ProfileMainPage: React.FC = () => {
                 </Card>
             </Grid>
         </Grid>
-    </DashboardContainer>;
+    </SidebarPageBox>;
 };
 
 export default ProfileMainPage;

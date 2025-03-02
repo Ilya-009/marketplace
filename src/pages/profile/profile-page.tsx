@@ -4,19 +4,20 @@ import Header from "../../components/header/header.tsx";
 import ProfileSidebar from "../../components/profile/profile-sidebar.tsx";
 import {Outlet} from "react-router-dom";
 import {loadLoggedUser} from "../../api";
+import {MainPageBox} from "../../components";
 
 const ProfilePage: React.FC = () => {
     useEffect(() => {
         loadLoggedUser();
     }, []);
 
-    return <Box sx={{marginLeft: 10, marginRight: 10}}>
+    return <MainPageBox>
         <Header/>
         <Box sx={{display: 'flex'}}>
             <ProfileSidebar/>
             <Outlet/>
         </Box>
-    </Box>;
+    </MainPageBox>;
 };
 
 export default ProfilePage;

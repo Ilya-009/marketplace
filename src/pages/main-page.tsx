@@ -1,10 +1,10 @@
 import React from 'react';
-import {Box} from '@mui/material';
 import Header from '../components/header/header.tsx';
+import {MainPageBox} from "../components";
 
 export const MainPage: React.FC = () => {
     return (
-        <Box sx={{marginLeft: 10, marginRight: 10}}>
+        <MainPageBox>
             <Header />
             {/*<Banner />*/}
             {/*<Container>*/}
@@ -18,6 +18,6 @@ export const MainPage: React.FC = () => {
             {/*    </Grid>*/}
             {/*</Container>*/}
             {/*<Footer />*/}
-        </Box>
+        </MainPageBox>
     );
 };

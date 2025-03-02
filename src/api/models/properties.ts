@@ -8,18 +8,6 @@ export type Property = {
     value: string;
 };
 
-// MOCK API
-// const getPropertiesMock: () => Array<Property> = () => {
-//     return [
-//         {
-//             id: 1,
-//             key: 'logo.image',
-//             value: 'https://ir.ozone.ru/s3/cms/eb/t8d/wc200/logo-logo-ozon-blue-png.png'
-//         },
-//     ];
-// };
-// MOCK API
-
 type LoadPropertiesParam = void;
 type LoadPropertiesResult = Property[];
 
