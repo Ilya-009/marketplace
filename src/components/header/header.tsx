@@ -35,7 +35,7 @@ const Header: React.FC = () => {
     };
 
     return (
-        <AppBar position="static" sx={{padding: 2, borderRadius: '0 0 10px 10px'}} color='transparent'>
+        <AppBar position="static" sx={{padding: 2, borderRadius: '0 0 10px 10px', marginBottom: '2rem'}} color='transparent'>
             <Stack direction="row" spacing={1} padding='0 .5rem' alignItems="center" justifyContent='space-between'>
                 <SmallLinkActive>
                     Вологда. Уточнить адрес

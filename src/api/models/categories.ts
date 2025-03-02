@@ -5,7 +5,6 @@ import {apiClient, baseUrl} from "../lib";
 export type GoodCategory = {
     id: number;
     name: string;
-    image: string;
     childCategories?: Array<GoodCategory>;
 };
 
@@ -64,88 +63,72 @@ const getCategoriesMock: () => GoodCategory[] = () => {
         {
             id: 1,
             name: 'Электроника',
-            image: '',
             childCategories: [
                 {
                     id: 2,
                     name: 'Телефоны',
-                    image: '',
                     childCategories: [
                         {
                             id: 12,
                             name: 'Смартфоны',
-                            image: ''
                         },
                         {
                             id: 13,
                             name: 'Кнопочные телефоны',
-                            image: ''
                         }
                     ]
                 },
                 {
                     id: 3,
                     name: 'Ноутбуки',
-                    image: ''
                 },
                 {
                     id: 4,
                     name: 'Планшеты',
-                    image: ''
                 },
                 {
                     id: 14,
                     name: 'Наушники',
-                    image: ''
                 },
                 {
                     id: 15,
                     name: 'Карты',
-                    image: ''
                 }
             ]
         },
         {
             id: 5,
             name: 'Одежда',
-            image: '',
             childCategories: [
                 {
                     id: 5,
-                    name: 'Мужская одежда',
-                    image: ''
+                    name: 'Мужская одежда'
                 },
                 {
                     id: 6,
                     name: 'Женская одежда',
-                    image: ''
                 },
                 {
                     id: 7,
                     name: 'Детская одежда',
-                    image: ''
                 }
             ]
         },
         {
             id: 8,
             name: 'Дом и сад',
-            image: '',
             childCategories: [
                 {
                     id: 9,
                     name: 'Мебель',
-                    image: ''
                 },
                 {
                     id: 10,
                     name: 'Декор',
-                    image: ''
                 },
                 {
                     id: 11,
                     name: 'Садовые инструменты',
-                    image: ''
                 }
             ]
         },

@@ -12,7 +12,7 @@ const StyledFooter = styled(Box)`
 const Footer: React.FC = () => {
     return (
         <StyledFooter>
-            <Typography variant="body1">© 2023 Marketplace. All Rights Reserved.</Typography>
+            <Typography variant="body1">© 2025 Маркетплейс. Все права защищены.</Typography>
         </StyledFooter>
     );
 };

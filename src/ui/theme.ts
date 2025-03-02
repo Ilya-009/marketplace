@@ -13,7 +13,7 @@ export const MainTheme = createTheme({
             main: green[500],
         },
         text: {
-            primary: blue[500],
+            primary: '#000',
         }
     },
 });

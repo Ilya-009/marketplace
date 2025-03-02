@@ -45,7 +45,7 @@ type ProductCardProps = {
 };
 
 const ProductCard = ({good}: ProductCardProps) => {
-    const deliveryMethods = ['Pickup', 'Post', 'Courier'];
+    const deliveryMethods = ['Самовывоз', 'СДЭК', 'Курьер'];
     // TODO заменить способы доставки с сервера (+ сделать кастомизируемыми)
 
     const onAddToCartBtnClick = () => {
