@@ -52,6 +52,10 @@ const CartPage: React.FC = () => {
         navigate(`/goods/${goodId}`);
     };
 
+    const navigateToCheckout = () => {
+        navigate('/checkout');
+    };
+
     return <MainPageBox>
         <Header/>
         <Typography variant="h4" gutterBottom>
@@ -152,7 +156,7 @@ const CartPage: React.FC = () => {
                         }, 0)}{' '}
                         ₽
                     </Typography>
-                    <Button variant="contained" color="primary" sx={{marginTop: 2}}>
+                    <Button variant="contained" color="primary" sx={{marginTop: 2}} onClick={navigateToCheckout}>
                         Оформить заказ
                     </Button>
                 </Box>
