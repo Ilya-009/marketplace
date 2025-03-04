@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, IconButton, Modal, styled } from '@mui/material';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import {GoodImage} from "../../../api";
+import { ChevronLeft, ChevronRight, Close } from '@mui/icons-material'; // Импортируем иконку Close
+import { GoodImage } from "../../../api";
 
 const FullScreenGalleryContainer = styled(Box)({
     display: 'flex',
@@ -10,6 +10,7 @@ const FullScreenGalleryContainer = styled(Box)({
     height: '100vh',
     width: '100vw',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    position: 'relative', // Добавляем относительное позиционирование для контейнера
 });
 
 const ThumbnailList = styled(Box)({
@@ -70,6 +71,17 @@ const RightButton = styled(NavigationButton)({
     right: '10px',
 });
 
+const CloseButton = styled(IconButton)({
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    color: '#fff',
+    backgroundColor: 'black',
+    '&:hover': {
+        backgroundColor: 'grey',
+    },
+});
+
 interface FullScreenGalleryProps {
     images: GoodImage[];
     selectedImage: number;
@@ -120,6 +132,9 @@ const FullScreenGallery: React.FC<FullScreenGalleryProps> = ({
                     ))}
                 </ThumbnailList>
                 <MainImageContainer>
+                    <CloseButton onClick={onClose}>
+                        <Close />
+                    </CloseButton>
                     <MainImage src={images[selectedImage]?.image} />
                     <LeftButton onClick={onPrev}>
                         <ChevronLeft />

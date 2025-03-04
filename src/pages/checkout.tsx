@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Typography,
@@ -13,27 +13,29 @@ import {
     List,
     ListItem,
     ListItemAvatar,
-    Avatar,
-    ListItemText, TextField,
+    ListItemText,
+    TextField,
 } from '@mui/material';
 import {MainPageBox} from "../components";
 import Header from "../components/header/header.tsx";
 import {useNavigate} from "react-router-dom";
-
-// Моковые данные для товаров в заказе
-const mockProducts = [
-    { id: 1, name: 'Товар 1', price: 1000, image: 'https://via.placeholder.com/50' },
-    { id: 2, name: 'Товар 2', price: 2000, image: 'https://via.placeholder.com/50' },
-];
+import {useUnit} from "effector-react";
+import {$allGoods, $cart, Good, loadGoodById} from "../api";
+import {findGoodById} from "../services";
 
 // Компонент страницы оформления заказа
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
+    const cart = useUnit($cart);
+    const allGoods = useUnit($allGoods);
+
+    useEffect(() => {
+        cart.forEach(cartItem => loadGoodById({id: cartItem.goodId}));
+    }, [cart]);
 
     const [paymentMethod, setPaymentMethod] = useState<string>('card');
     const [deliveryMethod, setDeliveryMethod] = useState<string>('pickup');
     // const [promoCode, setPromoCode] = useState<string>('');
-    const [discount, setDiscount] = useState<number>(0);
     const [userData, setUserData] = useState({
         name: '',
         address: '',
@@ -44,19 +46,11 @@ const CheckoutPage: React.FC = () => {
     const deliveryCost = deliveryMethod === 'pickup' ? 0 : 500;
 
     // Итоговая сумма
-    const totalProductsCost = mockProducts.reduce((sum, product) => sum + product.price, 0);
-    const totalCost = totalProductsCost + deliveryCost - discount;
-
-    // Обработчик применения промокода
-    // const handleApplyPromoCode = () => {
-    //     // Пример логики применения промокода
-    //     if (promoCode === 'DISCOUNT10') {
-    //         setDiscount(totalProductsCost * 0.1); // Скидка 10%
-    //     } else {
-    //         setDiscount(0);
-    //         alert('Промокод недействителен');
-    //     }
-    // };
+    const totalProductsCost = cart.reduce((sum, cartItem) => {
+        const good = findGoodById(allGoods, cartItem.goodId);
+        return sum + cartItem.quantity * (good?.price ?? 0);
+    }, 0)
+    const totalCost = totalProductsCost + deliveryCost;
 
     // Обработчик изменения данных пользователя
     const handleUserDataChange = (field: string, value: string) => {
@@ -68,6 +62,22 @@ const CheckoutPage: React.FC = () => {
 
     const handleSubmit = () => {
         alert('Заказ оформлен');
+        const order = {
+            paymentMethod: paymentMethod,
+            deliveryMethod: deliveryMethod,
+            userData: userData,
+            cost: totalProductsCost
+        };
+
+        const ordersStr = localStorage.getItem('orders');
+        if (ordersStr != null) {
+            const orders = JSON.parse(ordersStr);
+            const appended = [...orders, order];
+            localStorage.setItem('orders', JSON.stringify(appended));
+        } else {
+            localStorage.setItem('orders', JSON.stringify([order]));
+        }
+
         navigate('/');
     };
 
@@ -140,14 +150,31 @@ const CheckoutPage: React.FC = () => {
                             Товары в заказе
                         </Typography>
                         <List>
-                            {mockProducts.map((product) => (
-                                <ListItem key={product.id}>
-                                    <ListItemAvatar>
-                                        <Avatar src={product.image} alt={product.name} />
-                                    </ListItemAvatar>
-                                    <ListItemText primary={product.name} secondary={`${product.price} руб.`} />
-                                </ListItem>
-                            ))}
+                            {cart.map((cartItem) => {
+                                const good = findGoodById(allGoods, cartItem.goodId);
+                                if (good == null) {
+                                    return null;
+                                }
+
+                                return (
+                                    <ListItem key={good.id}>
+                                        <ListItemAvatar>
+                                            <Grid item xs={2}>
+                                                <img
+                                                    src={good.goodImages[0].image}
+                                                    alt={good.name}
+                                                    style={{width: 50, height: 50, marginRight: 10}}
+                                                />
+                                            </Grid>
+                                        </ListItemAvatar>
+                                        <ListItemText primary={good.name} secondary={`${good.price} руб.`} />
+                                        <ListItemText primary={`${cartItem.quantity} шт.`} />
+                                    </ListItem>
+                                );
+                            })}
+                            {/*{mockProducts.map((product) => (*/}
+                            {/*    */}
+                            {/*))}*/}
                         </List>
                     </Paper>
                 </Grid>
@@ -174,32 +201,10 @@ const CheckoutPage: React.FC = () => {
                                     Стоимость доставки: {deliveryCost} руб.
                                 </Typography>
                             )}
-                            {discount > 0 && (
-                                <Typography variant="body1" color="error">
-                                    Скидка: {discount} руб.
-                                </Typography>
-                            )}
                             <Typography variant="h6" sx={{ marginTop: '10px' }}>
                                 Итого: {totalCost} руб.
                             </Typography>
                         </Box>
-
-                        {/*<Divider sx={{ marginBottom: '20px' }} />*/}
-
-                        {/*<Typography variant="h6" gutterBottom>*/}
-                        {/*    Применить промокод*/}
-                        {/*</Typography>*/}
-                        {/*<Box sx={{ display: 'flex', gap: '10px' }}>*/}
-                        {/*    <TextField*/}
-                        {/*        value={promoCode}*/}
-                        {/*        onChange={(e) => setPromoCode(e.target.value)}*/}
-                        {/*        placeholder="Введите промокод"*/}
-                        {/*        fullWidth*/}
-                        {/*    />*/}
-                        {/*    <Button variant="outlined" onClick={handleApplyPromoCode}>*/}
-                        {/*        Применить*/}
-                        {/*    </Button>*/}
-                        {/*</Box>*/}
                     </Paper>
                 </Grid>
             </Grid>

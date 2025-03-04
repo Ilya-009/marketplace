@@ -19,6 +19,7 @@ import Header from "../components/header/header.tsx";
 import {$allGoods, loadGoodById} from "../api";
 import {ConfirmModal} from "../components/common/confirm-modal.tsx";
 import {MainPageBox} from "../components";
+import {findGoodById} from "../services";
 
 const CartPage: React.FC = () => {
     const cart = useUnit($cart);
@@ -32,7 +33,7 @@ const CartPage: React.FC = () => {
     }, [cart]);
 
     // Функция для получения данных товара по goodId
-    const getGoodById = (goodId: number) => allGoods.find((good) => good.id === goodId);
+    // const getGoodById = (goodId: number) => allGoods.find((good) => good.id === goodId);
 
     // Обработчик изменения количества
     const handleQuantityChange = (goodId: number, quantity: number) => {
@@ -72,7 +73,7 @@ const CartPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         {cart.map((item) => {
-                            const good = getGoodById(item.goodId);
+                            const good = findGoodById(allGoods, item.goodId);
                             if (!good) return null;
 
                             const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
@@ -149,7 +150,7 @@ const CartPage: React.FC = () => {
                     <Typography variant="h6">
                         Итого:{' '}
                         {cart.reduce((sum, item) => {
-                            const good = getGoodById(item.goodId);
+                            const good = findGoodById(allGoods, item.goodId);
                             if (!good) return sum;
                             const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
                             return sum + discountedPrice * item.quantity;
