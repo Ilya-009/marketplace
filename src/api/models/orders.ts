@@ -1,56 +1,108 @@
+import {createEffect, createEvent, createStore, sample} from "effector";
+import {AxiosError} from "axios";
+import {apiClient, baseUrl} from "../lib";
+
 export interface Order {
-    id: string;
-    date: string;
-    status: 'active' | 'completed';
-    totalAmount: number;
-    deliveryInfo: string;
-    deliveryDate: string;
-    products: Array<{
-        id: number;
-        name: string;
-        image: string;
-        price: number;
-    }>;
+    id: number;
+    createdAt: Date;
+    status: string;
+    customerId: number;
+    orderGoods: Array<OrderGood>;
+    paymentMethod: PaymentMethod;
+    deliveryMethod: DeliveryMethod;
 }
 
-// Моковые данные для заказов
-export const orders: Order[] = [
-    {
-        id: '0189819059-0003',
-        date: '1 февраля',
-        status: 'completed',
-        totalAmount: 353,
-        deliveryInfo: 'Доставка в пункт выдачи',
-        deliveryDate: '8 февраля в 16:06',
-        products: [
-            {
-                id: 1,
-                name: 'Товар 1',
-                image: 'https://via.placeholder.com/50',
-                price: 1200,
-            },
-            {
-                id: 2,
-                name: 'Товар 2',
-                image: 'https://via.placeholder.com/50',
-                price: 800,
-            },
-        ],
-    },
-    {
-        id: '0189819059-0002',
-        date: '8 января',
-        status: 'completed',
-        totalAmount: 285,
-        deliveryInfo: 'Доставка в пункт выдачи',
-        deliveryDate: '10 января в 14:31',
-        products: [
-            {
-                id: 3,
-                name: 'Товар 3',
-                image: 'https://via.placeholder.com/50',
-                price: 1500,
-            },
-        ],
-    },
-];
+export interface OrderGood {
+    id: number;
+    quantity: number;
+    goodId: number;
+}
+
+export interface PaymentMethod {
+    id: number;
+    name: string;
+}
+
+export interface DeliveryMethod {
+    id: number;
+    price: number;
+    name: string;
+}
+
+type LoadCustomerOrdersParam = {
+    customerId: number;
+};
+export type CreateNewOrderParam = {
+    customerId: number;
+    addressId?: number;
+    deliveryMethodId: number;
+    paymentMethodId: number;
+    goods: Array<{
+        goodId: number;
+        quantity: number;
+    }>;
+};
+
+export const $orders = createStore<Order[]>([]);
+export const $paymentMethods = createStore<PaymentMethod[]>([]);
+export const $deliveryMethods = createStore<DeliveryMethod[]>([]);
+
+export const loadCustomerOrders = createEvent<LoadCustomerOrdersParam>();
+export const createNewOrder = createEvent<CreateNewOrderParam>();
+export const loadPaymentMethods = createEvent();
+export const loadDeliveryMethods = createEvent();
+
+const loadCustomerOrdersFx = createEffect<LoadCustomerOrdersParam, Order[], AxiosError>({
+    async handler({customerId}) {
+        return await apiClient.get(`${baseUrl}/orders/${customerId}`).then(({ data }) => data);
+    }
+});
+const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({
+    async handler(order) {
+        await apiClient.post(`${baseUrl}/orders`, order);
+        // await apiClient.get(`${baseUrl}/orders/${customerId}`).then(({ data }) => data);
+        // console.log(order);
+    }
+});
+const loadPaymentMethodsFx = createEffect<void, PaymentMethod[], AxiosError>({
+    async handler() {
+        return await apiClient.get(`${baseUrl}/orders/paymentMethods`).then(({ data }) => data);
+    }
+});
+const loadDeliveryMethodsFx = createEffect<void, DeliveryMethod[], AxiosError>({
+    async handler() {
+        return await apiClient.get(`${baseUrl}/orders/deliveryMethods`).then(({ data }) => data);
+    }
+});
+
+sample({
+    clock: loadCustomerOrders,
+    target: loadCustomerOrdersFx
+});
+sample({
+    clock: loadCustomerOrdersFx.doneData,
+    target: $orders
+});
+
+sample({
+    clock: createNewOrder,
+    target: createNewOrderFx
+});
+
+sample({
+    clock: loadPaymentMethods,
+    target: loadPaymentMethodsFx
+});
+sample({
+    clock: loadPaymentMethodsFx.doneData,
+    target: $paymentMethods
+});
+
+sample({
+    clock: loadDeliveryMethods,
+    target: loadDeliveryMethodsFx
+});
+sample({
+    clock: loadDeliveryMethodsFx.doneData,
+    target: $deliveryMethods
+});

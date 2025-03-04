@@ -49,14 +49,7 @@ const sections = [
 
 const ProfileSidebar: React.FC = () => {
     const location = useLocation();
-    const user = useUnit($loggedUser);
     const customer = useUnit($customer);
-
-    useEffect(() => {
-        if (user !== defaultUserInfo) {
-            loadCustomer({userId: user.id});
-        }
-    }, [user, user.id]);
 
     return <>
         <Sidebar>

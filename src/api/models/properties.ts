@@ -28,4 +28,4 @@ sample({
 sample({
     clock: loadPropertiesFx.doneData,
     target: $properties
-})
+});

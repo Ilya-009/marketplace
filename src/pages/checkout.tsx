@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
     Box,
     Typography,
@@ -14,76 +14,101 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
-    TextField,
 } from '@mui/material';
-import {MainPageBox} from "../components";
+import { MainPageBox } from "../components";
 import Header from "../components/header/header.tsx";
-import {useNavigate} from "react-router-dom";
-import {useUnit} from "effector-react";
-import {$allGoods, $cart, Good, loadGoodById} from "../api";
-import {findGoodById} from "../services";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import { useUnit } from "effector-react";
+import {$allGoods, $cart, $customer, CartItem, Good, loadGoodById} from "../api";
+import { findGoodById } from "../services";
+import {
+    $deliveryMethods,
+    $paymentMethods, createNewOrder,
+    CreateNewOrderParam,
+    loadDeliveryMethods,
+    loadPaymentMethods
+} from '../api/models/orders';
+
+type CartGood = {
+    cartItem: CartItem,
+    good: Good
+};
 
 // Компонент страницы оформления заказа
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const selectedGoodIds = searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? [];
+
     const cart = useUnit($cart);
     const allGoods = useUnit($allGoods);
+    const customer = useUnit($customer);
+    const deliveryMethods = useUnit($deliveryMethods);
+    const paymentMethods = useUnit($paymentMethods);
 
     useEffect(() => {
-        cart.forEach(cartItem => loadGoodById({id: cartItem.goodId}));
+        loadDeliveryMethods();
+        loadPaymentMethods();
+    }, []);
+
+    useEffect(() => {
+        cart.forEach(cartItem => loadGoodById({ id: cartItem.goodId }));
     }, [cart]);
 
-    const [paymentMethod, setPaymentMethod] = useState<string>('card');
-    const [deliveryMethod, setDeliveryMethod] = useState<string>('pickup');
-    // const [promoCode, setPromoCode] = useState<string>('');
-    const [userData, setUserData] = useState({
-        name: '',
-        address: '',
-        email: '',
-    });
+    const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
+    const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
 
-    // Стоимость доставки (пример)
-    const deliveryCost = deliveryMethod === 'pickup' ? 0 : 500;
+    const cartGoods: CartGood[] = useMemo(() => {
+        return cart.reduce((elems, cartItem) => {
+            const good = findGoodById(allGoods, cartItem.goodId);
 
-    // Итоговая сумма
-    const totalProductsCost = cart.reduce((sum, cartItem) => {
-        const good = findGoodById(allGoods, cartItem.goodId);
-        return sum + cartItem.quantity * (good?.price ?? 0);
-    }, 0)
-    const totalCost = totalProductsCost + deliveryCost;
+            if (good == null || !selectedGoodIds.includes(good.id)) {
+                return elems;
+            }
 
-    // Обработчик изменения данных пользователя
-    const handleUserDataChange = (field: string, value: string) => {
-        setUserData((prevData) => ({
-            ...prevData,
-            [field]: value,
-        }));
-    };
+            const newItem: CartGood = {
+                cartItem: cartItem,
+                good: good
+            };
+
+            return [...elems, newItem];
+        }, []);
+    }, [allGoods, cart]);
+
+    const deliveryCost = useMemo(() => {
+        return deliveryMethods.find(m => m.id === deliveryMethodId)?.price ?? 0;
+    }, [deliveryMethodId, deliveryMethods]);
+
+    const totalProductsCost = useMemo(() => {
+        return cartGoods.reduce((sum, cartItem) => {
+            return sum + cartItem.cartItem.quantity * (cartItem.good?.price ?? 0);
+        }, 0);
+    }, [cartGoods])
+
+    const totalCost = useMemo(() => {
+        return totalProductsCost + deliveryCost;
+    }, [deliveryCost, totalProductsCost]);
 
     const handleSubmit = () => {
-        alert('Заказ оформлен');
-        const order = {
-            paymentMethod: paymentMethod,
-            deliveryMethod: deliveryMethod,
-            userData: userData,
-            cost: totalProductsCost
+        const order: CreateNewOrderParam = {
+            customerId: customer?.id,
+            deliveryMethodId: deliveryMethodId,
+            paymentMethodId: paymentMethodId,
+            addressId: 1,
+            goods: cartGoods.map(cartGood => {
+                return {
+                    goodId: cartGood.good.id,
+                    quantity: cartGood.cartItem.quantity
+                }
+            }, [])
         };
-
-        const ordersStr = localStorage.getItem('orders');
-        if (ordersStr != null) {
-            const orders = JSON.parse(ordersStr);
-            const appended = [...orders, order];
-            localStorage.setItem('orders', JSON.stringify(appended));
-        } else {
-            localStorage.setItem('orders', JSON.stringify([order]));
-        }
-
+        createNewOrder(order);
         navigate('/');
     };
 
     return (
         <MainPageBox>
-            <Header/>
+            <Header />
             <Typography variant="h4" gutterBottom>
                 Оформление заказа
             </Typography>
@@ -95,86 +120,53 @@ const CheckoutPage: React.FC = () => {
                         <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
                             <FormLabel component="legend">Способ оплаты</FormLabel>
                             <RadioGroup
-                                value={paymentMethod}
-                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                value={paymentMethodId}
+                                onChange={(e) => setPaymentMethodId(parseInt(e.target.value))}
                             >
-                                <FormControlLabel value="card" control={<Radio />} label="Банковская карта" />
-                                <FormControlLabel
-                                    value="cash"
-                                    control={<Radio />}
-                                    label="Наличными при получении"
-                                />
+                                {paymentMethods.map((paymentMethod) => (
+                                    <FormControlLabel
+                                        key={paymentMethod.id}
+                                        value={paymentMethod.id}
+                                        control={<Radio/>}
+                                        label={paymentMethod.name}
+                                    />
+                                ))}
                             </RadioGroup>
                         </FormControl>
 
                         <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
                             <FormLabel component="legend">Способ доставки</FormLabel>
                             <RadioGroup
-                                value={deliveryMethod}
-                                onChange={(e) => setDeliveryMethod(e.target.value)}
+                                value={deliveryMethodId}
+                                onChange={(e) => setDeliveryMethodId(parseInt(e.target.value))}
                             >
-                                <FormControlLabel value="pickup" control={<Radio />} label="Самовывоз" />
-                                <FormControlLabel value="cdek" control={<Radio />} label="СДЭК" />
-                                <FormControlLabel value="courier" control={<Radio />} label="Курьер" />
+                                {deliveryMethods.map(deliveryMethod => (
+                                    <FormControlLabel key={deliveryMethod.id} value={deliveryMethod.id} control={<Radio />} label={deliveryMethod.name} />
+                                ))}
                             </RadioGroup>
                         </FormControl>
-
-                        {/* Форма данных пользователя */}
-                        <Typography variant="h6" gutterBottom>
-                            Данные пользователя
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '2rem' }}>
-                            <TextField
-                                label="Имя"
-                                value={userData.name}
-                                onChange={(e) => handleUserDataChange('name', e.target.value)}
-                                fullWidth
-                            />
-                            {deliveryMethod !== 'pickup' && (
-                                <TextField
-                                    label="Адрес доставки"
-                                    value={userData.address}
-                                    onChange={(e) => handleUserDataChange('address', e.target.value)}
-                                    fullWidth
-                                />
-                            )}
-                            <TextField
-                                label="Email"
-                                value={userData.email}
-                                onChange={(e) => handleUserDataChange('email', e.target.value)}
-                                fullWidth
-                            />
-                        </Box>
 
                         <Typography variant="h6" gutterBottom>
                             Товары в заказе
                         </Typography>
                         <List>
-                            {cart.map((cartItem) => {
-                                const good = findGoodById(allGoods, cartItem.goodId);
-                                if (good == null) {
-                                    return null;
-                                }
-
+                            {cartGoods.map((cartElem) => {
                                 return (
-                                    <ListItem key={good.id}>
+                                    <ListItem key={cartElem.good.id}>
                                         <ListItemAvatar>
                                             <Grid item xs={2}>
                                                 <img
-                                                    src={good.goodImages[0].image}
-                                                    alt={good.name}
-                                                    style={{width: 50, height: 50, marginRight: 10}}
+                                                    src={cartElem.good.goodImages[0].image}
+                                                    alt={cartElem.good.name}
+                                                    style={{ width: 50, height: 50, marginRight: 10 }}
                                                 />
                                             </Grid>
                                         </ListItemAvatar>
-                                        <ListItemText primary={good.name} secondary={`${good.price} руб.`} />
-                                        <ListItemText primary={`${cartItem.quantity} шт.`} />
+                                        <ListItemText primary={cartElem.good.name} secondary={`${cartElem.good.price} руб.`} />
+                                        <ListItemText primary={`${cartElem.cartItem.quantity} шт.`} />
                                     </ListItem>
                                 );
                             })}
-                            {/*{mockProducts.map((product) => (*/}
-                            {/*    */}
-                            {/*))}*/}
                         </List>
                     </Paper>
                 </Grid>

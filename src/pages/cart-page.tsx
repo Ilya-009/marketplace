@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {
     Box,
@@ -20,6 +20,8 @@ import {$allGoods, loadGoodById} from "../api";
 import {ConfirmModal} from "../components/common/confirm-modal.tsx";
 import {MainPageBox} from "../components";
 import {findGoodById} from "../services";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const CartPage: React.FC = () => {
     const cart = useUnit($cart);
@@ -27,13 +29,24 @@ const CartPage: React.FC = () => {
     const navigate = useNavigate();
     const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
     const [confirmModalPayload, setConfirmModalPayload] = useState<any>();
+    const [selectedItems, setSelectedItems] = useState<number[]>(cart.map((item) => item.goodId));
 
     useEffect(() => {
         cart.forEach(cartItem => loadGoodById({id: cartItem.goodId}));
     }, [cart]);
 
-    // Функция для получения данных товара по goodId
-    // const getGoodById = (goodId: number) => allGoods.find((good) => good.id === goodId);
+    const totalSum = useMemo(() => {
+        return cart.reduce((sum, item) => {
+            const good = findGoodById(allGoods, item.goodId);
+
+            if (!good || !selectedItems.includes(good.id)) {
+                return sum;
+            }
+
+            const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
+            return sum + discountedPrice * item.quantity;
+        }, 0);
+    }, [allGoods, cart, selectedItems]);
 
     // Обработчик изменения количества
     const handleQuantityChange = (goodId: number, quantity: number) => {
@@ -54,7 +67,26 @@ const CartPage: React.FC = () => {
     };
 
     const navigateToCheckout = () => {
-        navigate('/checkout');
+        const selectedGoodIds = selectedItems.join(',');
+        navigate(`/checkout?goodIds=${selectedGoodIds}`);
+    };
+
+    // Обработчик выбора/снятия выбора одного товара
+    const handleSelectItem = (goodId: number) => {
+        setSelectedItems((prevSelected) =>
+            prevSelected.includes(goodId)
+                ? prevSelected.filter((id) => id !== goodId) // Убираем товар из выбранных
+                : [...prevSelected, goodId] // Добавляем товар в выбранные
+        );
+    };
+
+    // Обработчик выбора/снятия выбора всех товаров
+    const handleSelectAll = () => {
+        if (selectedItems.length === cart.length) {
+            setSelectedItems([]); // Снимаем выбор со всех товаров
+        } else {
+            setSelectedItems(cart.map((item) => item.goodId)); // Выбираем все товары
+        }
     };
 
     return <MainPageBox>
@@ -72,6 +104,19 @@ const CartPage: React.FC = () => {
             <>
                 <Card>
                     <CardContent>
+                        {/* Общий чекбокс для выбора всех товаров */}
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={selectedItems.length === cart.length}
+                                    indeterminate={selectedItems.length > 0 && selectedItems.length < cart.length}
+                                    onChange={handleSelectAll}
+                                />
+                            }
+                            label="Выбрать все"
+                            sx={{ marginBottom: 2 }}
+                        />
+
                         {cart.map((item) => {
                             const good = findGoodById(allGoods, item.goodId);
                             if (!good) return null;
@@ -83,6 +128,10 @@ const CartPage: React.FC = () => {
                                     <Grid container alignItems="center" spacing={2} sx={{marginBottom: 2}}>
                                         {/* Чекбокс и фото */}
                                         <Grid item xs={2}>
+                                            <Checkbox
+                                                checked={selectedItems.includes(item.goodId)}
+                                                onChange={() => handleSelectItem(item.goodId)}
+                                            />
                                             <img
                                                 src={good.goodImages[0].image}
                                                 alt={good.name}
@@ -149,12 +198,7 @@ const CartPage: React.FC = () => {
                 <Box sx={{marginTop: 3, textAlign: 'right'}}>
                     <Typography variant="h6">
                         Итого:{' '}
-                        {cart.reduce((sum, item) => {
-                            const good = findGoodById(allGoods, item.goodId);
-                            if (!good) return sum;
-                            const discountedPrice = good.discount ? good.price - good.discount.discountValue : good.price;
-                            return sum + discountedPrice * item.quantity;
-                        }, 0)}{' '}
+                        {totalSum}{' '}
                         ₽
                     </Typography>
                     <Button variant="contained" color="primary" sx={{marginTop: 2}} onClick={navigateToCheckout}>
