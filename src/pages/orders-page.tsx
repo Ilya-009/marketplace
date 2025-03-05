@@ -1,50 +1,42 @@
-import React, { useState } from 'react';
-import { Box, Typography, Tabs, Tab, Card, CardContent, Grid, Avatar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { Order } from '../api/models/orders';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Avatar, Box, Card, CardContent, Grid, Tab, Tabs, Typography} from '@mui/material';
+import {$orders, loadCustomerOrders, OrderStatus} from '../api/models/orders';
+import {useUnit} from "effector-react";
+import {$allGoods, $customer, $properties, loadGoodById} from "../api";
+import {getProperty} from "../services";
 
 const OrdersPage: React.FC = () => {
-    const [status, setStatus] = useState<'active' | 'completed'>('active');
-    const navigate = useNavigate();
+    const [status, setStatus] = useState<OrderStatus>(OrderStatus.CREATED);
+    const properties = useUnit($properties);
+    const customer = useUnit($customer);
+    const orders = useUnit($orders);
+    const goods = useUnit($allGoods);
 
-    // Пример данных заказов
-    const orders: Order[] = [
-        {
-            id: 1,
-            createdAt: new Date('2023-10-01'),
-            status: 'active',
-            customerId: 123,
-            orderGoods: [
-                { id: 1, quantity: 2, goodId: 101 },
-                { id: 2, quantity: 1, goodId: 102 }
-            ],
-            paymentMethod: { id: 1, name: 'Credit Card' },
-            deliveryMethod: { id: 1, name: 'Courier' }
-        },
-        {
-            id: 2,
-            createdAt: new Date('2023-09-25'),
-            status: 'completed',
-            customerId: 123,
-            orderGoods: [
-                { id: 3, quantity: 3, goodId: 103 }
-            ],
-            paymentMethod: { id: 2, name: 'PayPal' },
-            deliveryMethod: { id: 2, name: 'Post' }
+    useEffect(() => {
+        if (customer?.id !== -1) {
+            loadCustomerOrders({customerId: customer?.id});
         }
-    ];
+    }, [customer?.id]);
+
+    useEffect(() => {
+        orders
+            .flatMap(order => order.orderGoods)
+            .map(orderGood => orderGood.goodId)
+            .forEach((goodId) => loadGoodById({id: goodId}));
+    }, [orders]);
+
+    const emptyImage = useMemo(() => {
+        return getProperty(properties, 'no.images.img');
+    }, [properties]);
 
     // Фильтрация заказов по статусу
-    const filteredOrders = orders.filter((order) => order.status === status);
+    const filteredOrders = useMemo(() =>
+            orders.filter((order) => order.status === status),
+        [orders, status]);
 
     // Обработчик изменения статуса
-    const handleStatusChange = (event: React.SyntheticEvent, newStatus: 'active' | 'completed') => {
+    const handleStatusChange = (event: React.SyntheticEvent, newStatus: OrderStatus) => {
         setStatus(newStatus);
-    };
-
-    // Обработчик перехода на страницу заказа
-    const handleOrderClick = (orderId: number) => {
-        navigate(`/orders/${orderId}`); // Заглушка для перехода на страницу заказа
     };
 
     return (
@@ -55,18 +47,18 @@ const OrdersPage: React.FC = () => {
 
             {/* Табы для выбора статуса заказов */}
             <Tabs value={status} onChange={handleStatusChange} sx={{ marginBottom: 3 }}>
-                <Tab label="Актуальные" value="active" />
-                <Tab label="Завершённые" value="completed" />
+                <Tab label="Актуальные" value={OrderStatus.CREATED} />
+                <Tab label="Завершённые" value={OrderStatus.FINISHED} />
             </Tabs>
 
             {/* Список заказов */}
             {filteredOrders.map((order) => (
-                <Card key={order.id} sx={{ marginBottom: 3 }} onClick={() => handleOrderClick(order.id)}>
+                <Card key={order.id} sx={{ marginBottom: 3 }}>
                     <CardContent>
                         <Grid container alignItems="center" spacing={2}>
                             {/* Заголовок и сумма заказа */}
                             <Grid item xs={8}>
-                                <Typography variant="h6">Заказ от {order.createdAt.toLocaleDateString()}</Typography>
+                                <Typography variant="h6">Заказ от {order.createdAt}</Typography>
                             </Grid>
                             <Grid item xs={4} sx={{ textAlign: 'right' }}>
                                 <Typography variant="h6">
@@ -88,9 +80,14 @@ const OrdersPage: React.FC = () => {
                             {/* Миниатюры товаров */}
                             <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', gap: 1, marginTop: 2 }}>
-                                    {order.orderGoods.map((product) => (
-                                        <Avatar key={product.id} src={`https://example.com/images/${product.goodId}.jpg`} alt={`Product ${product.goodId}`} />
-                                    ))}
+                                    {order.orderGoods.map((orderGood) => {
+                                        const good = goods.find(g => g.id === orderGood.goodId);
+                                        if (!good) {
+                                            return '';
+                                        }
+
+                                        return <Avatar key={orderGood.id} src={good.goodImages[0]?.image ?? emptyImage} alt={`Product ${orderGood.goodId}`} />;
+                                    })}
                                 </Box>
                             </Grid>
                         </Grid>

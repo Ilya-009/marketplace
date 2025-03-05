@@ -84,6 +84,9 @@ sample({
 
 sample({
     clock: loadGoodById,
+    filter: (param) => {
+        return !$allGoods.getState().some(g => g.id === param.id);
+    },
     target: loadGoodByIdFx
 });
 
@@ -98,11 +101,6 @@ sample({
 
 $allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {
     if (good == null) {
-        return goods;
-    }
-
-    const hasInStore = goods.some(g => g.id === good.id);
-    if (hasInStore) {
         return goods;
     }
 

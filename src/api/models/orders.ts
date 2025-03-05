@@ -4,12 +4,19 @@ import {apiClient, baseUrl} from "../lib";
 
 export interface Order {
     id: number;
-    createdAt: Date;
-    status: string;
+    createdAt: string;
+    status: OrderStatus;
     customerId: number;
     orderGoods: Array<OrderGood>;
     paymentMethod: PaymentMethod;
     deliveryMethod: DeliveryMethod;
+}
+
+export enum OrderStatus {
+    CREATED = 'CREATED',
+    DELIVERED = 'DELIVERED',
+    REJECTED = 'REJECTED',
+    FINISHED = 'FINISHED'
 }
 
 export interface OrderGood {
@@ -54,7 +61,9 @@ export const loadDeliveryMethods = createEvent();
 
 const loadCustomerOrdersFx = createEffect<LoadCustomerOrdersParam, Order[], AxiosError>({
     async handler({customerId}) {
-        return await apiClient.get(`${baseUrl}/orders/${customerId}`).then(({ data }) => data);
+        if (customerId) {
+            return await apiClient.get(`${baseUrl}/orders/${customerId}`).then(({ data }) => data);
+        }
     }
 });
 const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({

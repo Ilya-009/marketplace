@@ -13,20 +13,23 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {$cart, removeFromCart, updateQuantity} from "../api";
+import {$cart, $properties, removeFromCart, updateQuantity} from "../api";
 import {useUnit} from "effector-react/effector-react.mjs";
 import Header from "../components/header/header.tsx";
 import {$allGoods, loadGoodById} from "../api";
 import {ConfirmModal} from "../components/common/confirm-modal.tsx";
 import {MainPageBox} from "../components";
-import {findGoodById} from "../services";
+import {findGoodById, getProperty} from "../services";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 const CartPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const cart = useUnit($cart);
     const allGoods = useUnit($allGoods);
-    const navigate = useNavigate();
+    const properties = useUnit($properties);
+
     const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
     const [confirmModalPayload, setConfirmModalPayload] = useState<any>();
     const [selectedItems, setSelectedItems] = useState<number[]>(cart.map((item) => item.goodId));
@@ -47,6 +50,10 @@ const CartPage: React.FC = () => {
             return sum + discountedPrice * item.quantity;
         }, 0);
     }, [allGoods, cart, selectedItems]);
+
+    const emptyImage = useMemo(() => {
+        return getProperty(properties, 'no.images.img');
+    }, [properties]);
 
     // Обработчик изменения количества
     const handleQuantityChange = (goodId: number, quantity: number) => {
@@ -133,7 +140,7 @@ const CartPage: React.FC = () => {
                                                 onChange={() => handleSelectItem(item.goodId)}
                                             />
                                             <img
-                                                src={good.goodImages[0].image}
+                                                src={good.goodImages[0]?.image ?? emptyImage}
                                                 alt={good.name}
                                                 style={{width: 100, height: 100, marginLeft: 10}}
                                             />

@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
-import {$customer, $loggedUser, defaultUserInfo, loadCustomer, logOut} from "../../api";
+import {$customer, logOut} from "../../api";
 import {useUnit} from "effector-react";
 
 const Sidebar = styled(Box)`
