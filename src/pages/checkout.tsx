@@ -19,8 +19,8 @@ import { MainPageBox } from "../components";
 import Header from "../components/header/header.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import { useUnit } from "effector-react";
-import {$allGoods, $cart, $customer, CartItem, Good, loadGoodById} from "../api";
-import { findGoodById } from "../services";
+import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodById} from "../api";
+import {findGoodById, getProperty} from "../services";
 import {
     $deliveryMethods,
     $paymentMethods, createNewOrder,
@@ -40,6 +40,7 @@ const CheckoutPage: React.FC = () => {
     const [searchParams] = useSearchParams();
     const selectedGoodIds = searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? [];
 
+    const properties = useUnit($properties);
     const cart = useUnit($cart);
     const allGoods = useUnit($allGoods);
     const customer = useUnit($customer);
@@ -57,6 +58,10 @@ const CheckoutPage: React.FC = () => {
 
     const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
     const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
+
+    const emptyImage = useMemo(() => {
+        return getProperty(properties, 'no.images.img');
+    }, [properties]);
 
     const cartGoods: CartGood[] = useMemo(() => {
         return cart.reduce((elems, cartItem) => {
@@ -156,7 +161,7 @@ const CheckoutPage: React.FC = () => {
                                         <ListItemAvatar>
                                             <Grid item xs={2}>
                                                 <img
-                                                    src={cartElem.good.goodImages[0].image}
+                                                    src={cartElem.good.goodImages[0]?.image ?? emptyImage}
                                                     alt={cartElem.good.name}
                                                     style={{ width: 50, height: 50, marginRight: 10 }}
                                                 />

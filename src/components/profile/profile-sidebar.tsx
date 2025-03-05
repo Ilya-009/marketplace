@@ -43,7 +43,8 @@ const sections = [
     // {id: 'payment-methods', label: 'Способы оплаты', path: 'payment-methods'},
     {id: 'my-cart', label: 'Моя корзина', path: '/cart'},
     {id: 'my-orders', label: 'Мои заказы', path: 'orders'},
-    {id: 'purchased-items', label: 'Купленные товары', path: 'purchased-items'},
+    {id: 'address', label: 'Мой адрес', path: 'address'},
+    // {id: 'purchased-items', label: 'Купленные товары', path: 'purchased-items'},
     {id: 'my-reviews', label: 'Мои отзывы', path: 'my-reviews'},
 ];
 

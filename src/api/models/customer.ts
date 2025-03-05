@@ -1,6 +1,5 @@
 import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
-import {Address} from "./address.ts";
 import {apiClient, baseUrl} from "../lib";
 import {isUserAuthenticatedWithRole} from "../../services";
 import {UserRole} from "./authentication.ts";
@@ -11,9 +10,7 @@ export interface Customer {
     lastName: string;
     updatedAt: Date;
     userId: number;
-    address: Address;
-    cart: CartItem[];
-    favorites: FavoriteGoodItem[];
+    addresses: number[];
 }
 const defaultCustomer: Customer = {
     id: -1,
@@ -21,9 +18,7 @@ const defaultCustomer: Customer = {
     lastName: '',
     updatedAt: new Date(),
     userId: 0,
-    address: {},
-    cart: [],
-    favorites: []
+    addresses: []
 };
 
 export type CartItem = {

@@ -1,3 +1,7 @@
+import {createEffect, createEvent, createStore, sample} from "effector";
+import {AxiosError} from "axios";
+import {apiClient, baseUrl} from "../lib";
+
 export interface Address {
     id: number;
     country: string;
@@ -8,3 +12,37 @@ export interface Address {
     flatNumber: string
     postNumber: string
 }
+export const emptyAddress: Address = {
+    id: -1,
+    country: '',
+    city: '',
+    street: '',
+    houseNumber: '',
+    entranceNumber: '',
+    flatNumber: '',
+    postNumber: ''
+};
+
+type LoadAddressParam = {
+   addressIds: number[];
+};
+
+export const loadAddresses = createEvent<LoadAddressParam>();
+export const $addresses = createStore<Address[]>([]);
+
+const loadAddressesFx = createEffect<LoadAddressParam, Address[], AxiosError>({
+    async handler({addressIds}) {
+        const ids = addressIds.join(',');
+        return await apiClient.get(`${baseUrl}/addresses/by-ids?ids=${ids}`)
+            .then(({ data }) => data);
+    }
+});
+
+sample({
+    clock: loadAddresses,
+    target: loadAddressesFx
+});
+sample({
+    clock: loadAddressesFx.doneData,
+    target: $addresses
+});

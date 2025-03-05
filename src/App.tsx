@@ -16,6 +16,7 @@ import OrdersPage from "./pages/orders-page.tsx";
 import AdminPage from "./pages/admin/admin-page.tsx";
 import SettingsManagementPage from "./pages/admin/properties-page.tsx";
 import CheckoutPage from "./pages/checkout.tsx";
+import AddressPage from "./pages/profile/profile-address-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -38,6 +39,7 @@ function App() {
                         <Route path="main" element={<ProfileMainPage />} />
                         <Route path="personalInfo" element={<EditProfile />} />
                         <Route path="orders" element={<OrdersPage />} />
+                        <Route path="address" element={<AddressPage />} />
                     </Route>
                     <Route path="/admin" element={<AdminPage />}>
                         <Route path="properties" element={<SettingsManagementPage />} />
