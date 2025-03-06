@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Box,
     Typography,
@@ -17,10 +17,10 @@ import {
 } from '@mui/material';
 import { MainPageBox } from "../components";
 import Header from "../components/header/header.tsx";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUnit } from "effector-react";
-import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodById} from "../api";
-import {findGoodById, getProperty} from "../services";
+import { $allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodById } from "../api";
+import { findGoodById, getProperty } from "../services";
 import {
     $deliveryMethods,
     $paymentMethods, createNewOrder,
@@ -28,13 +28,13 @@ import {
     loadDeliveryMethods,
     loadPaymentMethods
 } from '../api/models/orders';
+import {$addresses, loadAddresses} from "../api/models/address.ts";
 
 type CartGood = {
     cartItem: CartItem,
     good: Good
 };
 
-// Компонент страницы оформления заказа
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -46,6 +46,11 @@ const CheckoutPage: React.FC = () => {
     const customer = useUnit($customer);
     const deliveryMethods = useUnit($deliveryMethods);
     const paymentMethods = useUnit($paymentMethods);
+    const customerAddresses = useUnit($addresses);
+
+    const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
+    const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
+    const [selectedAddressId, setSelectedAddressId] = useState<number>(1); // Состояние для выбранного адреса
 
     useEffect(() => {
         loadDeliveryMethods();
@@ -53,11 +58,14 @@ const CheckoutPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        if (customer.id > 0) {
+            loadAddresses({addressIds: customer.addresses});
+        }
+    }, [customer.addresses, customer.id]);
+
+    useEffect(() => {
         cart.forEach(cartItem => loadGoodById({ id: cartItem.goodId }));
     }, [cart]);
-
-    const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
-    const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
 
     const emptyImage = useMemo(() => {
         return getProperty(properties, 'no.images.img');
@@ -99,7 +107,7 @@ const CheckoutPage: React.FC = () => {
             customerId: customer?.id,
             deliveryMethodId: deliveryMethodId,
             paymentMethodId: paymentMethodId,
-            addressId: 1,
+            addressId: selectedAddressId,
             goods: cartGoods.map(cartGood => {
                 return {
                     goodId: cartGood.good.id,
@@ -147,6 +155,23 @@ const CheckoutPage: React.FC = () => {
                             >
                                 {deliveryMethods.map(deliveryMethod => (
                                     <FormControlLabel key={deliveryMethod.id} value={deliveryMethod.id} control={<Radio />} label={deliveryMethod.name} />
+                                ))}
+                            </RadioGroup>
+                        </FormControl>
+
+                        <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
+                            <FormLabel component="legend">Адрес доставки</FormLabel>
+                            <RadioGroup
+                                value={selectedAddressId}
+                                onChange={(e) => setSelectedAddressId(parseInt(e.target.value))}
+                            >
+                                {customerAddresses.map(address => (
+                                    <FormControlLabel
+                                        key={address.id}
+                                        value={address.id}
+                                        control={<Radio />}
+                                        label={`${address.city}, ${address.street}, ${address.houseNumber}, кв. ${address.flatNumber}`}
+                                    />
                                 ))}
                             </RadioGroup>
                         </FormControl>
