@@ -17,8 +17,9 @@ import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
 import {validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
-import {loginUser} from "../api";
+import {$authError, loginUser} from "../api";
 import {primaryTextColor} from "../ui";
+import {useUnit} from "effector-react";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -73,6 +74,7 @@ export default function SignIn() {
 
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const authError = useUnit($authError);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -98,8 +100,6 @@ export default function SignIn() {
             email: email,
             password: password
         });
-
-        navigate('/');
     };
 
     return (
@@ -114,6 +114,10 @@ export default function SignIn() {
                     >
                         Вход
                     </Typography>
+                    {authError !== undefined && <Typography color='error'>
+                        {authError}
+                    </Typography>
+                    }
                     <Box
                         component="form"
                         noValidate
@@ -197,6 +201,10 @@ export default function SignIn() {
                                 Зарегистрироваться
                             </Link>
                         </Typography>
+
+                        <Button href='/' fullWidth variant="outlined">
+                            Войти как магазин
+                        </Button>
 
                         <Button href='/' fullWidth variant="outlined">
                             Вернуться на главную

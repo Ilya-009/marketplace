@@ -2,7 +2,7 @@ import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
 import {apiClient, baseUrl} from "../lib";
 import {isUserAuthenticatedWithRole} from "../../services";
-import {UserRole} from "./authentication.ts";
+import {$loggedUser, UserRole} from "./authentication.ts";
 
 export interface Customer {
     id: number;
@@ -11,6 +11,7 @@ export interface Customer {
     updatedAt: Date;
     userId: number;
     addresses: number[];
+    cart: CartItem[];
 }
 const defaultCustomer: Customer = {
     id: -1,
@@ -18,7 +19,8 @@ const defaultCustomer: Customer = {
     lastName: '',
     updatedAt: new Date(),
     userId: 0,
-    addresses: []
+    addresses: [],
+    cart: []
 };
 
 export type CartItem = {
@@ -126,7 +128,7 @@ sample({
 
 sample({
     clock: addToCart,
-    filter: () => isUserAuthenticatedWithRole(UserRole.CUSTOMER),
+    filter: () => isUserAuthenticatedWithRole($loggedUser.getState(), UserRole.CUSTOMER),
     fn: (addGoodToCartParam) => {
         return {
             ...addGoodToCartParam,
@@ -137,7 +139,7 @@ sample({
 });
 sample({
     clock: removeFromCart,
-    filter: () => isUserAuthenticatedWithRole(UserRole.CUSTOMER),
+    filter: () => isUserAuthenticatedWithRole($loggedUser.getState(), UserRole.CUSTOMER),
     fn: (request) => {
         return {
             ...request,
@@ -148,7 +150,7 @@ sample({
 });
 sample({
     clock: updateQuantity,
-    filter: () => isUserAuthenticatedWithRole(UserRole.CUSTOMER),
+    filter: () => isUserAuthenticatedWithRole($loggedUser.getState(), UserRole.CUSTOMER),
     fn: (request) => {
         return {
             ...request,

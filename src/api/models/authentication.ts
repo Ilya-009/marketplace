@@ -85,6 +85,7 @@ export const loginUserFx = createEffect<LoginUserParam, AuthenticateUserResult, 
 
 export const loadLoggedUser = createEvent();
 export const $loggedUser = createStore<UserInfo>(defaultUserInfo);
+export const $authError = createStore<string>('');
 const loadLoggedUserFx = createEffect<void, LoadLoggedUserResult, AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/auth/user`).then(({data}) => data);
@@ -162,3 +163,9 @@ sample({
     clock: logOut,
     target: logOutFx
 });
+
+sample({
+    clock: [registerUserFx.fail, loginUserFx.fail, changePasswordFx.fail],
+    fn: (result) => result.error.message,
+    target: $authError
+})

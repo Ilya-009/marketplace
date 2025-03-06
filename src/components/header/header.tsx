@@ -1,20 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
-import { AppBar, Button, TextField, IconButton, Stack, Box, Link } from '@mui/material';
+import {AppBar, Box, Button, IconButton, Link, Stack, TextField} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import { SmallLinkActive, SmallLinkPassive } from "../common";
+import {SmallLinkActive, SmallLinkPassive} from "../common";
 import LinkWithIcon from "./header-link.tsx";
-import { useUnit } from "effector-react";
-import {$allGoods, $properties, $searchResults, executeSearch, Good} from "../../api";
-import { getProperty } from "../../services";
+import {useUnit} from "effector-react";
+import {$loggedUser, $properties, $searchResults, executeSearch, UserRole} from "../../api";
+import {getProperty, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
-import { primaryTextColor } from "../../ui";
-import { isUserAuthenticated } from "../../services";
-import { AccountBox } from "@mui/icons-material";
+import {primaryTextColor} from "../../ui";
+import {AccountBox} from "@mui/icons-material";
+import StoreIcon from '@mui/icons-material/Store';
 import {SearchResultsDropdown} from "../catalog/search-dropdown.tsx";
 
 const SearchField = styled(TextField)`
@@ -24,13 +24,11 @@ const SearchField = styled(TextField)`
 
 const Header: React.FC = () => {
     const properties = useUnit($properties);
-    // const allGoods = useUnit($allGoods);
     const searchResults = useUnit($searchResults);
+    const loggedUser = useUnit($loggedUser);
     const logoImageSrc = getProperty(properties, 'logo.image');
 
     const [open, setOpen] = useState(false);
-    // const [searchQuery, setSearchQuery] = useState('');
-    // const [searchResults, setSearchResults] = useState<Good[]>([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -40,24 +38,9 @@ const Header: React.FC = () => {
         setOpen(false);
     };
 
-    // const handleSearch = (query: string, goods: Good[]) => {
-    //     if (!query) {
-    //         setSearchResults([]);
-    //         return;
-    //     }
-    //
-    //     const filteredGoods = goods.filter(good =>
-    //         good.name.toLowerCase().includes(query.toLowerCase())
-    //     );
-    //
-    //     setSearchResults(filteredGoods);
-    // };
-
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const query = event.target.value;
         executeSearch(query);
-        // setSearchQuery(query);
-        // handleSearch(query, allGoods);
     };
 
     return (
@@ -68,7 +51,9 @@ const Header: React.FC = () => {
                 </SmallLinkActive>
 
                 <Stack direction="row" spacing={1} alignItems="center" justifyContent='space-between'>
-                    <SmallLinkPassive>Стать продавцом</SmallLinkPassive>
+                    {(isUserAuthenticated() && !isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER)) && (
+                        <SmallLinkPassive href='/store/register'>Стать продавцом</SmallLinkPassive>
+                    )}
                     <SmallLinkPassive>Помощь</SmallLinkPassive>
                 </Stack>
             </Stack>
@@ -95,7 +80,6 @@ const Header: React.FC = () => {
                         sx={{ input: { color: primaryTextColor }, width: '100%' }}
                         placeholder="Поиск товаров"
                         size="small"
-                        // value={searchQuery}
                         onChange={handleSearchChange}
                         InputProps={{
                             endAdornment: (
@@ -112,6 +96,9 @@ const Header: React.FC = () => {
                         ? <LinkWithIcon icon={<AccountBox />} label='Профиль' href='/profile/main' />
                         : <LinkWithIcon icon={<LoginIcon />} label='Войти' href='/signIn' />
                     }
+                    {isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER) && (
+                        <LinkWithIcon icon={<StoreIcon />} label='Мой магазин' href='/store/main' />
+                    )}
                     <LinkWithIcon icon={<FavoriteIcon />} label='Избранное' href='#' />
                     <LinkWithIcon icon={<ShoppingCartIcon />} label='Корзина' href='/cart' />
                 </Stack>

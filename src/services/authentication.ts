@@ -1,4 +1,4 @@
-import {$loggedUser, clearAuthentication, UserInfo, UserRole} from "../api";
+import {clearAuthentication, UserInfo, UserRole} from "../api";
 
 const isTokenValid = (token: string): boolean => {
     try {
@@ -51,12 +51,12 @@ export const isUserAuthenticated = () : boolean => {
     return tokenValid;
 };
 
-export const isUserAuthenticatedWithRole = (role: UserRole) : boolean => {
+export const isUserAuthenticatedWithRole = (user: UserInfo, role: UserRole) : boolean => {
     const hasAuthentication = isUserAuthenticated();
     if (!hasAuthentication) {
         return false;
     }
 
     // Проверка наличия роли
-    return $loggedUser.getState().roles.includes(role);
+    return user.roles.includes(role);
 };

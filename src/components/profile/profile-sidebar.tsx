@@ -83,11 +83,6 @@ const ProfileSidebar: React.FC = () => {
                 </ListItem>
             </List>
         </Sidebar>
-        <Content>
-            {sections.map(section => (
-                <EditProfileLink key={section.id} component={Link} to={section.path}/>
-            ))}
-        </Content>
     </>;
 };
 
