@@ -2,6 +2,7 @@ import {validateEmail, validatePassword} from "../../services";
 import {emailValidationError, passwordValidationError, phoneValidationError} from "./constants.ts";
 import React from "react";
 import {isValidPhoneNumber} from "libphonenumber-js";
+import {GoodCategory} from "../../api";
 
 type UseStateSetterBooleanType = React.Dispatch<React.SetStateAction<boolean>>;
 type UseStateSetterStringType = React.Dispatch<React.SetStateAction<string>>;
@@ -21,6 +22,20 @@ type SignUpProps = SignInProps & {
     phone: string;
     setPhoneErrorMessage: UseStateSetterStringType;
     setPhoneError: UseStateSetterBooleanType;
+};
+
+type RegisterStoreProps = {
+    country: string;
+    setCountryErr: UseStateSetterBooleanType;
+
+    organizationType: string;
+    setOrganizationTypeErr: UseStateSetterBooleanType;
+
+    storeName: string;
+    setStoreNameErr: UseStateSetterBooleanType;
+
+    mainGoodCategory?: GoodCategory;
+    setMainGoodCategoryErr: UseStateSetterBooleanType;
 };
 
 export const validateSignInInputs =
@@ -79,4 +94,23 @@ export const validateSignUpInputs = ({email, password, phone, setEmailError, set
     }
 
     return emailValid && passwordValid && phoneValid;
+};
+
+export const validateSellerRegister = ({
+                                           country, setCountryErr,
+                                           organizationType, setOrganizationTypeErr,
+                                           storeName, setStoreNameErr,
+                                           mainGoodCategory, setMainGoodCategoryErr}: RegisterStoreProps) => {
+    const isCountryValid = !!country;
+    const isOrganizationTypeValid = !!organizationType;
+    const isStoreNameValid = !!storeName;
+    const isMainGoodCategoryValid = !!mainGoodCategory;
+    console.log(isCountryValid, isOrganizationTypeValid, isStoreNameValid, isMainGoodCategoryValid);
+
+    setCountryErr(!isCountryValid);
+    setOrganizationTypeErr(!isOrganizationTypeValid);
+    setStoreNameErr(!isStoreNameValid);
+    setMainGoodCategoryErr(!isMainGoodCategoryValid);
+
+    return isCountryValid && isOrganizationTypeValid &&  isStoreNameValid && isMainGoodCategoryValid;
 };

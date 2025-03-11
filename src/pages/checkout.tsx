@@ -86,7 +86,7 @@ const CheckoutPage: React.FC = () => {
 
             return [...elems, newItem];
         }, []);
-    }, [allGoods, cart]);
+    }, [allGoods, cart, selectedGoodIds]);
 
     const deliveryCost = useMemo(() => {
         return deliveryMethods.find(m => m.id === deliveryMethodId)?.price ?? 0;
@@ -116,7 +116,7 @@ const CheckoutPage: React.FC = () => {
             }, [])
         };
         createNewOrder(order);
-        navigate('/');
+        navigate('/profile/main');
     };
 
     return (

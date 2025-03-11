@@ -17,6 +17,7 @@ import AdminPage from "./pages/admin/admin-page.tsx";
 import SettingsManagementPage from "./pages/admin/properties-page.tsx";
 import CheckoutPage from "./pages/checkout.tsx";
 import AddressPage from "./pages/profile/profile-address-page.tsx";
+import BecomeSellerPage from "./pages/seller/become-seller-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -35,6 +36,10 @@ function App() {
                     <Route path="/goods/:id" element={<ProductCardPage />} />
                     <Route path="cart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage/>} />
+
+                    <Route path="/seller">
+                        <Route path="become-seller" element={<BecomeSellerPage/>} />
+                    </Route>
                     <Route path="/profile" element={<ProfilePage />}>
                         <Route path="main" element={<ProfileMainPage />} />
                         <Route path="personalInfo" element={<EditProfile />} />

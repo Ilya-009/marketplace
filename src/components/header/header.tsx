@@ -52,7 +52,7 @@ const Header: React.FC = () => {
 
                 <Stack direction="row" spacing={1} alignItems="center" justifyContent='space-between'>
                     {(isUserAuthenticated() && !isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER)) && (
-                        <SmallLinkPassive href='/store/register'>Стать продавцом</SmallLinkPassive>
+                        <SmallLinkPassive href='/seller/become-seller'>Стать продавцом</SmallLinkPassive>
                     )}
                     <SmallLinkPassive>Помощь</SmallLinkPassive>
                 </Stack>
