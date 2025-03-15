@@ -102,7 +102,7 @@ export const changePasswordFx = createEffect<ChangePasswordParam, void, AxiosErr
 export const changeUserPersonalData = createEvent<ChangeUserPersonalDataRequest>();
 export const changeUserPersonalDataFx = createEffect<ChangeUserPersonalDataRequest, void, AxiosError>({
     async handler(param) {
-        await apiClient.patch(`${baseUrl}/auth`, param);
+        await apiClient.patch(`${baseUrl}/auth/user`, param);
     }
 });
 

@@ -3,6 +3,7 @@ import {emailValidationError, passwordValidationError, phoneValidationError} fro
 import React from "react";
 import {isValidPhoneNumber} from "libphonenumber-js";
 import {GoodCategory} from "../../api";
+import {OrganizationType} from "../../api/models/store.ts";
 
 type UseStateSetterBooleanType = React.Dispatch<React.SetStateAction<boolean>>;
 type UseStateSetterStringType = React.Dispatch<React.SetStateAction<string>>;
@@ -28,7 +29,7 @@ type RegisterStoreProps = {
     country: string;
     setCountryErr: UseStateSetterBooleanType;
 
-    organizationType: string;
+    organizationType?: OrganizationType;
     setOrganizationTypeErr: UseStateSetterBooleanType;
 
     storeName: string;
@@ -105,7 +106,6 @@ export const validateSellerRegister = ({
     const isOrganizationTypeValid = !!organizationType;
     const isStoreNameValid = !!storeName;
     const isMainGoodCategoryValid = !!mainGoodCategory;
-    console.log(isCountryValid, isOrganizationTypeValid, isStoreNameValid, isMainGoodCategoryValid);
 
     setCountryErr(!isCountryValid);
     setOrganizationTypeErr(!isOrganizationTypeValid);

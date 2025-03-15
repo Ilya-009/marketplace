@@ -12,10 +12,11 @@ import {useMemo, useState} from "react";
 import {MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import {countries, organizationTypes} from "../../constants.ts";
 import {useUnit} from "effector-react";
-import {$categories, findCategoryById, GoodCategory} from "../../api";
+import {$categories, $loggedUser, findCategoryById, GoodCategory} from "../../api";
 import {getRootCategories} from "../../services";
 import {validateSellerRegister} from "../../components";
 import {useNavigate} from "react-router-dom";
+import {OrganizationType, registerStoreFx} from "../../api/models/store.ts";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -61,12 +62,13 @@ const SignInContainer = styled(Stack)(({theme}) => ({
 
 export default function BecomeSellerPage() {
     const categories = useUnit($categories);
+    const loggedUser = useUnit($loggedUser);
     const navigate = useNavigate();
 
     const [country, setCountry] = useState<string>('Россия');
     const [countryError, setCountryError] = useState<boolean>(false);
 
-    const [organizationType, setOrganizationType] = useState<string>('');
+    const [organizationType, setOrganizationType] = useState<OrganizationType>();
     const [organizationTypeError, setOrganizationTypeError] = useState<boolean>(false);
 
     const [shopName, setShopName] = useState<string>('');
@@ -79,15 +81,16 @@ export default function BecomeSellerPage() {
         return getRootCategories(categories);
     }, [categories]);
 
-    const handleCountryChange = (event: SelectChangeEvent<string>) => {
+    const handleCountryChange = (event: SelectChangeEvent) => {
         setCountry(event.target.value as string);
     };
 
-    const handleOrganizationTypeChange = (event: SelectChangeEvent<string>) => {
-        setOrganizationType(event.target.value as string);
+    const handleOrganizationTypeChange = (event: SelectChangeEvent) => {
+        const orgType = event.target.value as OrganizationType;
+        setOrganizationType(orgType);
     };
 
-    const handleProductCategoryChange = (event: SelectChangeEvent<string>) => {
+    const handleProductCategoryChange = (event: SelectChangeEvent) => {
         const category = findCategoryById(rootCategories, parseInt(event.target.value));
         if (category != null) {
             setProductCategory(category);
@@ -97,7 +100,7 @@ export default function BecomeSellerPage() {
     const handleSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        const validResult = validateSellerRegister({
+        const newStore = {
             country: country,
             setCountryErr: setCountryError,
             organizationType: organizationType,
@@ -106,13 +109,20 @@ export default function BecomeSellerPage() {
             setStoreNameErr: setShopNameError,
             mainGoodCategory: productCategory,
             setMainGoodCategoryErr: setMainProductCategoryError
-        });
-
-        console.log(validResult);
+        };
+        const validResult = validateSellerRegister(newStore);
 
         if (validResult) {
             // Отправляем запрос на регистрацию продавца (синхронно)
             // и выполняем редирект на страницу продавца
+            registerStoreFx({
+                name: shopName,
+                country: country,
+                organizationType: organizationType as OrganizationType,
+                userId: loggedUser.id,
+                mainCategoryId: productCategory?.id as number
+            })
+                .then(() => navigate('/seller/main'));
             return;
         }
     };
@@ -166,8 +176,8 @@ export default function BecomeSellerPage() {
                                 onChange={handleOrganizationTypeChange}
                                 sx={{ marginBottom: '20px' }}
                             >
-                                {organizationTypes.map((type) => (
-                                    <MenuItem key={type} value={type}>{type}</MenuItem>
+                                {[...organizationTypes.entries()].map((entry) => (
+                                    <MenuItem key={entry[0]} value={entry[0]}>{entry[1]}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>

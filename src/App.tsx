@@ -39,6 +39,7 @@ function App() {
 
                     <Route path="/seller">
                         <Route path="become-seller" element={<BecomeSellerPage/>} />
+                        <Route path="main" element={<ProfileMainPage />} />
                     </Route>
                     <Route path="/profile" element={<ProfilePage />}>
                         <Route path="main" element={<ProfileMainPage />} />

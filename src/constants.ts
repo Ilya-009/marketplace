@@ -1,3 +1,5 @@
+import {OrganizationType} from "./api/models/store.ts";
+
 export const countries: string[] = [
     "Россия",
     "Китай",
@@ -237,12 +239,12 @@ export const countries: string[] = [
     "Япония"
 ];
 
-export const organizationTypes: string[] = [
-    'ИП',
-    'Самозанятый',
-    'АО',
-    'ООО',
-    'ПАО',
-    'ЗАО',
-    'ОАО',
-];
+export const organizationTypes = new Map<OrganizationType, string>([
+    [OrganizationType.IP, 'ИП'],
+    [OrganizationType.SELF_EMPLOYED, 'Самозанятый'],
+    [OrganizationType.AO, 'АО'],
+    [OrganizationType.OOO, 'ООО'],
+    [OrganizationType.PAO, 'ПАО'],
+    [OrganizationType.ZAO, 'ЗАО'],
+    [OrganizationType.OAO, 'ОАО'],
+]);
