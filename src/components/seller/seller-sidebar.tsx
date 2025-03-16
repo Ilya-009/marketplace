@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
-import {$customer, logOut} from "../../api";
+import {$loggedUser} from "../../api";
 import {useUnit} from "effector-react";
+import {$store, loadStoreByUser} from "../../api/models/store.ts";
+import StoreIcon from '@mui/icons-material/Store';
 
 const Sidebar = styled(Box)`
     width: 250px;
@@ -16,47 +18,46 @@ const Sidebar = styled(Box)`
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 `;
 
-const UserInfo = styled(Box)`
+const StoreInfo = styled(Box)`
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
 `;
 
-const UserAvatar = styled(Avatar)`
-    width: 80px;
-    height: 80px;
-    margin-bottom: 10px;
-`;
-
-const UserName = styled(Typography)`
+const StoreName = styled(Typography)`
     font-weight: 600;
     font-size: 18px;
 `;
 
 const sections = [
-    {id: 'main', label: 'Мои данные', path: 'main'},
-    // {id: 'payment-methods', label: 'Способы оплаты', path: 'payment-methods'},
-    {id: 'my-cart', label: 'Моя корзина', path: '/cart'},
-    {id: 'my-orders', label: 'Мои заказы', path: 'orders'},
-    {id: 'address', label: 'Мой адрес', path: 'address'},
-    // {id: 'purchased-items', label: 'Купленные товары', path: 'purchased-items'},
-    {id: 'my-reviews', label: 'Мои отзывы', path: 'my-reviews'},
+    {id: 'main', label: 'Главная', path: 'main'},
+    {id: 'goods-prices', label: 'Товары и цены', path: 'goods'},
+    {id: 'orders', label: 'Заказы', path: 'orders'},
+    {id: 'analytics', label: 'Аналитика', path: 'analytics'},
+    {id: 'reviews', label: 'Отзывы', path: 'reviews'},
 ];
 
-const ProfileSidebar: React.FC = () => {
+const SellerSidebar: React.FC = () => {
     const location = useLocation();
-    const customer = useUnit($customer);
+    const navigate = useNavigate();
+
+    const user = useUnit($loggedUser);
+    const store = useUnit($store);
+
+    useEffect(() => {
+        loadStoreByUser({userId: user?.id});
+    }, [user?.id]);
 
     return <>
         <Sidebar>
-            <UserInfo>
-                <UserAvatar alt="User Avatar" src="/path/to/avatar.jpg"/>
-                <UserName>{customer.firstName} {customer.lastName}</UserName>
+            <StoreInfo>
+                <StoreIcon fontSize='large'/>
+                <StoreName>{store.name}</StoreName>
                 <EditProfileLink component={Link} to="personalInfo">
-                    Редактировать профиль
+                    Редактировать магазин
                 </EditProfileLink>
-            </UserInfo>
+            </StoreInfo>
 
             {/* Список разделов */}
             <List>
@@ -72,9 +73,9 @@ const ProfileSidebar: React.FC = () => {
                     </ListItem>
                 ))}
 
-                <ListItem key='logout' disablePadding>
-                    <ListItemButton component={Link} onClick={() => logOut()}>
-                        <ListItemText primary='Выйти из аккаунта'/>
+                <ListItem key='logout' disablePadding onClick={() => navigate('/profile/main')}>
+                    <ListItemButton component={Link}>
+                        <ListItemText primary='Войти как покупатель'/>
                     </ListItemButton>
                 </ListItem>
             </List>
@@ -82,4 +83,4 @@ const ProfileSidebar: React.FC = () => {
     </>;
 };
 
-export default ProfileSidebar;
+export default SellerSidebar;

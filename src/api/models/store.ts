@@ -63,6 +63,7 @@ export const registerStoreFx = createEffect<RegisterStoreParam, Store, AxiosErro
 
 sample({
     clock: loadStoreByUser,
+    filter: ({userId}) => userId > 0,
     target: loadStoreByUserFx
 });
 sample({

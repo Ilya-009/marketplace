@@ -8,7 +8,6 @@ import SignIn from "./pages/sign-in.tsx";
 import {loadProperties, loadCategories, loadLoggedUser} from "./api";
 import {CategoryPage} from "./pages";
 import {NotFoundPage} from "./pages";
-import ProfilePage from "./pages/profile/profile-page.tsx";
 import ProfileMainPage from "./pages/profile/profile-main-page.tsx";
 import EditProfile from "./pages/profile/personal-info-page.tsx";
 import CartPage from "./pages/cart-page.tsx";
@@ -18,6 +17,16 @@ import SettingsManagementPage from "./pages/admin/properties-page.tsx";
 import CheckoutPage from "./pages/checkout.tsx";
 import AddressPage from "./pages/profile/profile-address-page.tsx";
 import BecomeSellerPage from "./pages/seller/become-seller-page.tsx";
+import PageWithSidebar from "./components/common/page-with-header-sidebar.tsx";
+import ProfileSidebar from "./components/profile/profile-sidebar.tsx";
+import Header from "./components/header/header.tsx";
+import SellerHeader from "./components/header/seller-header.tsx";
+import SellerMainPage from "./pages/seller/seller-main-page.tsx";
+import SellerSidebar from "./components/seller/seller-sidebar.tsx";
+import SellerGoodsPage from "./pages/seller/seller-goods-page.tsx";
+import SellerOrdersPage from "./pages/seller/seller-orders-page.tsx";
+import SellerAnalyticsPage from "./pages/seller/seller-analytics-page.tsx";
+import SellerReviewsPage from "./pages/seller/seller-reviews-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -36,12 +45,24 @@ function App() {
                     <Route path="/goods/:id" element={<ProductCardPage />} />
                     <Route path="cart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage/>} />
+                    <Route path="/become-seller" element={<BecomeSellerPage/>} />
 
-                    <Route path="/seller">
-                        <Route path="become-seller" element={<BecomeSellerPage/>} />
-                        <Route path="main" element={<ProfileMainPage />} />
+                    <Route path="/seller" element={
+                        <PageWithSidebar header={<SellerHeader/>} sidebar={<SellerSidebar/>} />
+                    }>
+                        <Route path="main" element={<SellerMainPage/>} />
+                        <Route path="goods" element={<SellerGoodsPage/>} />
+                        <Route path="orders" element={<SellerOrdersPage/>} />
+                        <Route path="analytics" element={<SellerAnalyticsPage/>} />
+                        <Route path="reviews" element={<SellerReviewsPage/>} />
                     </Route>
-                    <Route path="/profile" element={<ProfilePage />}>
+
+                    <Route path="/profile" element={
+                        <PageWithSidebar
+                            header={<Header/>}
+                            sidebar={<ProfileSidebar/>}
+                        />
+                    }>
                         <Route path="main" element={<ProfileMainPage />} />
                         <Route path="personalInfo" element={<EditProfile />} />
                         <Route path="orders" element={<OrdersPage />} />

@@ -4,3 +4,4 @@ export * from './authentication';
 export * from './catalog';
 export * from './good';
 export * from './admin';
+export * from './seller';
