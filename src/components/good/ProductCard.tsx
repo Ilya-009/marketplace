@@ -77,17 +77,6 @@ const ProductCard = ({ good }: ProductCardProps) => {
             </ImageContainer>
             <CardContent sx={{ flexGrow: 1, p: 2 }}>
                 <Box sx={{ mb: 1 }}>
-                    {/*{product.isOriginal && (*/}
-                    {/*    <Chip*/}
-                    {/*        label="Original"*/}
-                    {/*        size="small"*/}
-                    {/*        sx={{*/}
-                    {/*            bgcolor: 'success.light',*/}
-                    {/*            color: 'success.contrastText',*/}
-                    {/*            mb: 1*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*)}*/}
                     {good.discount && (
                         <Chip
                             label={`-${good.discount}%`}
@@ -103,19 +92,6 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 </Box>
                 <Typography variant="h6" component="div" sx={{ fontWeight: 500 }}>
                     {good.price} ₽
-                    {/*{product.originalPrice && (*/}
-                    {/*    <Typography*/}
-                    {/*        component="span"*/}
-                    {/*        sx={{*/}
-                    {/*            ml: 1,*/}
-                    {/*            color: 'text.secondary',*/}
-                    {/*            textDecoration: 'line-through',*/}
-                    {/*            fontSize: '0.875rem'*/}
-                    {/*        }}*/}
-                    {/*    >*/}
-                    {/*        {product.originalPrice} ₽*/}
-                    {/*    </Typography>*/}
-                    {/*)}*/}
                 </Typography>
                 <Typography
                     variant="body2"

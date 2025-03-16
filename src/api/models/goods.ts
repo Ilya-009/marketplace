@@ -9,11 +9,17 @@ export interface Good {
     name: string;
     description: string;
     price: number;
+    status: GoodStatus;
     storeId: number;
     categoryId: number;
     goodImages: Array<GoodImage>;
     reviews: Array<Review>;
     discount?: GoodDiscount;
+}
+export enum GoodStatus {
+    ON_SALE = 'ON_SALE',
+    READY_FOR_SELL = 'READY_FOR_SELL',
+    REMOVED_FROM_SELL = 'REMOVED_FROM_SELL'
 }
 
 export interface GoodDiscount {
@@ -38,7 +44,10 @@ export interface SearchResult {
 }
 
 export type SortOption = 'popular' | 'newest' | 'priceAsc' | 'priceDesc' | 'ratingHigh' | 'discountHigh';
-export type DiscountType = 'percentage' | 'amount';
+export enum DiscountType {
+    PERCENTAGE = 'PERCENTAGE',
+    AMOUNT = 'AMOUNT'
+}
 
 type LoadAllGoodsByCategoryParam = {
     categoryId: number;
@@ -55,6 +64,10 @@ export const $searchResults = createStore<SearchResult[]>([]);
 
 export const $goodsByCategory = createStore<LoadGoodsByCategoryResult>([]);
 
+type LoadGoodsByStoreIdParam = {storeId: number};
+export const loadGoodsByStoreId = createEvent<LoadGoodsByStoreIdParam>();
+export const $storeGoods = createStore<Array<Good>>([]);
+
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
         return await apiClient.get(`${baseUrl}/goods/byCategory?categoryId=${categoryId}`).then(({ data }) => data);
@@ -70,6 +83,12 @@ const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosEr
 const executeSearchFx = createEffect<string, SearchResult[], AxiosError>({
     async handler(searchText) {
         return await apiClient.get(`${baseUrl}/goods/search?text=${searchText}`).then(({ data }) => data);
+    }
+});
+
+const loadGoodsByStoreIdFx = createEffect<LoadGoodsByStoreIdParam, Good[], AxiosError>({
+    async handler({storeId}) {
+        return await apiClient.get(`${baseUrl}/goods/byStore?storeId=${storeId}`).then(({ data }) => data);
     }
 });
 
@@ -97,6 +116,15 @@ sample({
 sample({
     clock: executeSearchFx.doneData,
     target: $searchResults
+});
+
+sample({
+    clock: loadGoodsByStoreId,
+    target: loadGoodsByStoreIdFx
+});
+sample({
+    clock: loadGoodsByStoreIdFx.doneData,
+    target: $storeGoods
 });
 
 $allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {

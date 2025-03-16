@@ -52,6 +52,7 @@ function App() {
                     }>
                         <Route path="main" element={<SellerMainPage/>} />
                         <Route path="goods" element={<SellerGoodsPage/>} />
+                        {/*<Route path="goods/:id" element={<SellerGoodsPage/>} />*/}
                         <Route path="orders" element={<SellerOrdersPage/>} />
                         <Route path="analytics" element={<SellerAnalyticsPage/>} />
                         <Route path="reviews" element={<SellerReviewsPage/>} />

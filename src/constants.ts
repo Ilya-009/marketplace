@@ -1,4 +1,5 @@
 import {OrganizationType} from "./api/models/store.ts";
+import {GoodStatus} from "./api";
 
 export const countries: string[] = [
     "Россия",
@@ -247,4 +248,10 @@ export const organizationTypes = new Map<OrganizationType, string>([
     [OrganizationType.PAO, 'ПАО'],
     [OrganizationType.ZAO, 'ЗАО'],
     [OrganizationType.OAO, 'ОАО'],
+]);
+
+export const goodStatuses = new Map<GoodStatus, string>([
+    [GoodStatus.ON_SALE, 'В продаже'],
+    [GoodStatus.READY_FOR_SELL, 'Готовы к продаже'],
+    [GoodStatus.REMOVED_FROM_SELL, 'Сняты с продажи'],
 ]);
