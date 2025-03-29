@@ -39,6 +39,9 @@ export interface DeliveryMethod {
 type LoadCustomerOrdersParam = {
     customerId: number;
 };
+type LoadSellerOrdersParam = {
+    sellerId: number;
+};
 export type CreateNewOrderParam = {
     customerId: number;
     addressId?: number;
@@ -58,19 +61,25 @@ export const loadCustomerOrders = createEvent<LoadCustomerOrdersParam>();
 export const createNewOrder = createEvent<CreateNewOrderParam>();
 export const loadPaymentMethods = createEvent();
 export const loadDeliveryMethods = createEvent();
+export const loadSellerOrders = createEvent<LoadSellerOrdersParam>();
 
 const loadCustomerOrdersFx = createEffect<LoadCustomerOrdersParam, Order[], AxiosError>({
     async handler({customerId}) {
         if (customerId) {
-            return await apiClient.get(`${baseUrl}/orders/${customerId}`).then(({ data }) => data);
+            return await apiClient.get(`${baseUrl}/orders/byCustomer/${customerId}`).then(({ data }) => data);
+        }
+    }
+});
+const loadSellerOrdersFx = createEffect<LoadSellerOrdersParam, Order[], AxiosError>({
+    async handler({sellerId}) {
+        if (sellerId) {
+            return await apiClient.get(`${baseUrl}/stores/orders?storeId=${sellerId}`).then(({ data }) => data);
         }
     }
 });
 const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({
     async handler(order) {
         await apiClient.post(`${baseUrl}/orders`, order);
-        // await apiClient.get(`${baseUrl}/orders/${customerId}`).then(({ data }) => data);
-        // console.log(order);
     }
 });
 const loadPaymentMethodsFx = createEffect<void, PaymentMethod[], AxiosError>({
@@ -89,7 +98,7 @@ sample({
     target: loadCustomerOrdersFx
 });
 sample({
-    clock: loadCustomerOrdersFx.doneData,
+    clock: [loadCustomerOrdersFx.doneData, loadSellerOrdersFx.doneData],
     target: $orders
 });
 
@@ -114,4 +123,9 @@ sample({
 sample({
     clock: loadDeliveryMethodsFx.doneData,
     target: $deliveryMethods
+});
+
+sample({
+    clock: loadSellerOrders,
+    target: loadSellerOrdersFx
 });

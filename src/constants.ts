@@ -1,5 +1,6 @@
 import {OrganizationType} from "./api/models/store.ts";
 import {GoodStatus} from "./api";
+import {OrderStatus} from "./api/models/orders.ts";
 
 export const countries: string[] = [
     "Россия",
@@ -254,4 +255,11 @@ export const goodStatuses = new Map<GoodStatus, string>([
     [GoodStatus.ON_SALE, 'В продаже'],
     [GoodStatus.READY_FOR_SELL, 'Готовы к продаже'],
     [GoodStatus.REMOVED_FROM_SELL, 'Сняты с продажи'],
+]);
+
+export const orderStatuses = new Map<OrderStatus, string>([
+    [OrderStatus.CREATED, 'Создан'],
+    [OrderStatus.DELIVERED, 'Доставлен'],
+    [OrderStatus.REJECTED, 'Отклонен'],
+    [OrderStatus.FINISHED, 'Завершен'],
 ]);

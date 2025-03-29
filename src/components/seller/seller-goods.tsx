@@ -132,7 +132,7 @@ const SellerGoods: React.FC = () => {
                                         {good.name}
                                     </EditProfileLink>
                                 </TableCell>
-                                <TableCell>{good.status}</TableCell>
+                                <TableCell>{goodStatuses.get(good.status)}</TableCell>
                                 <TableCell>{good.discount ? good.price : '-'}</TableCell>
                                 <TableCell>
                                     {good.discount

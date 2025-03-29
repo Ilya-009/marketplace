@@ -1,8 +1,10 @@
 import React from 'react';
 import {SidebarPageBox} from "../../components";
+import OrdersList from "../../components/seller/seller-orders.tsx";
 
 const SellerOrdersPage: React.FC = () => {
-    return <SidebarPageBox>
+    return <SidebarPageBox sx={{width: '90%'}}>
+        <OrdersList />
     </SidebarPageBox>
 };
 
