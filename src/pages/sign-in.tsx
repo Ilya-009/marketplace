@@ -17,7 +17,7 @@ import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
 import {validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
-import {$authError, loginUser} from "../api";
+import {$authError, loginUserFx} from "../api";
 import {primaryTextColor} from "../ui";
 import {useUnit} from "effector-react";
 
@@ -96,9 +96,13 @@ export default function SignIn() {
             return false;
         }
 
-        loginUser({
+        loginUserFx({
             email: email,
             password: password
+        }).then((response) => {
+            if (response.token) {
+                navigate('/profile/main');
+            }
         });
     };
 

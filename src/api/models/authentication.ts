@@ -57,9 +57,7 @@ const clearAuthenticationSession = createEffect({
 });
 
 export const clearAuthentication = createEvent();
-
-export const registerUser = createEvent<RegisterUserParam>();
-const registerUserFx = createEffect<RegisterUserParam, AuthenticateUserResult, AxiosError>({
+export const registerUserFx = createEffect<RegisterUserParam, AuthenticateUserResult, AxiosError>({
     async handler(param) {
         const result = await apiClient.post(`${baseUrl}/auth/sign-up`, param).then((response) => response.data);
         const token = result.token;
@@ -72,7 +70,6 @@ const registerUserFx = createEffect<RegisterUserParam, AuthenticateUserResult, A
     }
 });
 
-export const loginUser = createEvent<LoginUserParam>();
 export const loginUserFx = createEffect<LoginUserParam, AuthenticateUserResult, AxiosError>({
     async handler(param) {
         const result = await apiClient.post(`${baseUrl}/auth/sign-in`, param).then((response) => response.data);
@@ -112,16 +109,6 @@ export const logOutFx = createEffect<void, void, AxiosError>({
         await apiClient.post(`${baseUrl}/auth/sign-out`);
         await clearAuthenticationSession();
     }
-});
-
-sample({
-    clock: registerUser,
-    target: registerUserFx
-});
-
-sample({
-    clock: loginUser,
-    target: loginUserFx
 });
 
 sample({
@@ -165,7 +152,17 @@ sample({
 });
 
 sample({
-    clock: [registerUserFx.fail, loginUserFx.fail, changePasswordFx.fail],
-    fn: (result) => result.error.message,
+    clock: [loginUserFx.fail, changePasswordFx.fail],
+    fn: () => 'Неверный логин или пароль',
+    target: $authError
+});
+sample({
+    clock: [changePasswordFx.fail],
+    fn: () => 'Неверный пароль',
     target: $authError
 })
+sample({
+    clock: [registerUserFx.fail],
+    fn: () => 'Неверно введены данные или пользователь уже существует',
+    target: $authError
+});

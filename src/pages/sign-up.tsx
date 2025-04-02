@@ -13,7 +13,7 @@ import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import {useState} from "react";
 import {validateSignUpInputs} from "../components";
-import {registerUser} from "../api";
+import {registerUserFx} from "../api";
 import {useNavigate} from "react-router-dom";
 import {primaryTextColor} from "../ui";
 
@@ -86,13 +86,15 @@ export default function SignUp() {
             return false;
         }
 
-        registerUser({
+        registerUserFx({
             email: email,
             phone: phone,
             password: password
+        }).then((response) => {
+            if (response.token) {
+                navigate('/profile/main');
+            }
         });
-
-        navigate('/');
     };
 
     return (
