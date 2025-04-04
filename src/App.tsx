@@ -23,10 +23,11 @@ import Header from "./components/header/header.tsx";
 import SellerHeader from "./components/header/seller-header.tsx";
 import SellerMainPage from "./pages/seller/seller-main-page.tsx";
 import SellerSidebar from "./components/seller/seller-sidebar.tsx";
-import SellerGoodsPage from "./pages/seller/seller-goods-page.tsx";
+import SellerGoodsPage from "./pages/seller/goods/seller-goods-page.tsx";
 import SellerOrdersPage from "./pages/seller/seller-orders-page.tsx";
 import SellerAnalyticsPage from "./pages/seller/seller-analytics-page.tsx";
 import SellerReviewsPage from "./pages/seller/seller-reviews-page.tsx";
+import CreateGoodPage from "./pages/seller/goods/seller-good-control-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -51,8 +52,9 @@ function App() {
                         <PageWithSidebar header={<SellerHeader/>} sidebar={<SellerSidebar/>} />
                     }>
                         <Route path="main" element={<SellerMainPage/>} />
+                        <Route path="goods/new" element={<CreateGoodPage isCreate/>} />
+                        <Route path="goods/:id" element={<CreateGoodPage isCreate={false} />} />
                         <Route path="goods" element={<SellerGoodsPage/>} />
-                        {/*<Route path="goods/:id" element={<SellerGoodsPage/>} />*/}
                         <Route path="orders" element={<SellerOrdersPage/>} />
                         <Route path="analytics" element={<SellerAnalyticsPage/>} />
                         <Route path="reviews" element={<SellerReviewsPage/>} />

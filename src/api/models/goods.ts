@@ -17,13 +17,16 @@ export interface Good {
     discount?: GoodDiscount;
 }
 export enum GoodStatus {
-    ON_SALE = 'ON_SALE',
-    READY_FOR_SELL = 'READY_FOR_SELL',
-    REMOVED_FROM_SELL = 'REMOVED_FROM_SELL'
+    DRAFT = 'DRAFT',
+    ON_MODERATION = 'ON_MODERATION',
+    ACTIVE = 'ACTIVE',
+    REMOVED_FROM_SELL = 'REMOVED_FROM_SELL',
+    ARCHIVED = 'ARCHIVED',
+    BLOCKED = 'BLOCKED'
 }
 
 export interface GoodDiscount {
-    id: number;
+    id?: number;
     discountType: DiscountType;
     discountValue: number;
 }
@@ -68,13 +71,26 @@ type LoadGoodsByStoreIdParam = {storeId: number};
 export const loadGoodsByStoreId = createEvent<LoadGoodsByStoreIdParam>();
 export const $storeGoods = createStore<Array<Good>>([]);
 
+export type ModifyGoodType = {
+    name: string;
+    description: string;
+    price: number;
+    status?: GoodStatus;
+    categoryId: number;
+};
+export type CreateNewGoodParam = ModifyGoodType & {
+    userId: number;
+    images: File[];
+    discount?: GoodDiscount;
+};
+
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
         return await apiClient.get(`${baseUrl}/goods/byCategory?categoryId=${categoryId}`).then(({ data }) => data);
     }
 });
 
-const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosError>({
+export const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosError>({
     async handler({id}) {
         return await apiClient.get(`${baseUrl}/goods/${id}`).then(({ data }) => data);
     }
@@ -89,6 +105,33 @@ const executeSearchFx = createEffect<string, SearchResult[], AxiosError>({
 const loadGoodsByStoreIdFx = createEffect<LoadGoodsByStoreIdParam, Good[], AxiosError>({
     async handler({storeId}) {
         return await apiClient.get(`${baseUrl}/goods/byStore?storeId=${storeId}`).then(({ data }) => data);
+    }
+});
+
+export const createNewGoodFx = createEffect<CreateNewGoodParam, boolean, AxiosError>({
+    async handler(param) {
+        const formData = new FormData();
+        formData.append('name', param.name);
+        formData.append('description', param.description);
+        formData.append('price', param.price?.toString());
+        // formData.append('status', param.status?.toString() ?? null);
+        formData.append('userId', param.userId?.toString());
+        formData.append('categoryId', param.categoryId?.toString());
+
+        if (param.discount) {
+            formData.append('discount', JSON.stringify(param.discount));
+        }
+
+        param.images.forEach(file => {
+            formData.append('images', file);
+        });
+
+        const response = await apiClient.post(`${baseUrl}/goods`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
     }
 });
 

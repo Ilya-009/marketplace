@@ -252,9 +252,12 @@ export const organizationTypes = new Map<OrganizationType, string>([
 ]);
 
 export const goodStatuses = new Map<GoodStatus, string>([
-    [GoodStatus.ON_SALE, 'В продаже'],
-    [GoodStatus.READY_FOR_SELL, 'Готовы к продаже'],
+    [GoodStatus.DRAFT, 'Черновики'],
+    [GoodStatus.ON_MODERATION, 'На модерации'],
+    [GoodStatus.ACTIVE, 'Активный'],
     [GoodStatus.REMOVED_FROM_SELL, 'Сняты с продажи'],
+    [GoodStatus.ARCHIVED, 'В архиве'],
+    [GoodStatus.BLOCKED, 'Заблокированы'],
 ]);
 
 export const orderStatuses = new Map<OrderStatus, string>([

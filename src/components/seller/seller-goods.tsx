@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {
-    Box,
+    Box, Button,
     IconButton,
     InputAdornment,
     MenuItem,
@@ -25,11 +25,14 @@ import {$store} from "../../api/models/store.ts";
 import {goodStatuses} from "../../constants.ts";
 import {getProperty} from "../../services";
 import {EditProfileLink} from "../common";
+import {useNavigate} from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
 
 const SellerGoods: React.FC = () => {
     const store = useUnit($store);
     const goods = useUnit($storeGoods);
     const properties = useUnit($properties);
+    const navigate = useNavigate();
 
     const [filteredGoods, setFilteredGoods] = useState<Good[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<GoodStatus | 'ALL'>('ALL');
@@ -78,13 +81,25 @@ const SellerGoods: React.FC = () => {
         setPage(1);
     };
 
+    const handleCreateNewGood = () => {
+        navigate('/seller/goods/new');
+    };
+
     const paginatedGoods = filteredGoods.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
     return (
         <Box>
             <Typography variant="h4" gutterBottom>
-                Товары / Услуги и цены
+                Товары и цены
             </Typography>
+            <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={handleCreateNewGood}
+            >
+                Добавить товар
+            </Button>
             <Tabs value={selectedStatus} onChange={handleStatusChange}>
                 <Tab label="Все" value="ALL" />
                 {[...goodStatuses.entries()].map(entry => (
