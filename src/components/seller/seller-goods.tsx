@@ -140,7 +140,10 @@ const SellerGoods: React.FC = () => {
                             <TableRow key={good.id}>
                                 <TableCell>{good.id}</TableCell>
                                 <TableCell>
-                                    <img src={good.goodImages[0]?.image ?? emptyImage} alt={good.name} width="50" height="50" />
+                                    <img src={`http://localhost:8080/files/images/${good.goodImages[0]?.image ?? emptyImage}`}
+                                         alt={good.name}
+                                         width="50"
+                                         height="50" />
                                 </TableCell>
                                 <TableCell>
                                     <EditProfileLink href={`/seller/goods/${good.id}`}>

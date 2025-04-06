@@ -33,7 +33,7 @@ export const SearchResultsDropdown: React.FC<{ results: SearchResult[] }> = ({ r
                     >
                         <Box sx={{ marginRight: '12px' }}>
                             {'goodImages' in result.data ? (
-                                <img src={result.data.goodImages[0]?.image} alt={result.data.name} style={{ width: '40px', height: '40px', borderRadius: '4px' }} />
+                                <img src={`http://localhost:8080/files/images/${result.data.goodImages[0]?.image}`} alt={result.data.name} style={{ width: '40px', height: '40px', borderRadius: '4px' }} />
                             ) : (
                                 <Segment style={{ width: '40px', height: '40px', borderRadius: '4px' }} />
                             )}

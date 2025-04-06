@@ -186,7 +186,7 @@ const CheckoutPage: React.FC = () => {
                                         <ListItemAvatar>
                                             <Grid item xs={2}>
                                                 <img
-                                                    src={cartElem.good.goodImages[0]?.image ?? emptyImage}
+                                                    src={`http://localhost:8080/files/images/${cartElem.good.goodImages[0]?.image ?? emptyImage}`}
                                                     alt={cartElem.good.name}
                                                     style={{ width: 50, height: 50, marginRight: 10 }}
                                                 />

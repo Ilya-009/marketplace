@@ -83,6 +83,12 @@ export type CreateNewGoodParam = ModifyGoodType & {
     images: File[];
     discount?: GoodDiscount;
 };
+export type UpdateGoodParam = ModifyGoodType & {
+    id: number;
+    userId: number;
+    images: File[];
+    discount?: GoodDiscount;
+};
 
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
@@ -134,6 +140,34 @@ export const createNewGoodFx = createEffect<CreateNewGoodParam, boolean, AxiosEr
         return response.data;
     }
 });
+
+export const updateGoodFx = createEffect<UpdateGoodParam, boolean, AxiosError>({
+    async handler(param) {
+        const formData = new FormData();
+        formData.append('name', param.name);
+        formData.append('description', param.description);
+        formData.append('price', param.price?.toString());
+        // formData.append('status', param.status?.toString() ?? null);
+        formData.append('userId', param.userId?.toString());
+        formData.append('categoryId', param.categoryId?.toString());
+
+        if (param.discount) {
+            formData.append('discount', JSON.stringify(param.discount));
+        }
+
+        param.images.forEach(file => {
+            formData.append('images', file);
+        });
+
+        const response = await apiClient.post(`${baseUrl}/goods`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    }
+});
+
 
 sample({
     clock: loadGoodsByCategory,

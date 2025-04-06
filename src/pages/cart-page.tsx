@@ -140,7 +140,7 @@ const CartPage: React.FC = () => {
                                                 onChange={() => handleSelectItem(item.goodId)}
                                             />
                                             <img
-                                                src={good.goodImages[0]?.image ?? emptyImage}
+                                                src={`http://localhost:8080/files/images/${good.goodImages[0]?.image ?? emptyImage}`}
                                                 alt={good.name}
                                                 style={{width: 100, height: 100, marginLeft: 10}}
                                             />

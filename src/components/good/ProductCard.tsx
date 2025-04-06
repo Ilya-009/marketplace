@@ -70,8 +70,8 @@ const ProductCard = ({ good }: ProductCardProps) => {
 
             <ImageContainer>
                 {good.goodImages.length !== 0
-                    ? <img src={good.goodImages[0].image} alt={good.name} loading="lazy"/>
-                    : <img src='https://svetolok.ru/img/no-photo.jpg' alt={good.name} loading="lazy"/>
+                    ? <img src={`http://localhost:8080/files/images/${good.goodImages[0]?.image}`} alt={good.name} loading="lazy"/>
+                    : <img src='http://localhost:8080/files/images/no-photo.jpg' alt={good.name} loading="lazy"/>
                 }
 
             </ImageContainer>
