@@ -103,7 +103,7 @@ const SellerGoods: React.FC = () => {
             <Tabs value={selectedStatus} onChange={handleStatusChange}>
                 <Tab label="Все" value="ALL" />
                 {[...goodStatuses.entries()].map(entry => (
-                    <Tab key={entry[0]} label={entry[1]} value={entry[0]} />
+                    <Tab key={entry[0]} label={entry[1]?.label} value={entry[0]} />
                 ))}
             </Tabs>
             <TextField
@@ -150,7 +150,7 @@ const SellerGoods: React.FC = () => {
                                         {good.name}
                                     </EditProfileLink>
                                 </TableCell>
-                                <TableCell>{goodStatuses.get(good.status)}</TableCell>
+                                <TableCell>{goodStatuses.get(good.status)?.label}</TableCell>
                                 <TableCell>{good.discount ? good.price : '-'}</TableCell>
                                 <TableCell>
                                     {good.discount

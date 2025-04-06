@@ -89,6 +89,10 @@ export type UpdateGoodParam = ModifyGoodType & {
     images: File[];
     discount?: GoodDiscount;
 };
+export type ChangeGoodStatusParam = {
+    id: number;
+    status: GoodStatus;
+};
 
 const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
@@ -120,7 +124,6 @@ export const createNewGoodFx = createEffect<CreateNewGoodParam, boolean, AxiosEr
         formData.append('name', param.name);
         formData.append('description', param.description);
         formData.append('price', param.price?.toString());
-        // formData.append('status', param.status?.toString() ?? null);
         formData.append('userId', param.userId?.toString());
         formData.append('categoryId', param.categoryId?.toString());
 
@@ -147,7 +150,6 @@ export const updateGoodFx = createEffect<UpdateGoodParam, boolean, AxiosError>({
         formData.append('name', param.name);
         formData.append('description', param.description);
         formData.append('price', param.price?.toString());
-        // formData.append('status', param.status?.toString() ?? null);
         formData.append('userId', param.userId?.toString());
         formData.append('categoryId', param.categoryId?.toString());
 
@@ -168,6 +170,14 @@ export const updateGoodFx = createEffect<UpdateGoodParam, boolean, AxiosError>({
     }
 });
 
+export const changeGoodStatusFx = createEffect<ChangeGoodStatusParam, void, AxiosError>({
+    async handler(param) {
+        const payload = {
+            status: param.status
+        };
+        await apiClient.patch(`${baseUrl}/goods/${param.id}`, payload);
+    }
+});
 
 sample({
     clock: loadGoodsByCategory,

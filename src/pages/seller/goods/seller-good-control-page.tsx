@@ -1,6 +1,6 @@
-import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useMatch, useNavigate} from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
+import {useDropzone} from 'react-dropzone';
 import styled from 'styled-components';
 import {
     Box,
@@ -9,16 +9,16 @@ import {
     CardContent,
     Divider,
     FormControl,
+    FormControlLabel,
     Grid,
     InputAdornment,
     InputLabel,
     MenuItem,
-    Select,
-    TextField,
-    Typography,
     Paper,
+    Select,
     Switch,
-    FormControlLabel
+    TextField,
+    Typography
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -27,15 +27,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
     $categories,
     $loggedUser,
+    changeGoodStatusFx,
     createNewGoodFx,
-    ModifyGoodType,
     DiscountType,
+    Good,
     GoodDiscount,
+    GoodStatus,
     loadCategories,
-    loadGoodByIdFx, Good
+    loadGoodByIdFx,
+    ModifyGoodType,
+    updateGoodFx
 } from "../../../api";
 import {useUnit} from "effector-react";
 import {extractIdFromPath, getCategoryPathMapFromArray} from "../../../services";
+import {goodStatuses} from "../../../constants.ts";
 
 const StyledDropzone = styled.div`
   border: 2px dashed #ccc;
@@ -91,6 +96,40 @@ type CreateGoodPageProps = {
     isCreate: boolean;
 };
 
+const getStatusButtons = (currentStatus: GoodStatus, onClickCallback: (status: GoodStatus) => void) => {
+    let shownStatuses: GoodStatus[];
+    switch (currentStatus) {
+        case GoodStatus.ACTIVE:
+            shownStatuses = [GoodStatus.DRAFT, GoodStatus.REMOVED_FROM_SELL];
+            break;
+        case GoodStatus.ON_MODERATION:
+        case GoodStatus.BLOCKED:
+            shownStatuses = [];
+            break;
+        case GoodStatus.DRAFT:
+            shownStatuses = [GoodStatus.ACTIVE];
+            break;
+        case GoodStatus.ARCHIVED:
+            shownStatuses = [GoodStatus.ACTIVE];
+            break;
+        case GoodStatus.REMOVED_FROM_SELL:
+            shownStatuses = [GoodStatus.ACTIVE, GoodStatus.ARCHIVED];
+    }
+
+    return shownStatuses.map(status => {
+        const statusInfo = goodStatuses.get(status);
+        return (
+            <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                onClick={() => onClickCallback(status)}
+                sx={{mb: 2, backgroundColor: statusInfo?.color}}
+            >{statusInfo?.actionLabel}</Button>
+        );
+    }, []);
+};
+
 const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPageProps) => {
     const match = useMatch('/seller/goods/:id');
     const goodId = extractIdFromPath(match);
@@ -106,7 +145,8 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         price: 0,
         categoryId: -1
     });
-    const [images, setImages] = useState<{image: string; file: File}[]>([]);
+    const [images, setImages] = useState<{image: string; file?: File}[]>([]);
+    const [existingImages, setExistingImages] = useState<string[]>([]);
     const [hasDiscount, setHasDiscount] = useState(false);
     const [discount, setDiscount] = useState<GoodDiscount>({
         discountType: DiscountType.PERCENTAGE,
@@ -118,8 +158,8 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
     }, []);
 
     useEffect(() => {
-        if (!isCreate) {
-            loadGoodByIdFx({id: goodId as number}).then(response => {
+        if (!isCreate && goodId) {
+            loadGoodByIdFx({id: goodId}).then(response => {
                 const good = response as Good;
                 const modifyGoodType: ModifyGoodType = {
                     name: good.name,
@@ -129,6 +169,20 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                     categoryId: good.categoryId
                 };
                 setGood(modifyGoodType);
+
+                // Загрузка существующих изображений
+                if (good.goodImages && good.goodImages.length > 0) {
+                    setExistingImages(good.goodImages.map(img => `http://localhost:8080/files/images/${img.image}`));
+                }
+
+                // Загрузка скидки, если есть
+                if (good.discount) {
+                    setHasDiscount(true);
+                    setDiscount({
+                        discountType: good.discount.discountType,
+                        discountValue: good.discount.discountValue
+                    });
+                }
             });
         }
     }, [goodId, isCreate]);
@@ -138,7 +192,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
             const reader = new FileReader();
             reader.readAsDataURL(file);
             return {
-                image: null,
+                image: '',
                 file
             };
         });
@@ -152,7 +206,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                 setImages(prev => {
                     const updated = [...prev];
                     const imgIndex = prev.length - acceptedFiles.length + index;
-                    updated[imgIndex].image = reader.result;
+                    updated[imgIndex].image = reader.result as string;
                     return updated;
                 });
             };
@@ -168,17 +222,23 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         multiple: true
     });
 
-    const removeImage = (index: number) => {
-        setImages(prev => prev.filter((_, i) => i !== index));
+    const removeImage = (index: number, isExisting: boolean) => {
+        if (isExisting) {
+            // const imageToDelete = existingImages[index];
+            setExistingImages(prev => prev.filter((_, i) => i !== index));
+            // setImagesToDelete(prev => [...prev, imageToDelete]);
+        } else {
+            setImages(prev => prev.filter((_, i) => i !== index));
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setGood(prev => ({ ...prev, [name]: value }));
+        setGood(prev => ({ ...prev, [name]: name === 'price' ? parseFloat(value) || 0 : value }));
     };
 
     const handleCategoryChange = (e: any) => {
-        setGood(prev => ({ ...prev, categoryId: e.target.value }));
+        setGood(prev => ({ ...prev, categoryId: parseInt(e.target.value) }));
     };
 
     const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -196,28 +256,38 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        createNewGoodFx({
+        const formData = {
             name: good.name,
             description: good.description,
             price: good.price,
             status: good.status,
             categoryId: good.categoryId,
             userId: loggedUser.id,
-            images: images.map(img => img.file),
+            images: images.map(img => img.file as File),
             discount: hasDiscount ? discount : undefined
-        }).then((response) => {
-            // После успешного сохранения можно перенаправить на страницу товаров
-            if (response) {
-                navigate('/seller/goods');
-            }
-        });
+        };
+
+        if (isCreate) {
+            await createNewGoodFx(formData);
+        } else if (goodId) {
+            await updateGoodFx({ id: goodId, ...formData });
+        }
+    };
+
+    const handleStatusChanged = async (targetStatus: GoodStatus) => {
+        if (goodId) {
+            await changeGoodStatusFx({
+                id: goodId,
+                status: targetStatus
+            }).then(() => navigate('/seller/goods'));
+        }
     };
 
     const calculateFinalPrice = () => {
-        const price = parseFloat(good.price) || 0;
+        const price = good.price || 0;
         if (!hasDiscount) return price;
 
         if (discount.discountType === DiscountType.PERCENTAGE) {
@@ -230,7 +300,9 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
     return (
         <Box component="form" onSubmit={handleSubmit}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h4">Создание нового товара</Typography>
+                <Typography variant="h4">
+                    {isCreate ? 'Создание нового товара' : 'Редактирование товара'}
+                </Typography>
                 <Button
                     variant="outlined"
                     startIcon={<ArrowBackIcon />}
@@ -278,6 +350,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                         onChange={handleInputChange}
                                         InputProps={{
                                             endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+                                            inputProps: { min: 0 }
                                         }}
                                         required
                                     />
@@ -292,6 +365,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                             onChange={handleCategoryChange}
                                             required
                                         >
+                                            <MenuItem value={-1} disabled>Выберите категорию</MenuItem>
                                             {[...categories.entries()].map(category => (
                                                 <MenuItem key={category[0]} value={category[0]}>
                                                     {category[1]}
@@ -320,19 +394,30 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                 </Typography>
                             </StyledDropzone>
 
-                            {images.length > 0 && (
+                            {(existingImages.length > 0 || images.length > 0) && (
                                 <>
-                                    <Typography variant="subtitle2">Загруженные изображения:</Typography>
+                                    <Typography variant="subtitle2">Изображения товара:</Typography>
                                     <ThumbnailContainer>
+                                        {existingImages.map((img, index) => (
+                                            <Thumbnail key={`existing-${index}`}>
+                                                <ThumbnailImage
+                                                    src={img}
+                                                    alt={`Existing ${index}`}
+                                                />
+                                                <ThumbnailOverlay onClick={() => removeImage(index, true)}>
+                                                    <DeleteIcon fontSize="small" color="error" />
+                                                </ThumbnailOverlay>
+                                            </Thumbnail>
+                                        ))}
                                         {images.map((img, index) => (
-                                            <Thumbnail key={index}>
+                                            <Thumbnail key={`new-${index}`}>
                                                 {img.image && (
                                                     <ThumbnailImage
-                                                        src={img.image.toString()}
+                                                        src={img.image}
                                                         alt={`Preview ${index}`}
                                                     />
                                                 )}
-                                                <ThumbnailOverlay onClick={() => removeImage(index)}>
+                                                <ThumbnailOverlay onClick={() => removeImage(index, false)}>
                                                     <DeleteIcon fontSize="small" color="error" />
                                                 </ThumbnailOverlay>
                                             </Thumbnail>
@@ -363,7 +448,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                     {/*    </CardContent>*/}
                     {/*</Card>*/}
 
-                    <Card>
+                    <Card sx={{ mt: 3 }}>
                         <CardContent>
                             <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">Скидка</Typography>
@@ -411,6 +496,10 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                                             {discount.discountType === DiscountType.PERCENTAGE ? '%' : '₽'}
                                                         </InputAdornment>
                                                     ),
+                                                    inputProps: {
+                                                        min: 0,
+                                                        max: discount.discountType === DiscountType.PERCENTAGE ? 100 : undefined
+                                                    }
                                                 }}
                                             />
                                         </Grid>
@@ -433,28 +522,44 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                             )}
                         </CardContent>
                     </Card>
-                    {isCreate && <Box mt={3}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            size="large"
-                            startIcon={<SaveIcon />}
-                            type="submit"
-                        >
-                            Создать товар
-                        </Button>
-                    </Box>}
-                    {!isCreate && <Box mt={3}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color='error'
-                            size="large"
-                            startIcon={<DeleteIcon />}
-                        >
-                            Снять с продажи
-                        </Button>
-                    </Box>}
+
+                    <Box mt={3}>
+                        {isCreate ? (
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                size="large"
+                                startIcon={<SaveIcon />}
+                                type="submit"
+                            >
+                                Создать товар
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    size="large"
+                                    startIcon={<SaveIcon />}
+                                    type="submit"
+                                    sx={{ mb: 2 }}
+                                >
+                                    Сохранить изменения
+                                </Button>
+                                {/*<Button*/}
+                                {/*    fullWidth*/}
+                                {/*    variant="contained"*/}
+                                {/*    color='error'*/}
+                                {/*    size="large"*/}
+                                {/*    startIcon={<DeleteIcon />}*/}
+                                {/*    onClick={handleRemoveFromSale}*/}
+                                {/*>*/}
+                                {/*    Снять с продажи*/}
+                                {/*</Button>*/}
+                                {getStatusButtons(good?.status ?? GoodStatus.DRAFT, handleStatusChanged)}
+                            </>
+                        )}
+                    </Box>
                 </Grid>
             </Grid>
         </Box>

@@ -1,6 +1,13 @@
 import {OrganizationType} from "./api/models/store.ts";
 import {GoodStatus} from "./api";
 import {OrderStatus} from "./api/models/orders.ts";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+type GoodStatusData = {
+    label: string;
+    actionLabel: string;
+    color: string;
+};
 
 export const countries: string[] = [
     "Россия",
@@ -251,13 +258,13 @@ export const organizationTypes = new Map<OrganizationType, string>([
     [OrganizationType.OAO, 'ОАО'],
 ]);
 
-export const goodStatuses = new Map<GoodStatus, string>([
-    [GoodStatus.DRAFT, 'Черновики'],
-    [GoodStatus.ON_MODERATION, 'На модерации'],
-    [GoodStatus.ACTIVE, 'Активный'],
-    [GoodStatus.REMOVED_FROM_SELL, 'Сняты с продажи'],
-    [GoodStatus.ARCHIVED, 'В архиве'],
-    [GoodStatus.BLOCKED, 'Заблокированы'],
+export const goodStatuses = new Map<GoodStatus, GoodStatusData>([
+    [GoodStatus.DRAFT, {label: 'Черновики', actionLabel: 'Перевести в черновик', color: '#ffffff'}],
+    [GoodStatus.ACTIVE, {label: 'Активный', actionLabel: 'Выставить на продажу', color: '#03c51c'}],
+    [GoodStatus.REMOVED_FROM_SELL, {label: 'Сняты с продажи', actionLabel: 'Черновик', color: '#f16600'}],
+    [GoodStatus.ON_MODERATION, {label: 'На модерации', actionLabel: 'Перевести на модерацию', color: '#e4bc0b'}],
+    [GoodStatus.ARCHIVED, {label: 'В архиве', actionLabel: 'В архив', color: '#b3b3b3'}],
+    [GoodStatus.BLOCKED, {label: 'Заблокированы', actionLabel: 'Заблокировать', color: '#ff0000'}],
 ]);
 
 export const orderStatuses = new Map<OrderStatus, string>([
