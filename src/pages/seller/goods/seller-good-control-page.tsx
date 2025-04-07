@@ -124,7 +124,7 @@ const getStatusButtons = (currentStatus: GoodStatus, onClickCallback: (status: G
                 variant="contained"
                 size="large"
                 onClick={() => onClickCallback(status)}
-                sx={{mb: 2, backgroundColor: statusInfo?.color}}
+                sx={{mb: 2, backgroundColor: statusInfo?.color, color: '#000'}}
             >{statusInfo?.actionLabel}</Button>
         );
     }, []);

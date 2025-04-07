@@ -28,6 +28,7 @@ import SellerOrdersPage from "./pages/seller/seller-orders-page.tsx";
 import SellerAnalyticsPage from "./pages/seller/seller-analytics-page.tsx";
 import SellerReviewsPage from "./pages/seller/seller-reviews-page.tsx";
 import CreateGoodPage from "./pages/seller/goods/seller-good-control-page.tsx";
+import StoreEditPage from "./pages/seller/seller-edit-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -52,6 +53,7 @@ function App() {
                         <PageWithSidebar header={<SellerHeader/>} sidebar={<SellerSidebar/>} />
                     }>
                         <Route path="main" element={<SellerMainPage/>} />
+                        <Route path="edit" element={<StoreEditPage/>} />
                         <Route path="goods/new" element={<CreateGoodPage isCreate/>} />
                         <Route path="goods/:id" element={<CreateGoodPage isCreate={false} />} />
                         <Route path="goods" element={<SellerGoodsPage/>} />

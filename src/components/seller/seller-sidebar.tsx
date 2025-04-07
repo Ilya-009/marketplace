@@ -54,7 +54,7 @@ const SellerSidebar: React.FC = () => {
             <StoreInfo>
                 <StoreIcon fontSize='large'/>
                 <StoreName>{store.name}</StoreName>
-                <EditProfileLink component={Link} to="personalInfo">
+                <EditProfileLink component={Link} to="edit">
                     Редактировать магазин
                 </EditProfileLink>
             </StoreInfo>

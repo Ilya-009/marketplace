@@ -1,7 +1,6 @@
 import {OrganizationType} from "./api/models/store.ts";
 import {GoodStatus} from "./api";
 import {OrderStatus} from "./api/models/orders.ts";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 type GoodStatusData = {
     label: string;
@@ -261,7 +260,7 @@ export const organizationTypes = new Map<OrganizationType, string>([
 export const goodStatuses = new Map<GoodStatus, GoodStatusData>([
     [GoodStatus.DRAFT, {label: 'Черновики', actionLabel: 'Перевести в черновик', color: '#ffffff'}],
     [GoodStatus.ACTIVE, {label: 'Активный', actionLabel: 'Выставить на продажу', color: '#03c51c'}],
-    [GoodStatus.REMOVED_FROM_SELL, {label: 'Сняты с продажи', actionLabel: 'Черновик', color: '#f16600'}],
+    [GoodStatus.REMOVED_FROM_SELL, {label: 'Сняты с продажи', actionLabel: 'Снять с продажи', color: '#f16600'}],
     [GoodStatus.ON_MODERATION, {label: 'На модерации', actionLabel: 'Перевести на модерацию', color: '#e4bc0b'}],
     [GoodStatus.ARCHIVED, {label: 'В архиве', actionLabel: 'В архив', color: '#b3b3b3'}],
     [GoodStatus.BLOCKED, {label: 'Заблокированы', actionLabel: 'Заблокировать', color: '#ff0000'}],
