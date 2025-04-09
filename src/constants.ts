@@ -269,6 +269,7 @@ export const goodStatuses = new Map<GoodStatus, GoodStatusData>([
 export const orderStatuses = new Map<OrderStatus, string>([
     [OrderStatus.CREATED, 'Создан'],
     [OrderStatus.DELIVERED, 'Доставлен'],
+    [OrderStatus.DELIVERING, 'Доставляется'],
     [OrderStatus.REJECTED, 'Отклонен'],
     [OrderStatus.FINISHED, 'Завершен'],
 ]);

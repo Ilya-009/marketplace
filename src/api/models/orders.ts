@@ -15,6 +15,7 @@ export interface Order {
 export enum OrderStatus {
     CREATED = 'CREATED',
     DELIVERED = 'DELIVERED',
+    DELIVERING = 'DELIVERING',
     REJECTED = 'REJECTED',
     FINISHED = 'FINISHED'
 }
