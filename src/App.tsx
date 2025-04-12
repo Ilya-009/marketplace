@@ -29,6 +29,8 @@ import SellerAnalyticsPage from "./pages/seller/seller-analytics-page.tsx";
 import SellerReviewsPage from "./pages/seller/seller-reviews-page.tsx";
 import CreateGoodPage from "./pages/seller/goods/seller-good-control-page.tsx";
 import StoreEditPage from "./pages/seller/seller-edit-page.tsx";
+import SuppliesList from "./pages/seller/supplies/supplies-page.tsx";
+import CreateSupply from "./components/seller/supplies/create-supply.tsx";
 
 function App() {
     useEffect(() => {
@@ -57,6 +59,8 @@ function App() {
                         <Route path="goods/new" element={<CreateGoodPage isCreate/>} />
                         <Route path="goods/:id" element={<CreateGoodPage isCreate={false} />} />
                         <Route path="goods" element={<SellerGoodsPage/>} />
+                        <Route path="supplies" element={<SuppliesList/>} />
+                        <Route path="supplies/new" element={<CreateSupply/>} />
                         <Route path="orders" element={<SellerOrdersPage/>} />
                         <Route path="analytics" element={<SellerAnalyticsPage/>} />
                         <Route path="reviews" element={<SellerReviewsPage/>} />

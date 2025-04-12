@@ -23,7 +23,7 @@ import {$store} from "../../../api/models/store.ts";
 import {useUnit} from "effector-react";
 import {$allGoods, loadGoodById} from "../../../api";
 import OrderDetailsModal from "./order-details-modal.tsx";
-import ConfirmationDialog from "./cancel-order-dialog.tsx";
+import ConfirmationDialog from "../../common/confirmation-dialog.tsx";
 
 const OrdersList: React.FC = () => {
     const seller = useUnit($store);
@@ -164,7 +164,7 @@ const OrdersList: React.FC = () => {
                                     <Button onClick={() => handleOpenOrderModal(order)} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
                                         Детали
                                     </Button>
-                                    <Button onClick={() => handleOpenConfirmationDialog(order)} variant="outlined" color="secondary" size="small">
+                                    <Button onClick={() => handleOpenConfirmationDialog(order)} variant="outlined" color="error" size="small">
                                         Отклонить
                                     </Button>
                                 </TableCell>
@@ -185,6 +185,8 @@ const OrdersList: React.FC = () => {
             {openConfirmationDialog && orderToReject && (
                 <ConfirmationDialog
                     open={openConfirmationDialog}
+                    title='Вы уверены, что хотите отменить заказ?'
+                    infoMessage='При отмене заказа будут начислены штрафные баллы и появляется риск снижения рейтинга магазина.'
                     onReject={handleRejectOrder}
                     onCancel={handleCancelConfirmation}
                 />

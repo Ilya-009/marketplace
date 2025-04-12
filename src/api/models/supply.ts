@@ -24,9 +24,29 @@ type CreateSupplyParam = {
     createdAt: Date;
     supplyGoods: SupplyGood[];
 };
+type LoadAllSuppliesParam = {
+    storeId: number;
+};
+type UpdateSupplyParam = {
+    updatedSupply: Supply;
+};
 
 export const $supplies = createStore<Supply[]>([]);
 export const createSupply = createEvent<CreateSupplyParam>();
+export const loadSuppliesByStore = createEvent<LoadAllSuppliesParam>();
+
+const loadSuppliesFx = createEffect<LoadAllSuppliesParam, Supply[], AxiosError>({
+    async handler({storeId}) {
+        return await apiClient.get(`${baseUrl}/stores/supplies?storeId=${storeId}`).then(({ data }) => data);
+    }
+});
+
+export const updateSupplyFx = createEffect<UpdateSupplyParam, void, AxiosError>({
+    async handler(param) {
+        // console.log(param);
+        await apiClient.put(`${baseUrl}/stores/supplies/${param.updatedSupply.id}`, param.updatedSupply);
+    }
+});
 
 const createSupplyFx = createEffect<CreateSupplyParam, void, AxiosError>({
     async handler(param) {
@@ -38,28 +58,12 @@ sample({
     clock: createSupply,
     target: createSupplyFx
 });
+sample({
+    clock: loadSuppliesByStore,
+    target: loadSuppliesFx
+});
 
-export const loadSupplies = async (): Promise<Supply[]> => {
-    // Здесь логика запроса данных с сервера
-    // Возвращаем пример поставок для имитации
-    return [
-        {
-            id: 1,
-            status: SupplyStatus.PENDING,
-            supplyGoods: [
-                { goodId: 101, quantity: 50 },
-                { goodId: 102, quantity: 30 },
-            ],
-            createdAt: '2025-04-10',
-        },
-        {
-            id: 2,
-            status: SupplyStatus.COMPLETED,
-            supplyGoods: [
-                { goodId: 103, quantity: 20 },
-                { goodId: 104, quantity: 10 },
-            ],
-            createdAt: '2025-04-05',
-        },
-    ];
-};
+sample({
+    clock: loadSuppliesFx.doneData,
+    target: $supplies
+});

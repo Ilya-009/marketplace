@@ -1,6 +1,7 @@
 import {OrganizationType} from "./api/models/store.ts";
 import {GoodStatus} from "./api";
 import {OrderStatus} from "./api/models/orders.ts";
+import {SupplyStatus} from "./api/models/supply.ts";
 
 type GoodStatusData = {
     label: string;
@@ -272,4 +273,10 @@ export const orderStatuses = new Map<OrderStatus, string>([
     [OrderStatus.DELIVERING, 'Доставляется'],
     [OrderStatus.REJECTED, 'Отклонен'],
     [OrderStatus.FINISHED, 'Завершен'],
+]);
+
+export const supplyStatuses = new Map<SupplyStatus, string>([
+    [SupplyStatus.PENDING, 'Ожидает'],
+    [SupplyStatus.COMPLETED, 'Завершена'],
+    [SupplyStatus.CANCELLED, 'Отменена'],
 ]);

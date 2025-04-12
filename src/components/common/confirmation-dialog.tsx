@@ -3,18 +3,18 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography }
 
 interface ConfirmationDialogProps {
     open: boolean;
+    title: string;
+    infoMessage: string;
     onReject: () => void;
     onCancel: () => void;
 }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onReject, onCancel }) => {
+const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, title, infoMessage, onReject, onCancel }) => {
     return (
         <Dialog open={open} onClose={onCancel}>
-            <DialogTitle>Вы уверены, что хотите отменить заказ?</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent>
-                <Typography variant="body1">
-                    При отмене заказа будут начислены штрафные баллы и появляется риск снижения рейтинга магазина.
-                </Typography>
+                <Typography variant="body1">{infoMessage}</Typography>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onReject} color="primary">Подтвердить</Button>

@@ -33,6 +33,7 @@ const StoreName = styled(Typography)`
 const sections = [
     {id: 'main', label: 'Главная', path: 'main'},
     {id: 'goods-prices', label: 'Товары и цены', path: 'goods'},
+    {id: 'supplies', label: 'Поставки', path: 'supplies'},
     {id: 'orders', label: 'Заказы', path: 'orders'},
     {id: 'analytics', label: 'Аналитика', path: 'analytics'},
     {id: 'reviews', label: 'Отзывы', path: 'reviews'},
