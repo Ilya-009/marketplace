@@ -43,7 +43,6 @@ const loadSuppliesFx = createEffect<LoadAllSuppliesParam, Supply[], AxiosError>(
 
 export const updateSupplyFx = createEffect<UpdateSupplyParam, void, AxiosError>({
     async handler(param) {
-        // console.log(param);
         await apiClient.put(`${baseUrl}/stores/supplies/${param.updatedSupply.id}`, param.updatedSupply);
     }
 });

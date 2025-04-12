@@ -78,13 +78,13 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 {images.map((img, index) => (
                     <Thumbnail
                         key={index}
-                        src={img.image}
+                        src={`http://localhost:8080/files/images/${img.image}`}
                         onClick={() => handleThumbnailClick(index)}
                     />
                 ))}
             </ThumbnailList>
             <MainImageContainer>
-                <MainImage src={images[selectedImage]?.image} onClick={handleFullScreen} />
+                <MainImage src={`http://localhost:8080/files/images/${images[selectedImage]?.image}`} onClick={handleFullScreen} />
             </MainImageContainer>
             {isFullScreen && (
                 <FullScreenGallery
