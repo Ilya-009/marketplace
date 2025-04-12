@@ -21,6 +21,7 @@ export enum SupplyStatus {
 }
 
 type CreateSupplyParam = {
+    storeId: number;
     createdAt: Date;
     supplyGoods: SupplyGood[];
 };
@@ -32,7 +33,6 @@ type UpdateSupplyParam = {
 };
 
 export const $supplies = createStore<Supply[]>([]);
-export const createSupply = createEvent<CreateSupplyParam>();
 export const loadSuppliesByStore = createEvent<LoadAllSuppliesParam>();
 
 const loadSuppliesFx = createEffect<LoadAllSuppliesParam, Supply[], AxiosError>({
@@ -47,16 +47,12 @@ export const updateSupplyFx = createEffect<UpdateSupplyParam, void, AxiosError>(
     }
 });
 
-const createSupplyFx = createEffect<CreateSupplyParam, void, AxiosError>({
+export const createSupplyFx = createEffect<CreateSupplyParam, void, AxiosError>({
     async handler(param) {
         await apiClient.post(`${baseUrl}/stores/supplies`, param);
     }
 });
 
-sample({
-    clock: createSupply,
-    target: createSupplyFx
-});
 sample({
     clock: loadSuppliesByStore,
     target: loadSuppliesFx

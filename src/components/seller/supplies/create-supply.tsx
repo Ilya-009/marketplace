@@ -20,7 +20,7 @@ import {$orders, loadSellerOrders, Order, OrderStatus} from "../../../api/models
 import {SidebarPageBox} from "../../common";
 import {useUnit} from "effector-react";
 import {$store} from "../../../api/models/store.ts";
-import {createSupply, SupplyGood} from "../../../api/models/supply.ts";
+import {createSupplyFx, SupplyGood} from "../../../api/models/supply.ts";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -104,10 +104,14 @@ const CreateSupply: React.FC = () => {
         }
 
         // Логика для создания поставки, можно передать данные на сервер
-        createSupply({supplyGoods: goodsToSupply, createdAt: deliveryDate?.toDate() as Date});
-
-        // Редирект на список поставок
-        // navigate('/seller/supplies');
+        createSupplyFx({
+            storeId: store.id,
+            supplyGoods: goodsToSupply,
+            createdAt: deliveryDate?.toDate() as Date
+        }).then(() => {
+            // Редирект на список поставок
+            navigate('/seller/supplies');
+        })
     };
 
     const handleCancel = () => {
