@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Avatar, Box, Card, CardContent, Grid, Tab, Tabs, Typography} from '@mui/material';
 import {$orders, loadCustomerOrders, OrderStatus} from '../api/models/orders';
 import {useUnit} from "effector-react";
-import {$allGoods, $customer, $properties, loadGoodById} from "../api";
+import {$allGoods, $customer, $properties, loadGoodsByIds} from "../api";
 import {getProperty} from "../services";
 
 const OrdersPage: React.FC = () => {
@@ -19,10 +19,10 @@ const OrdersPage: React.FC = () => {
     }, [customer?.id]);
 
     useEffect(() => {
-        orders
+        const goodIds = orders
             .flatMap(order => order.orderGoods)
-            .map(orderGood => orderGood.goodId)
-            .forEach((goodId) => loadGoodById({id: goodId}));
+            .map(orderGood => orderGood.goodId);
+        loadGoodsByIds({ids: goodIds});
     }, [orders]);
 
     const emptyImage = useMemo(() => {

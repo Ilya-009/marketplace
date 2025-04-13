@@ -13,10 +13,10 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {$cart, $properties, removeFromCart, updateQuantity} from "../api";
+import {$cart, $properties, loadGoodsByIds, removeFromCart, updateQuantity} from "../api";
 import {useUnit} from "effector-react/effector-react.mjs";
 import Header from "../components/header/header.tsx";
-import {$allGoods, loadGoodById} from "../api";
+import {$allGoods} from "../api";
 import {ConfirmModal} from "../components/common/confirm-modal.tsx";
 import {MainPageBox} from "../components";
 import {findGoodById, getProperty} from "../services";
@@ -35,7 +35,8 @@ const CartPage: React.FC = () => {
     const [selectedItems, setSelectedItems] = useState<number[]>(cart.map((item) => item.goodId));
 
     useEffect(() => {
-        cart.forEach(cartItem => loadGoodById({id: cartItem.goodId}));
+        const goodIds = cart.map(cartItem => cartItem.goodId);
+        loadGoodsByIds({ids: goodIds});
     }, [cart]);
 
     const totalSum = useMemo(() => {

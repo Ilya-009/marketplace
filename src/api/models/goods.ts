@@ -59,7 +59,9 @@ type LoadGoodsByCategoryResult = Good[];
 export const loadGoodsByCategory = createEvent<LoadAllGoodsByCategoryParam>();
 
 type LoadGoodByIdParam = {id: number};
+type LoadGoodsByIdsParam = {ids: number[]};
 export const loadGoodById = createEvent<LoadGoodByIdParam>();
+export const loadGoodsByIds = createEvent<LoadGoodsByIdsParam>();
 export const $allGoods = createStore<Array<Good>>([]);
 
 export const executeSearch = createEvent<string>();
@@ -103,6 +105,14 @@ const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGood
 export const loadGoodByIdFx = createEffect<LoadGoodByIdParam, Good | undefined, AxiosError>({
     async handler({id}) {
         return await apiClient.get(`${baseUrl}/goods/${id}`).then(({ data }) => data);
+    }
+});
+
+export const loadGoodsByIdsFx = createEffect<LoadGoodsByIdsParam, Good[], AxiosError>({
+    async handler({ids}) {
+        const notExistingIds = ids.filter(id => !$allGoods.getState().some(g => g.id === id));
+        const idsStr = notExistingIds.join(',');
+        return await apiClient.get(`${baseUrl}/goods/by-ids?ids=${idsStr}`).then(({ data }) => data);
     }
 });
 
@@ -197,6 +207,16 @@ sample({
 });
 
 sample({
+    clock: loadGoodsByIds,
+    filter: (param: LoadGoodsByIdsParam) => {
+        const filtered = param.ids
+            .filter(id => !$allGoods.getState().some(g => g.id === id));
+        return filtered.length !== 0;
+    },
+    target: loadGoodsByIdsFx
+});
+
+sample({
     clock: executeSearch,
     target: executeSearchFx
 });
@@ -220,4 +240,8 @@ $allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {
     }
 
     return [...goods, good];
+});
+
+$allGoods.on(loadGoodsByIdsFx.doneData, (goods, addedGoods) => {
+    return [...goods, ...addedGoods];
 });

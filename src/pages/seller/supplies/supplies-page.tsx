@@ -19,7 +19,7 @@ import {EditProfileLink, SidebarPageBox} from "../../../components";
 import {useUnit} from "effector-react";
 import {$store} from "../../../api/models/store.ts";
 import {supplyStatuses} from "../../../constants.ts";
-import {$allGoods, loadGoodById} from "../../../api";
+import {$allGoods, loadGoodsByIds} from "../../../api";
 import ConfirmationDialog from "../../../components/common/confirmation-dialog.tsx";
 import {useNavigate} from "react-router-dom";
 
@@ -43,10 +43,11 @@ const SuppliesList: React.FC = () => {
         loadSuppliesByStore({storeId: store.id});
     }, [store.id]);
     useEffect(() => {
-        new Set(supplies
+        const goodIds = [...new Set(supplies
             .flatMap(o => o.supplyGoods)
             .map(og => og.goodId)
-        ).forEach(goodId => loadGoodById({id: goodId}));
+        )];
+        loadGoodsByIds({ids: goodIds});
     }, [supplies]);
 
     // Обработчик изменения выбранного статуса

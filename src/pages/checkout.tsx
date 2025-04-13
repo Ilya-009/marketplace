@@ -19,7 +19,7 @@ import { MainPageBox } from "../components";
 import Header from "../components/header/header.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUnit } from "effector-react";
-import { $allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodById } from "../api";
+import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodById, loadGoodsByIds} from "../api";
 import { findGoodById, getProperty } from "../services";
 import {
     $deliveryMethods,
@@ -64,7 +64,8 @@ const CheckoutPage: React.FC = () => {
     }, [customer.addresses, customer.id]);
 
     useEffect(() => {
-        cart.forEach(cartItem => loadGoodById({ id: cartItem.goodId }));
+        const goodIds = cart.map(cartItem => cartItem.goodId);
+        loadGoodsByIds({ids: goodIds});
     }, [cart]);
 
     const emptyImage = useMemo(() => {

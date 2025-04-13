@@ -15,7 +15,7 @@ import {
     Typography
 } from '@mui/material';
 import {useNavigate} from 'react-router-dom';
-import {$allGoods, loadGoodById} from "../../../api";
+import {$allGoods, loadGoodsByIds} from "../../../api";
 import {$orders, loadSellerOrders, Order, OrderStatus} from "../../../api/models/orders.ts";
 import {SidebarPageBox} from "../../common";
 import {useUnit} from "effector-react";
@@ -45,10 +45,11 @@ const CreateSupply: React.FC = () => {
 
     useEffect(() => {
         if (orders.length) {
-            new Set(orders
+            const ids = [...new Set(orders
                 .flatMap(o => o.orderGoods)
                 .map(og => og.goodId)
-            ).forEach(goodId => loadGoodById({id: goodId}));
+            )];
+            loadGoodsByIds({ids: ids});
         }
     }, [orders]);
 

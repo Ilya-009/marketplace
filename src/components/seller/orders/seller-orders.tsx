@@ -21,7 +21,7 @@ import {DatePicker} from "@mui/x-date-pickers";
 import {orderStatuses} from "../../../constants.ts";
 import {$store} from "../../../api/models/store.ts";
 import {useUnit} from "effector-react";
-import {$allGoods, loadGoodById} from "../../../api";
+import {$allGoods, loadGoodsByIds} from "../../../api";
 import OrderDetailsModal from "./order-details-modal.tsx";
 import ConfirmationDialog from "../../common/confirmation-dialog.tsx";
 
@@ -37,10 +37,10 @@ const OrdersList: React.FC = () => {
     }, [seller.id]);
 
     useEffect(() => {
-        orders
+        const idsToLoad = orders
             .flatMap(order => order.orderGoods)
-            .map(orderGood => orderGood.goodId)
-            .forEach((goodId) => loadGoodById({ id: goodId }));
+            .map(orderGood => orderGood.goodId);
+        loadGoodsByIds({ids: idsToLoad});
     }, [orders]);
 
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
