@@ -31,7 +31,7 @@ import {
 } from "../../api";
 import {loadStoreAnalyticsFx, StoreSummary} from "../../api/models/analytics.ts";
 import {useUnit} from "effector-react";
-import {goodStatuses, supplyStatuses} from "../../constants.ts";
+import {goodStatuses, orderStatuses, supplyStatuses} from "../../constants.ts";
 
 const SellerMainPage: React.FC = () => {
     const store = useUnit($store);
@@ -313,7 +313,7 @@ const SellerMainPage: React.FC = () => {
                                                 color: 'common.white'
                                             }}
                                         >
-                                            {order.status}
+                                            {orderStatuses.get(order.status)}
                                         </Box>
                                     </TableCell>
                                     <TableCell>{order.paymentMethod.name}</TableCell>
