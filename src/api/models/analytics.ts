@@ -19,12 +19,15 @@ export interface ProductPerformance {
 export interface StoreAnalytics {
     salesOverTime: SalesData[];
     topProducts: ProductPerformance[];
-    summary: {
-        totalSales: number;
-        totalRevenue: number;
-        avgOrderValue: number;
-    };
+    summary: StoreSummary;
 }
+
+export interface StoreSummary {
+    totalSales: number;
+    totalRevenue: number;
+    avgOrderValue: number;
+}
+
 const defaultStoreAnalytics: StoreAnalytics = {
     salesOverTime: [],
     topProducts: [],
@@ -37,18 +40,24 @@ const defaultStoreAnalytics: StoreAnalytics = {
 
 type LoadStoreAnalyticsParam = {
     storeId: number;
-    startDate: Date;
-    endDate: Date;
+    startDate?: Date;
+    endDate?: Date;
 };
 
 export const $storeAnalytics = createStore<StoreAnalytics>(defaultStoreAnalytics);
 
 export const loadStoreAnalyticsFx = createEffect<LoadStoreAnalyticsParam, StoreAnalytics, AxiosError>({
     async handler({storeId, startDate, endDate}) {
-        const startDateStr = formatDate(startDate);
-        const endDateStr = formatDate(endDate);
+        let url;
 
-        const url = `${baseUrl}/analytics/store?storeId=${storeId}&startDate=${startDateStr}&endDate=${endDateStr}`;
+        if (startDate && endDate) {
+            const startDateStr = formatDate(startDate);
+            const endDateStr = formatDate(endDate);
+            url = `${baseUrl}/analytics/store?storeId=${storeId}&startDate=${startDateStr}&endDate=${endDateStr}`;
+        }else {
+            url = `${baseUrl}/analytics/store?storeId=${storeId}`;
+        }
+
         return await apiClient.get(url).then(({ data }) => data);
     }
 });

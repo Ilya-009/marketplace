@@ -71,10 +71,10 @@ const loadCustomerOrdersFx = createEffect<LoadCustomerOrdersParam, Order[], Axio
         }
     }
 });
-const loadSellerOrdersFx = createEffect<LoadSellerOrdersParam, Order[], AxiosError>({
+export const loadSellerOrdersFx = createEffect<LoadSellerOrdersParam, Order[], AxiosError>({
     async handler({sellerId}) {
-        if (sellerId) {
-            return await apiClient.get(`${baseUrl}/stores/orders?storeId=${sellerId}`).then(({ data }) => data);
+        if (sellerId > 0) {
+            return await apiClient.get(`${baseUrl}/orders/byStore/${sellerId}`).then(({ data }) => data);
         }
     }
 });

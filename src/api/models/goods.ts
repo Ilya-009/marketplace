@@ -70,6 +70,7 @@ export const $searchResults = createStore<SearchResult[]>([]);
 export const $goodsByCategory = createStore<LoadGoodsByCategoryResult>([]);
 
 type LoadGoodsByStoreIdParam = {storeId: number};
+type LoadRandomGoodsByStoreIdParam = {storeId: number, count: number};
 export const loadGoodsByStoreId = createEvent<LoadGoodsByStoreIdParam>();
 export const $storeGoods = createStore<Array<Good>>([]);
 
@@ -125,6 +126,16 @@ const executeSearchFx = createEffect<string, SearchResult[], AxiosError>({
 const loadGoodsByStoreIdFx = createEffect<LoadGoodsByStoreIdParam, Good[], AxiosError>({
     async handler({storeId}) {
         return await apiClient.get(`${baseUrl}/goods/byStore?storeId=${storeId}`).then(({ data }) => data);
+    }
+});
+
+export const loadRandomGoodsByStoreIdFx = createEffect<LoadRandomGoodsByStoreIdParam, Good[], AxiosError>({
+    async handler({storeId, count}) {
+        if (storeId > 0 && count > 0) {
+            return await apiClient.get(`${baseUrl}/goods/byStore/random?storeId=${storeId}&count=${count}`).then(({ data }) => data);
+        }
+
+        return [];
     }
 });
 
@@ -230,7 +241,7 @@ sample({
     target: loadGoodsByStoreIdFx
 });
 sample({
-    clock: loadGoodsByStoreIdFx.doneData,
+    clock: [loadGoodsByStoreIdFx.doneData, loadRandomGoodsByStoreIdFx.doneData],
     target: $storeGoods
 });
 

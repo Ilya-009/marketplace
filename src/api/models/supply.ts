@@ -35,7 +35,7 @@ type UpdateSupplyParam = {
 export const $supplies = createStore<Supply[]>([]);
 export const loadSuppliesByStore = createEvent<LoadAllSuppliesParam>();
 
-const loadSuppliesFx = createEffect<LoadAllSuppliesParam, Supply[], AxiosError>({
+export const loadSuppliesFx = createEffect<LoadAllSuppliesParam, Supply[], AxiosError>({
     async handler({storeId}) {
         return await apiClient.get(`${baseUrl}/stores/supplies?storeId=${storeId}`).then(({ data }) => data);
     }
