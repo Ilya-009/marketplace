@@ -104,7 +104,7 @@ const SellerMainPage: React.FC = () => {
                             <Box ml={2}>
                                 <Typography color="textSecondary">Общая выручка</Typography>
                                 <Typography variant="h5">
-                                    {stats?.totalRevenue.toLocaleString()} ₽
+                                    {stats?.totalRevenue?.toLocaleString() ?? 0} ₽
                                 </Typography>
                             </Box>
                         </Box>
@@ -132,7 +132,7 @@ const SellerMainPage: React.FC = () => {
                             <Box ml={2}>
                                 <Typography color="textSecondary">Активные поставки</Typography>
                                 <Typography variant="h5">
-                                    {supplies.filter(s => s.status !== SupplyStatus.COMPLETED).length}
+                                    {supplies?.filter(s => s.status !== SupplyStatus.COMPLETED).length ?? 0}
                                 </Typography>
                             </Box>
                         </Box>
@@ -147,7 +147,7 @@ const SellerMainPage: React.FC = () => {
                             <Box ml={2}>
                                 <Typography color="textSecondary">Ожидают обработки</Typography>
                                 <Typography variant="h5">
-                                    {orders.filter(o => o.status === OrderStatus.CREATED).length}
+                                    {orders?.filter(o => o.status === OrderStatus.CREATED).length ?? 0}
                                 </Typography>
                             </Box>
                         </Box>
@@ -292,9 +292,9 @@ const SellerMainPage: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {orders
-                            .filter(o => o.status === OrderStatus.CREATED)
-                            .slice(0, 5)
-                            .map((order) => (
+                            ?.filter(o => o.status === OrderStatus.CREATED)
+                            ?.slice(0, 5)
+                            ?.map((order) => (
                                 <TableRow key={order.id} hover>
                                     <TableCell>#{order.id}</TableCell>
                                     <TableCell>
@@ -313,7 +313,7 @@ const SellerMainPage: React.FC = () => {
                                                 color: 'common.white'
                                             }}
                                         >
-                                            {orderStatuses.get(order.status)}
+                                            {orderStatuses?.get(order.status) ?? ''}
                                         </Box>
                                     </TableCell>
                                     <TableCell>{order.paymentMethod.name}</TableCell>
