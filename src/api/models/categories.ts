@@ -6,7 +6,29 @@ export type GoodCategory = {
     id: number;
     name: string;
     childCategories?: Array<GoodCategory>;
+    params?: GoodCategoryParam[];
 };
+
+export type GoodCategoryParam = {
+    id: number;
+    name: string;
+    type: CategoryParamType;
+    options?: string[];
+};
+
+export enum CategoryParamType {
+    SELECT = 'SELECT',
+    CHECKBOX = 'CHECKBOX'
+}
+
+export type GoodCategoryChange = GoodCategory & {
+    changeType: GoodCategoryChangeType;
+};
+export enum GoodCategoryChangeType {
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE',
+    CREATE = 'CREATE'
+}
 
 export function findParentCategory(
     categories: Array<GoodCategory>,
@@ -61,21 +83,32 @@ type LoadCategoriesParam = void;
 type LoadCategoriesResult = GoodCategory[];
 
 export const loadCategories = createEvent<LoadCategoriesParam>();
+export const saveCategories = createEvent<GoodCategoryChange[]>();
 export const $categories = createStore<LoadCategoriesResult>([]);
 
 export const loadCategoriesFx = createEffect<LoadCategoriesParam, LoadCategoriesResult, AxiosError>({
     async handler() {
-        return apiClient.get(`${baseUrl}/goods/categories`).then(({ data }) => data);
-        // return getCategoriesMock();
+        return apiClient.get(`${baseUrl}/goods/categories`).then(({ data }) => data);;
+    }
+});
+
+export const saveCategoriesFx = createEffect<GoodCategoryChange[], void, AxiosError>({
+    async handler(param) {
+        await apiClient.put(`${baseUrl}/goods/categories`, param);
     }
 });
 
 sample({
-    clock: loadCategories,
+    clock: [loadCategories, saveCategoriesFx.done],
     target: loadCategoriesFx
+});
+
+sample({
+    clock: saveCategories,
+    target: saveCategoriesFx
 });
 
 sample({
     clock: loadCategoriesFx.doneData,
     target: $categories
-})
+});

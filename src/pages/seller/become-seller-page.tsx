@@ -16,7 +16,7 @@ import {$categories, $loggedUser, findCategoryById, GoodCategory} from "../../ap
 import {getRootCategories} from "../../services";
 import {validateSellerRegister} from "../../components";
 import {useNavigate} from "react-router-dom";
-import {OrganizationType, registerStoreFx} from "../../api/models/store.ts";
+import {OrganizationType, registerStoreFx} from "../../api";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',

@@ -2,7 +2,6 @@ import React from 'react';
 import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
-import {EditProfileLink} from "../common";
 
 const Sidebar = styled(Box)`
     width: 250px;
@@ -14,10 +13,6 @@ const Sidebar = styled(Box)`
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 `;
 
-const Content = styled(Box)`
-    padding: 20px;
-`;
-
 const UserInfo = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -27,7 +22,8 @@ const UserInfo = styled(Box)`
 
 const sections = [
     {id: 'properties', label: 'Настройки', path: 'properties'},
-    {id: 'main', label: 'Аналитика и отчеты', path: 'stats'},
+    {id: 'categories', label: 'Категории', path: 'categories'},
+    {id: 'analytics', label: 'Аналитика и отчеты', path: 'stats'},
 ];
 
 const AdminSidebar: React.FC = () => {

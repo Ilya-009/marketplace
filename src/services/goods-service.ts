@@ -21,6 +21,32 @@ export const getRootCategories = (categories: GoodCategory[]) => {
     })
 };
 
+export const findCategoryById = (categories: GoodCategory | GoodCategory[], id: number): GoodCategory | undefined => {
+    // Если передан массив категорий, ищем в каждом элементе
+    if (Array.isArray(categories)) {
+        for (const category of categories) {
+            const found = findCategoryById(category, id);
+            if (found) return found;
+        }
+        return undefined;
+    }
+
+    // Если текущая категория имеет искомый id, возвращаем её
+    if (categories.id === id) {
+        return categories;
+    }
+
+    // Рекурсивно ищем в дочерних категориях
+    if (categories.childCategories) {
+        for (const childCategory of categories.childCategories) {
+            const found = findCategoryById(childCategory, id);
+            if (found) return found;
+        }
+    }
+
+    return undefined;
+};
+
 function getCategoryPathMap(
     category: GoodCategory,
     parentPath: string = "",

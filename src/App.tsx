@@ -31,6 +31,7 @@ import CreateGoodPage from "./pages/seller/goods/seller-good-control-page.tsx";
 import StoreEditPage from "./pages/seller/seller-edit-page.tsx";
 import SuppliesList from "./pages/seller/supplies/supplies-page.tsx";
 import CreateSupply from "./components/seller/supplies/create-supply.tsx";
+import CategoriesPage from "./pages/admin/categories-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -79,6 +80,7 @@ function App() {
                     </Route>
                     <Route path="/admin" element={<AdminPage />}>
                         <Route path="properties" element={<SettingsManagementPage />} />
+                        <Route path="categories" element={<CategoriesPage />} />
                         {/*<Route path="stats" element={} />*/}
                     </Route>
                     <Route path="/" element={<MainPage />} />
