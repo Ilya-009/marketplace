@@ -5,6 +5,7 @@ import {apiClient, baseUrl} from "../lib";
 export type GoodCategory = {
     id: number;
     name: string;
+    status: CategoryStatus;
     childCategories?: Array<GoodCategory>;
     params?: GoodCategoryParam[];
 };
@@ -16,6 +17,11 @@ export type GoodCategoryParam = {
     options?: string[];
 };
 
+export enum CategoryStatus {
+    ACTIVE = 'ACTIVE',
+    ARCHIVED = 'ARCHIVED'
+}
+
 export enum CategoryParamType {
     SELECT = 'SELECT',
     CHECKBOX = 'CHECKBOX'
@@ -23,6 +29,7 @@ export enum CategoryParamType {
 
 export type GoodCategoryChange = GoodCategory & {
     changeType: GoodCategoryChangeType;
+    deleteChildCategories?: boolean;
 };
 export enum GoodCategoryChangeType {
     UPDATE = 'UPDATE',
@@ -88,7 +95,7 @@ export const $categories = createStore<LoadCategoriesResult>([]);
 
 export const loadCategoriesFx = createEffect<LoadCategoriesParam, LoadCategoriesResult, AxiosError>({
     async handler() {
-        return apiClient.get(`${baseUrl}/goods/categories`).then(({ data }) => data);;
+        return apiClient.get(`${baseUrl}/goods/categories`).then(({ data }) => data);
     }
 });
 

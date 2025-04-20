@@ -31,14 +31,16 @@ import styled from 'styled-components';
 import {SidebarPageBox} from "../../components";
 import SaveIcon from "@mui/icons-material/Save";
 import {
-    CategoryParamType,
+    CategoryParamType, CategoryStatus,
     GoodCategory,
     GoodCategoryChange,
     GoodCategoryChangeType,
     GoodCategoryParam,
-    loadCategoriesFx
+    loadCategoriesFx, saveCategories
 } from "../../api";
 import {findCategoryById} from "../../services";
+
+const changedCategories: GoodCategoryChange[] = [];
 
 const CategoryManagement: React.FC = () => {
     const [categories, setCategories] = useState<GoodCategory[]>([]);
@@ -59,7 +61,7 @@ const CategoryManagement: React.FC = () => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
     const [createRoot, setCreateRoot] = useState<boolean>(false);
-    const [changedCategories, setChangedCategories] = useState<GoodCategoryChange[]>([]);
+
 
     useEffect(() => {
         loadCategoriesFx().then(res => setCategories(res));
@@ -98,24 +100,21 @@ const CategoryManagement: React.FC = () => {
         setDeleteDialogOpen(true);
     };
 
-    function addChangedCategory(id: number, changeType: GoodCategoryChangeType) {
-        if (changeType === GoodCategoryChangeType.CREATE) {
-            const category = categories[categories.length - 1];
-            const changed: GoodCategoryChange = {...category, changeType: GoodCategoryChangeType.CREATE};
+    function addCreatedCategory(category: GoodCategory) {
+        const changed: GoodCategoryChange = {...category, changeType: GoodCategoryChangeType.CREATE};
+        changedCategories.push(changed);
+    }
 
-            setChangedCategories(...changedCategories, changed);
-            return;
-        }
-
+    function addChangedCategory(categories: GoodCategory[], id: number, changeType: GoodCategoryChangeType) {
         const updatedCategory = findCategoryById(categories, id);
         if (updatedCategory !== undefined) {
             const changed: GoodCategoryChange = {...updatedCategory, changeType: changeType};
 
-            if (changed.changeType === GoodCategoryChangeType.UPDATE) {
-                changed.childCategories = [];
+            if (changed.changeType === GoodCategoryChangeType.DELETE) {
+                changed.deleteChildCategories = deleteWithChildren;
             }
 
-            setChangedCategories(...changedCategories, changed);
+            changedCategories.push(changed);
         }
     }
 
@@ -141,7 +140,7 @@ const CategoryManagement: React.FC = () => {
         };
 
         const updatedCategories = deleteCategory(categories, selectedCategory.id, deleteWithChildren);
-        addChangedCategory(selectedCategory.id, GoodCategoryChangeType.UPDATE);
+        addChangedCategory(updatedCategories, selectedCategory.id, GoodCategoryChangeType.DELETE);
 
         setCategories(updatedCategories);
         setDeleteDialogOpen(false);
@@ -155,7 +154,6 @@ const CategoryManagement: React.FC = () => {
             return;
         }
 
-        const newId = Math.max(0, ...findAllIds(categories)) + 1;
         setCreateRoot(false);
 
         if (editingCategory) {
@@ -172,41 +170,32 @@ const CategoryManagement: React.FC = () => {
                 });
             };
 
-            addChangedCategory(editingCategory.id, GoodCategoryChangeType.UPDATE);
-            setCategories(updateCategory(categories));
+            const updatedCategories = updateCategory(categories);
+            addChangedCategory(updatedCategories, editingCategory.id, GoodCategoryChangeType.UPDATE);
+            setCategories(updatedCategories);
             showSnackbar('Категория обновлена', 'success');
         } else {
             // Add new category
             const newCategory: GoodCategory = {
-                id: newId,
+                id: -1,
                 name: newCategoryName,
+                status: CategoryStatus.ACTIVE,
                 childCategories: []
             };
 
             if (parentCategoryId === null) {
                 // Add to root
                 setCategories([...categories, newCategory]);
-            } else {
-                // Add as child
-                const addToParent = (cats: GoodCategory[]): GoodCategory[] => {
-                    return cats.map(cat => {
-                        if (cat.id === parentCategoryId) {
-                            return {
-                                ...cat,
-                                childCategories: [...(cat.childCategories || []), newCategory]
-                            };
-                        }
-                        if (cat.childCategories) {
-                            return { ...cat, childCategories: addToParent(cat.childCategories) };
-                        }
-                        return cat;
-                    });
-                };
 
-                setCategories(addToParent(categories));
+                // Помечаем категорию на добавление
+                addCreatedCategory(newCategory);
+            } else {
+                findCategoryById(categories, parentCategoryId)?.childCategories?.push(newCategory);
+
+                // Помечаем родительскую категорию на изменение т.к. в нее добавлен
+                addChangedCategory(categories, parentCategoryId, GoodCategoryChangeType.UPDATE);
             }
 
-            addChangedCategory(-1, GoodCategoryChangeType.CREATE);
             showSnackbar('Категория добавлена', 'success');
         }
 
@@ -265,8 +254,9 @@ const CategoryManagement: React.FC = () => {
             });
         };
 
-        setCategories(updateCategoryWithFilters(categories));
-        addChangedCategory(selectedCategory.id, GoodCategoryChangeType.UPDATE);
+        const updated = updateCategoryWithFilters(categories);
+        addChangedCategory(updated, selectedCategory.id, GoodCategoryChangeType.UPDATE);
+        setCategories(updated);
         setFilterDialogOpen(false);
         showSnackbar('Фильтры сохранены', 'success');
     };
@@ -279,8 +269,7 @@ const CategoryManagement: React.FC = () => {
 
     const handleSaveChanges = async () => {
         try {
-            // saveCategories(categories);
-            console.log(changedCategories);
+            saveCategories(changedCategories);
             showSnackbar('Изменения успешно сохранены', 'success');
         } catch (error) {
             showSnackbar('Ошибка при сохранении изменений', 'error');

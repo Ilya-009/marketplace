@@ -3,7 +3,7 @@ import {emailValidationError, passwordValidationError, phoneValidationError} fro
 import React from "react";
 import {isValidPhoneNumber} from "libphonenumber-js";
 import {GoodCategory} from "../../api";
-import {OrganizationType} from "../../api/models/store.ts";
+import {OrganizationType} from "../../api";
 
 type UseStateSetterBooleanType = React.Dispatch<React.SetStateAction<boolean>>;
 type UseStateSetterStringType = React.Dispatch<React.SetStateAction<string>>;
