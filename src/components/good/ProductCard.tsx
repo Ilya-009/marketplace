@@ -1,17 +1,9 @@
-import { useState } from 'react';
-import {
-    Card,
-    CardContent,
-    Typography,
-    Box,
-    IconButton,
-    Rating,
-    Chip
-} from '@mui/material';
+import {useState} from 'react';
+import {Box, Card, CardContent, Chip, IconButton, Rating, Typography} from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { styled } from '@mui/material/styles';
-import {Good} from "../../api";
+import {styled} from '@mui/material/styles';
+import {DiscountType, Good, GoodDiscount} from "../../api";
 import {getGoodRating} from "../../services";
 import {useNavigate} from "react-router-dom";
 
@@ -50,6 +42,14 @@ interface ProductCardProps {
     good: Good;
 }
 
+const getDiscountLabelText = (discount: GoodDiscount): string => {
+    const out = `-${discount.discountValue}`;
+    if (discount.discountType === DiscountType.PERCENTAGE) {
+        return out + '%';
+    }
+    return out;
+};
+
 const ProductCard = ({ good }: ProductCardProps) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const rating = getGoodRating(good);
@@ -79,7 +79,7 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 <Box sx={{ mb: 1 }}>
                     {good.discount && (
                         <Chip
-                            label={`-${good.discount}%`}
+                            label={getDiscountLabelText(good.discount)}
                             size="small"
                             sx={{
                                 bgcolor: 'error.light',
