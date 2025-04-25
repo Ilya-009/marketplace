@@ -3,9 +3,15 @@ import {Box} from "@mui/material";
 import Header from "../components/header/header.tsx";
 import styled from "styled-components";
 import {useMatch, useNavigate} from "react-router-dom";
-import {useEffect, useMemo} from "react";
-import {$allGoods, loadGoodById} from "../api";
-import {extractIdFromPath, findGoodById} from "../services";
+import {useEffect, useState} from "react";
+import {
+    $deliveryMethods,
+    defaultStore, Good,
+    loadDeliveryMethods,
+    loadGoodByIdFx,
+    loadStoreByStoreIdFx, Store
+} from "../api";
+import {extractIdFromPath} from "../services";
 import {useUnit} from "effector-react";
 import {MainPageBox} from "../components";
 
@@ -23,27 +29,30 @@ export const ProductCardPage = () => {
         if (goodId == null) {
             navigate('/404');
         }
-    }, []);
+    }, [goodId, navigate]);
 
-    const goods = useUnit($allGoods);
+    const deliveryMethods = useUnit($deliveryMethods);
+
+    const [good, setGood] = useState<Good>();
+    const [store, setStore] = useState<Store>(defaultStore);
 
     // Загружаем товар по ID при изменении match
     useEffect(() => {
-        loadGoodById({ id: goodId as number });
-    }, [match]);
+        loadGoodByIdFx({ id: goodId as number }).then(res => {
+            if (res !== undefined) {
+                setGood(res);
 
-    // Ищем товар в списке goods
-    const good = useMemo(() => {
-        const foundGood = findGoodById(goods, goodId as number);
-        // Если товар не найден, выполняем редирект на /404
-        if (!foundGood) {
-            navigate('/404');
-            return null;
-        }
-        return foundGood;
-    }, [goods, goodId, navigate]);
+                loadStoreByStoreIdFx({storeId: res.storeId}).then(store => {
+                    setStore(store);
+                });
+            }
+        });
+    }, [goodId, match]);
 
-    // Если good равен null (например, после редиректа), не рендерим компонент
+    useEffect(() => {
+        loadDeliveryMethods();
+    }, []);
+
     if (!good) {
         return null;
     }
@@ -52,7 +61,7 @@ export const ProductCardPage = () => {
         <MainPageBox>
             <Header />
             <CardContainer>
-                <ProductCard good={good} />
+                <ProductCard good={good} deliveryMethods={deliveryMethods} store={store} />
             </CardContainer>
         </MainPageBox>
     );
