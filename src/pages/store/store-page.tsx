@@ -15,7 +15,8 @@ import {
     loadCategoriesByStoreIdFx,
     loadGoodsByStoreIdFx,
     $storeUnsecure,
-    loadStoreUnsecure
+    loadStoreUnsecure,
+    loadGoodsByCategoryFx
 } from "../../api";
 import {extractIdFromPath, getMaxGoodPrice} from "../../services";
 import {useUnit} from "effector-react";
@@ -99,6 +100,12 @@ const SellerPage: React.FC = () => {
         setHighRatingOnly(checked);
     };
 
+    const handleCategoryClicked = (category: GoodCategory) => {
+        // Фильтрация товаров по выбранной категории
+        loadGoodsByCategoryFx({categoryId: category.id})
+            .then(goods => setFilteredGoods(goods));
+    };
+
     return (
         <MainPageBox>
             <Header/>
@@ -109,6 +116,7 @@ const SellerPage: React.FC = () => {
                     handleMaxPriceChange={handleMaxPriceChange}
                     handleHighRatingCheckChange={handleHighRatingChange}
                     priceRange={priceRange}
+                    handleCategoryClicked={handleCategoryClicked}
                 />
 
                 <ContentContainer>

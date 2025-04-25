@@ -97,7 +97,7 @@ export type ChangeGoodStatusParam = {
     status: GoodStatus;
 };
 
-const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
+export const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
         return await apiClient.get(`${baseUrl}/goods/byCategory?categoryId=${categoryId}`).then(({ data }) => data);
     }
