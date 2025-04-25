@@ -87,6 +87,7 @@ export function findCategoryById(
 }
 
 type LoadCategoriesParam = void;
+type LoadCategoriesByStoreIdParam = {storeId: number};
 type LoadCategoriesResult = GoodCategory[];
 
 export const loadCategories = createEvent<LoadCategoriesParam>();
@@ -96,6 +97,12 @@ export const $categories = createStore<LoadCategoriesResult>([]);
 export const loadCategoriesFx = createEffect<LoadCategoriesParam, LoadCategoriesResult, AxiosError>({
     async handler() {
         return apiClient.get(`${baseUrl}/goods/categories`).then(({ data }) => data);
+    }
+});
+
+export const loadCategoriesByStoreIdFx = createEffect<LoadCategoriesByStoreIdParam, LoadCategoriesResult, AxiosError>({
+    async handler({storeId}) {
+        return apiClient.get(`${baseUrl}/goods/categories/bySeller/${storeId}`).then(({ data }) => data);
     }
 });
 
@@ -116,6 +123,6 @@ sample({
 });
 
 sample({
-    clock: loadCategoriesFx.doneData,
+    clock: [loadCategoriesFx.doneData, loadCategoriesByStoreIdFx.doneData],
     target: $categories
 });

@@ -21,7 +21,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsByStoreId} from "../../api";
 import {useUnit} from "effector-react";
-import {$store} from "../../api/models/store.ts";
+import {$store} from "../../api";
 import {goodStatuses} from "../../constants.ts";
 import {getProperty} from "../../services";
 import {EditProfileLink} from "../common";

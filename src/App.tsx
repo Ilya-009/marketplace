@@ -32,6 +32,7 @@ import StoreEditPage from "./pages/seller/seller-edit-page.tsx";
 import SuppliesList from "./pages/seller/supplies/supplies-page.tsx";
 import CreateSupply from "./components/seller/supplies/create-supply.tsx";
 import CategoriesPage from "./pages/admin/categories-page.tsx";
+import SellerPage from "./pages/store/store-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -51,6 +52,7 @@ function App() {
                     <Route path="cart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage/>} />
                     <Route path="/become-seller" element={<BecomeSellerPage/>} />
+                    <Route path="/store/:id" element={<SellerPage/>} />
 
                     <Route path="/seller" element={
                         <PageWithSidebar header={<SellerHeader/>} sidebar={<SellerSidebar/>} />

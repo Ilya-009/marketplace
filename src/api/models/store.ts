@@ -23,7 +23,7 @@ export type Store = {
     organizationType: OrganizationType;
     userId: number;
 };
-const defaultStore: Store = {
+export const defaultStore: Store = {
     id: -1,
     name: '',
     description: '',
@@ -65,7 +65,7 @@ const loadStoreByUserFx = createEffect<LoadStoreByUserParam, Store, AxiosError>(
         return await apiClient.get(`${baseUrl}/stores/byUser/${userId}`).then(({ data }) => data);
     }
 });
-const loadStoreByStoreIdFx = createEffect<LoadStoreByStoreIdParam, Store, AxiosError>({
+export const loadStoreByStoreIdFx = createEffect<LoadStoreByStoreIdParam, Store, AxiosError>({
     async handler({storeId}) {
         return await apiClient.get(`${baseUrl}/stores/${storeId}`).then(({ data }) => data);
     }

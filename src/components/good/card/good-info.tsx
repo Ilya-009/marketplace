@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Typography, styled } from '@mui/material';
+import {Store} from "../../../api";
+import {useNavigate} from "react-router-dom";
 
 const ProductInfoContainer = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -23,40 +25,36 @@ interface ProductInfoProps {
     name: string;
     rating: number;
     reviewsCount: number;
-    // questionsCount: number;
-    shopName: string;
-    shopIcon: string;
-    color: string;
-    memoryOptions: string[];
     description: string;
-    specifications: string;
+    store: Store;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
                                                      name,
                                                      rating,
                                                      reviewsCount,
-                                                     // questionsCount,
-                                                     shopName,
-                                                     shopIcon,
-                                                     color,
-                                                     memoryOptions,
+                                                     store,
                                                      description,
-                                                     specifications,
                                                  }) => {
+    const navigate = useNavigate();
+
+    const handleStoreInfoClick = () => {
+        navigate(`/store/${store.id}`);
+    };
+
     return (
         <ProductInfoContainer>
             <Typography variant="h4">{name}</Typography>
             {/*<Typography variant="body1">Rating: {rating} ({reviewsCount} отзывов, {questionsCount} вопросов)</Typography>*/}
             <Typography variant="body1">Rating: {rating} ({reviewsCount} отзывов)</Typography>
-            <ShopInfo>
-                <img src={shopIcon} alt={shopName} width="20" height="20" />
-                <Typography variant="body1">{shopName}</Typography>
+            <ShopInfo onClick={handleStoreInfoClick}>
+                <img src={`http://localhost:8080/files/images/${store.logoImage}`} alt={store.name} width="20" height="20" />
+                <Typography variant="body1">{store.name}</Typography>
             </ShopInfo>
-            <Typography variant="body1">Цвет: {color}</Typography>
-            <Typography variant="body1">Встроенная память: {memoryOptions.join(', ')}</Typography>
-            <Typography variant="body1">{description}</Typography>
-            <Typography variant="body1">{specifications}</Typography>
+            {/*<Typography variant="body1">Цвет: {color}</Typography>*/}
+            {/*<Typography variant="body1">Встроенная память: {memoryOptions.join(', ')}</Typography>*/}
+            <Typography variant="body1">Описание: {description}</Typography>
+            {/*<Typography variant="body1">{specifications}</Typography>*/}
         </ProductInfoContainer>
     );
 };

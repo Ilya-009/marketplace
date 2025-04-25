@@ -15,9 +15,9 @@ import {useUnit} from "effector-react";
 import {$categories, findCategoryById} from "../api";
 import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
-import {$goodsByCategory, Good, loadGoodsByCategory, SortOption} from "../api";
+import {$goodsByCategory, loadGoodsByCategory, SortOption} from "../api";
 import ProductCard from "../components/good/ProductCard.tsx";
-import {extractIdFromPath, getGoodRating} from "../services";
+import {extractIdFromPath, getGoodRating, getMaxGoodPrice, getMinGoodPrice} from "../services";
 import {MainPageBox} from "../components";
 
 const MainContainer = styled(Box)(() => ({
@@ -56,8 +56,8 @@ export const CategoryPage: React.FC = () => {
     }, [categoryId]);
 
     useEffect(() => {
-        setMinPrice(getMinPrice(goods));
-        setMaxPrice(getMaxPrice(goods));
+        setMinPrice(getMinGoodPrice(goods));
+        setMaxPrice(getMaxGoodPrice(goods));
     }, [goods]);
 
     const filteredGoods = useMemo(() => {
@@ -132,19 +132,3 @@ export const CategoryPage: React.FC = () => {
         </MainPageBox>
     );
 };
-
-const getMinPrice = (goods: Good[]) => {
-    if (!goods.length) {
-        return 0;
-    }
-
-    return goods.reduce((min, curr) => curr.price < min ? curr.price : min, 100000);
-}
-
-const getMaxPrice = (goods: Good[]) => {
-    if (!goods.length) {
-        return 0;
-    }
-
-    return goods.reduce((max, curr) => curr.price > max ? curr.price : max, 0);
-}

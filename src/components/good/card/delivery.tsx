@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Box, Button, Typography, styled} from '@mui/material';
+import {DeliveryMethod} from "../../../api";
+import {useNavigate} from "react-router-dom";
 
 const PriceDeliveryContainer = styled(Box)(({theme}) => ({
     display: 'flex',
@@ -36,8 +38,8 @@ const ButtonsContainer = styled(Box)({
 interface PriceDeliveryProps {
     price: number;
     oldPrice?: number;
-    deliveryMethods: string[];
-    addToCart: (event: React.FormEvent<HTMLButtonElement>) => void;
+    deliveryMethods: DeliveryMethod[];
+    addToCart: () => void;
 }
 
 const PriceDelivery: React.FC<PriceDeliveryProps> = ({
@@ -46,6 +48,17 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
                                                          deliveryMethods,
                                                          addToCart
                                                      }) => {
+    const navigate = useNavigate();
+
+    const deliveryMethodsStr = useMemo(() =>
+            deliveryMethods.map(d => d.name).join(', ')
+        , [deliveryMethods]);
+
+    const handleBuyOneClick = () => {
+        addToCart();
+        navigate('/checkout');
+    };
+
     return <PriceDeliveryContainer>
         <Box sx={{display: 'flex'}}>
             <Price>{price} ₽</Price>
@@ -53,9 +66,9 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
         </Box>
         <ButtonsContainer>
             <Button variant="contained" onClick={addToCart}>Добавить в корзину</Button>
-            <Button variant="outlined">Купить в один клик</Button>
+            <Button variant="outlined" onClick={handleBuyOneClick}>Купить в один клик</Button>
         </ButtonsContainer>
-        <DeliveryInfo>Способы доставки: {deliveryMethods.join(', ')}</DeliveryInfo>
+        <DeliveryInfo>Способы доставки: {deliveryMethodsStr}</DeliveryInfo>
     </PriceDeliveryContainer>;
 };
 

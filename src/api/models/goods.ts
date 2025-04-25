@@ -123,7 +123,7 @@ const executeSearchFx = createEffect<string, SearchResult[], AxiosError>({
     }
 });
 
-const loadGoodsByStoreIdFx = createEffect<LoadGoodsByStoreIdParam, Good[], AxiosError>({
+export const loadGoodsByStoreIdFx = createEffect<LoadGoodsByStoreIdParam, Good[], AxiosError>({
     async handler({storeId}) {
         return await apiClient.get(`${baseUrl}/goods/byStore?storeId=${storeId}`).then(({ data }) => data);
     }

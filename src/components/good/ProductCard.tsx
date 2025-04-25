@@ -108,9 +108,10 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <Rating value={rating} precision={0.1} readOnly size="small" />
-                    <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                    {(good?.reviews?.length > 0) &&
+                        <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                         {rating} ({good.reviews?.length})
-                    </Typography>
+                    </Typography>}
                 </Box>
             </CardContent>
         </StyledCard>

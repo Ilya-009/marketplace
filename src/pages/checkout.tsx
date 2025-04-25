@@ -19,7 +19,7 @@ import { MainPageBox } from "../components";
 import Header from "../components/header/header.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUnit } from "effector-react";
-import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodById, loadGoodsByIds} from "../api";
+import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodsByIds} from "../api";
 import { findGoodById, getProperty } from "../services";
 import {
     $deliveryMethods,
@@ -27,8 +27,8 @@ import {
     CreateNewOrderParam,
     loadDeliveryMethods,
     loadPaymentMethods
-} from '../api/models/orders';
-import {$addresses, loadAddresses} from "../api/models/address.ts";
+} from '../api';
+import {$addresses, loadAddresses} from "../api";
 
 type CartGood = {
     cartItem: CartItem,
@@ -38,7 +38,6 @@ type CartGood = {
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const selectedGoodIds = searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? [];
 
     const properties = useUnit($properties);
     const cart = useUnit($cart);
@@ -51,6 +50,10 @@ const CheckoutPage: React.FC = () => {
     const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
     const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
     const [selectedAddressId, setSelectedAddressId] = useState<number>(1); // Состояние для выбранного адреса
+
+    const selectedGoodIds = useMemo(() =>
+        searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? cart.map(c => c.goodId),
+        [searchParams, cart]);
 
     useEffect(() => {
         loadDeliveryMethods();

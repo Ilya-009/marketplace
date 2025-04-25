@@ -1,4 +1,4 @@
-import {Good, GoodCategory} from "../api";
+import {DiscountType, Good, GoodCategory, GoodDiscount} from "../api";
 
 export const getGoodRating = (good: Good) => {
     if (!good.reviews?.length) {
@@ -45,6 +45,29 @@ export const findCategoryById = (categories: GoodCategory | GoodCategory[], id: 
     }
 
     return undefined;
+};
+
+export const calculatePriceBeforeDiscount = (finalPrice: number, discount: GoodDiscount) => {
+    const origin = discount.discountType === DiscountType.PERCENTAGE
+        ? finalPrice / (1 - discount.discountValue / 100)
+        : finalPrice + discount.discountValue;
+
+    return parseFloat(origin.toFixed(0));
+};
+
+export const getMaxGoodPrice = (goods: Good[]) => {
+    if (!goods.length) {
+        return 0;
+    }
+
+    return goods.reduce((max, curr) => curr.price > max ? curr.price : max, 0);
+};
+export const getMinGoodPrice = (goods: Good[]) => {
+    if (!goods.length) {
+        return 0;
+    }
+
+    return goods.reduce((min, curr) => curr.price < min ? curr.price : min, 100000);
 };
 
 function getCategoryPathMap(

@@ -4,8 +4,8 @@ import ProductInfo from "./good-info.tsx";
 import PriceDelivery from "./delivery.tsx";
 import {ReviewsContainer} from "./reviews.tsx";
 import ReviewCard from "./reviews.tsx";
-import {Good} from "../../../api";
-import {getGoodRating} from "../../../services";
+import {DeliveryMethod, Good, Store} from "../../../api";
+import {calculatePriceBeforeDiscount, getGoodRating} from "../../../services";
 import {addToCart} from "../../../api";
 
 const ProductCardContainer = styled(Box)(() => ({
@@ -42,12 +42,11 @@ const InfoSection = styled(Box)(({theme}) => ({
 
 type ProductCardProps = {
     good: Good;
+    deliveryMethods: DeliveryMethod[];
+    store: Store;
 };
 
-const ProductCard = ({good}: ProductCardProps) => {
-    const deliveryMethods = ['Самовывоз', 'СДЭК', 'Курьер'];
-    // TODO заменить способы доставки с сервера (+ сделать кастомизируемыми)
-
+const ProductCard = ({good, deliveryMethods, store}: ProductCardProps) => {
     const onAddToCartBtnClick = () => {
         addToCart({goodId: good.id});
     };
@@ -62,16 +61,12 @@ const ProductCard = ({good}: ProductCardProps) => {
                     name={good.name}
                     rating={getGoodRating(good)}
                     reviewsCount={good.reviews?.length ?? 0}
-                    shopName="Xiaomi"
-                    shopIcon="shop-icon.jpg"
-                    color="зеленый"
-                    memoryOptions={['256 ГБ', '128 ГБ']}
+                    store={store}
                     description={good.description}
-                    specifications="Тип: Смартфон, Диагональ экрана: 6.88 дюймов, Емкость аккумулятора: 5000 мАч, Процессор: Hello Gell Ultra, Основной материал корпуса: Пластик, Стекло"
                 />
                 <PriceDelivery
-                    price={10743}
-                    oldPrice={11076}
+                    price={good.price}
+                    oldPrice={good.discount ? calculatePriceBeforeDiscount(good.price, good.discount) : undefined}
                     deliveryMethods={deliveryMethods}
                     addToCart={onAddToCartBtnClick}
                 />
