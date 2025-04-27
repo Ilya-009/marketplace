@@ -1,1 +1,2 @@
-export * from './admin-page';
+export * from './categories-page';
+export * from './properties-page';

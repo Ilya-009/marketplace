@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
-import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
+import {Box, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
 import {$loggedUser} from "../../api";
 import {useUnit} from "effector-react";
-import {$store, loadStoreByUser} from "../../api/models/store.ts";
+import {$store, loadStoreByUser} from "../../api";
 import StoreIcon from '@mui/icons-material/Store';
 
 const Sidebar = styled(Box)`

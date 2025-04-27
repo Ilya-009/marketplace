@@ -5,7 +5,9 @@ export const baseUrl = 'http://localhost:8080/api/v1';
 
 apiClient.interceptors.request.use(function (config) {
     const token = localStorage.getItem('token');
-    config.headers.Authorization =  token ? `Bearer ${token}` : '';
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
 });
 

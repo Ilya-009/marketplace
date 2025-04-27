@@ -32,7 +32,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DatePicker} from "@mui/x-date-pickers";
-import {SidebarPageBox} from "../../components";
+import {CircularLoader, SidebarPageBox} from "../../components";
 import {loadStoreAnalyticsFx, StoreAnalytics} from "../../api/models/analytics.ts";
 import {useUnit} from "effector-react";
 import {$store} from "../../api";
@@ -67,11 +67,7 @@ const AnalyticsPage: React.FC = () => {
     }, [startDate, endDate]);
 
     if (loading) {
-        return (
-            <SidebarPageBox sx={{width: '90%'}} display="flex" justifyContent="center" alignItems="center" minHeight="300px">
-                <CircularProgress />
-            </SidebarPageBox>
-        );
+        return <CircularLoader/>;
     }
 
     if (!data) {

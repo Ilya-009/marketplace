@@ -5,14 +5,13 @@ import {MainTheme} from "./ui";
 import {useEffect} from "react";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
-import {loadProperties, loadCategories, loadLoggedUser} from "./api";
+import {loadProperties, loadCategories, loadLoggedUser, UserRole} from "./api";
 import {CategoryPage} from "./pages";
 import {NotFoundPage} from "./pages";
 import ProfileMainPage from "./pages/profile/profile-main-page.tsx";
 import EditProfile from "./pages/profile/personal-info-page.tsx";
 import CartPage from "./pages/cart-page.tsx";
 import OrdersPage from "./pages/orders-page.tsx";
-import AdminPage from "./pages/admin/admin-page.tsx";
 import SettingsManagementPage from "./pages/admin/properties-page.tsx";
 import CheckoutPage from "./pages/checkout.tsx";
 import AddressPage from "./pages/profile/profile-address-page.tsx";
@@ -33,10 +32,10 @@ import SuppliesList from "./pages/seller/supplies/supplies-page.tsx";
 import CreateSupply from "./components/seller/supplies/create-supply.tsx";
 import CategoriesPage from "./pages/admin/categories-page.tsx";
 import SellerPage from "./pages/store/store-page.tsx";
+import AdminSidebar from "./components/admin/admin-sidebar.tsx";
 
 function App() {
     useEffect(() => {
-        loadLoggedUser();
         loadProperties();
         loadCategories();
     }, []);
@@ -55,7 +54,9 @@ function App() {
                     <Route path="/store/:id" element={<SellerPage/>} />
 
                     <Route path="/seller" element={
-                        <PageWithSidebar header={<SellerHeader/>} sidebar={<SellerSidebar/>} />
+                        <PageWithSidebar header={<SellerHeader/>}
+                                         sidebar={<SellerSidebar/>}
+                                         requiredRoles={[UserRole.SELLER]}/>
                     }>
                         <Route path="main" element={<SellerMainPage/>} />
                         <Route path="edit" element={<StoreEditPage/>} />
@@ -73,6 +74,7 @@ function App() {
                         <PageWithSidebar
                             header={<Header/>}
                             sidebar={<ProfileSidebar/>}
+                            requiredRoles={[UserRole.CUSTOMER]}
                         />
                     }>
                         <Route path="main" element={<ProfileMainPage />} />
@@ -80,12 +82,18 @@ function App() {
                         <Route path="orders" element={<OrdersPage />} />
                         <Route path="address" element={<AddressPage />} />
                     </Route>
-                    <Route path="/admin" element={<AdminPage />}>
+                    <Route path="/admin" element={
+                        <PageWithSidebar header={<Header/>}
+                                         sidebar={<AdminSidebar/>}
+                                         requiredRoles={[UserRole.ADMIN]}
+                                         initFunction={() => loadLoggedUser()} />
+                    }>
                         <Route path="properties" element={<SettingsManagementPage />} />
                         <Route path="categories" element={<CategoriesPage />} />
                         {/*<Route path="stats" element={} />*/}
                     </Route>
                     <Route path="/" element={<MainPage />} />
+                    <Route path="/404" element={<NotFoundPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>

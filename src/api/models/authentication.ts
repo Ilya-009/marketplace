@@ -82,8 +82,9 @@ export const loginUserFx = createEffect<LoginUserParam, AuthenticateUserResult, 
 
 export const loadLoggedUser = createEvent();
 export const $loggedUser = createStore<UserInfo>(defaultUserInfo);
+export const $isUserLoading = createStore<boolean>(true);
 export const $authError = createStore<string>('');
-const loadLoggedUserFx = createEffect<void, LoadLoggedUserResult, AxiosError>({
+export const loadLoggedUserFx = createEffect<void, LoadLoggedUserResult, AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/auth/user`).then(({data}) => data);
     }
@@ -166,3 +167,8 @@ sample({
     fn: () => 'Неверно введены данные или пользователь уже существует',
     target: $authError
 });
+
+$isUserLoading
+    .on(loadLoggedUser, () => true)
+    .on(loadLoggedUserFx.done, () => false)
+    .on(loadLoggedUserFx.fail, () => false);

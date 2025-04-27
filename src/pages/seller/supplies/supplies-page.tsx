@@ -14,10 +14,10 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import {$supplies, loadSuppliesByStore, SupplyStatus, updateSupplyFx} from "../../../api/models/supply.ts";
+import {$supplies, loadSuppliesByStore, SupplyStatus, updateSupplyFx} from "../../../api";
 import {EditProfileLink, SidebarPageBox} from "../../../components";
 import {useUnit} from "effector-react";
-import {$store} from "../../../api/models/store.ts";
+import {$store} from "../../../api";
 import {supplyStatuses} from "../../../constants.ts";
 import {$allGoods, loadGoodsByIds} from "../../../api";
 import ConfirmationDialog from "../../../components/common/confirmation-dialog.tsx";
