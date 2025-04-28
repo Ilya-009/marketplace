@@ -62,7 +62,10 @@ type LoadGoodByIdParam = {id: number};
 type LoadGoodsByIdsParam = {ids: number[]};
 export const loadGoodById = createEvent<LoadGoodByIdParam>();
 export const loadGoodsByIds = createEvent<LoadGoodsByIdsParam>();
+export const loadGoodsWithDiscounts = createEvent();
+export const loadRecommendedGoods = createEvent();
 export const $allGoods = createStore<Array<Good>>([]);
+export const $recommendedGoods = createStore<Array<Good>>([]);
 
 export const executeSearch = createEvent<string>();
 export const $searchResults = createStore<SearchResult[]>([]);
@@ -126,6 +129,18 @@ const executeSearchFx = createEffect<string, SearchResult[], AxiosError>({
 export const loadGoodsByStoreIdFx = createEffect<LoadGoodsByStoreIdParam, Good[], AxiosError>({
     async handler({storeId}) {
         return await apiClient.get(`${baseUrl}/goods/byStore?storeId=${storeId}`).then(({ data }) => data);
+    }
+});
+
+const loadGoodsWithDiscountFx = createEffect<void, Good[], AxiosError>({
+    async handler() {
+        return await apiClient.get(`${baseUrl}/goods/withDiscount`).then(({ data }) => data);
+    }
+});
+
+const loadRecommendedGoodsFx = createEffect<void, Good[], AxiosError>({
+    async handler() {
+        return await apiClient.get(`${baseUrl}/goods/recommended`).then(({ data }) => data);
     }
 });
 
@@ -237,6 +252,20 @@ sample({
 });
 
 sample({
+    clock: loadGoodsWithDiscounts,
+    target: loadGoodsWithDiscountFx
+});
+
+sample({
+    clock: loadRecommendedGoods,
+    target: loadRecommendedGoodsFx
+});
+sample({
+    clock: loadRecommendedGoodsFx.doneData,
+    target: $recommendedGoods
+});
+
+sample({
     clock: loadGoodsByStoreId,
     target: loadGoodsByStoreIdFx
 });
@@ -253,6 +282,7 @@ $allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {
     return [...goods, good];
 });
 
-$allGoods.on(loadGoodsByIdsFx.doneData, (goods, addedGoods) => {
+$allGoods.on([loadGoodsByIdsFx.doneData, loadGoodsWithDiscountFx.doneData],
+    (goods, addedGoods) => {
     return [...goods, ...addedGoods];
 });

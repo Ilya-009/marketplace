@@ -2,7 +2,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {MainPage, ProductCardPage} from "./pages";
 import {ThemeProvider} from "@mui/material";
 import {MainTheme} from "./ui";
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
 import {loadProperties, loadCategories, loadLoggedUser, UserRole} from "./api";
@@ -39,6 +39,8 @@ function App() {
         loadProperties();
         loadCategories();
     }, []);
+
+    const getLoggedUserFn = useCallback(() => loadLoggedUser(), [])
 
     return (
         <ThemeProvider theme={MainTheme}>
@@ -86,7 +88,7 @@ function App() {
                         <PageWithSidebar header={<Header/>}
                                          sidebar={<AdminSidebar/>}
                                          requiredRoles={[UserRole.ADMIN]}
-                                         initFunction={() => loadLoggedUser()} />
+                                         initFunction={getLoggedUserFn} />
                     }>
                         <Route path="properties" element={<SettingsManagementPage />} />
                         <Route path="categories" element={<CategoriesPage />} />

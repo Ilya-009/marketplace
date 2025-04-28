@@ -58,6 +58,7 @@ const AddressTable: React.FC = () => {
     const handleSave = async () => {
         if (editAddress) {
             // await saveAddressToApi(editAddress);
+            // TODO: Добавить вызов API для сохранения
             if (editAddress.id === 0) {
                 // Новый адрес
                 setAddresses((prev) => [...prev, {...editAddress, id: prev.length + 1}]);
