@@ -21,6 +21,7 @@
     "effector": "^23.2.3",
     "effector-react": "^23.3.0",
     "libphonenumber-js": "^1.11.18",
+    "mui-color-input": "^7.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.8",

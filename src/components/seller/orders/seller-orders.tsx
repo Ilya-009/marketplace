@@ -14,12 +14,12 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import {$orders, loadSellerOrders, Order, OrderStatus} from "../../../api/models/orders.ts";
+import {$orders, loadSellerOrders, Order, OrderStatus} from "../../../api";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from "@mui/x-date-pickers";
 import {orderStatuses} from "../../../constants.ts";
-import {$store} from "../../../api/models/store.ts";
+import {$store} from "../../../api";
 import {useUnit} from "effector-react";
 import {$allGoods, loadGoodsByIds} from "../../../api";
 import OrderDetailsModal from "./order-details-modal.tsx";

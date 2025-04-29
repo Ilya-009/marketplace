@@ -1,5 +1,5 @@
 import {OrganizationType} from "./api/models/store.ts";
-import {GoodStatus} from "./api";
+import {GoodStatus, PropertyGroup, SettingType} from "./api";
 import {OrderStatus} from "./api/models/orders.ts";
 import {SupplyStatus} from "./api/models/supply.ts";
 
@@ -279,4 +279,22 @@ export const supplyStatuses = new Map<SupplyStatus, string>([
     [SupplyStatus.PENDING, 'Ожидает'],
     [SupplyStatus.COMPLETED, 'Завершена'],
     [SupplyStatus.CANCELLED, 'Отменена'],
+]);
+
+export const propertyTypes = new Map<SettingType, string>([
+    [SettingType.BOOLEAN, 'Логическое'],
+    [SettingType.STRING, 'Строка'],
+    [SettingType.NUMBER, 'Число'],
+    [SettingType.SELECT, 'Селектор'],
+    [SettingType.IMAGE, 'Картинка'],
+    [SettingType.DATE, 'Дата'],
+    [SettingType.COLOR, 'Цвет'],
+]);
+
+export const propertyGroups = new Map<PropertyGroup, string>([
+    [PropertyGroup.MAIN, 'Основная'],
+    [PropertyGroup.UI, 'Интерфейс'],
+    [PropertyGroup.LOGIC, 'Логика'],
+    [PropertyGroup.PAYMENT, 'Оплата'],
+    [PropertyGroup.DELIVERY, 'Доставка'],
 ]);

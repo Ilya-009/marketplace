@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
     Paper,
@@ -12,30 +11,30 @@ import {
     MenuItem,
     TextField,
     IconButton,
-    SelectChangeEvent, Typography
+    Typography,
+    Button,
+    Box,
+    Alert,
+    TableSortLabel,
+    InputAdornment, TableContainer, SelectChangeEvent
 } from '@mui/material';
-import { Edit as EditIcon, Save as SaveIcon } from '@mui/icons-material';
-import styled from '@emotion/styled';
-import {SidebarPageBox} from "../../components";
+import {
+    Edit as EditIcon,
+    Save as SaveIcon,
+    Delete as DeleteIcon,
+    Add as AddIcon,
+    Search as SearchIcon
+} from '@mui/icons-material';
+import { SidebarPageBox } from "../../components";
+import {mockSettings, Property, PropertyGroup, SettingType} from "../../api";
+import styled from "styled-components";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import {propertyGroups, propertyTypes} from "../../constants.ts";
+import {renderEditControl, renderValueDisplay} from "../../components";
 
-// Тип для настройки
-interface Setting {
-    key: string;
-    description: string;
-    value: string;
-}
-
-// Моковые данные для примера
-const mockSettings: Setting[] = [
-    { key: 'theme', description: 'Цветовая тема', value: 'light' },
-    { key: 'language', description: 'Язык интерфейса', value: 'ru' },
-    { key: 'currency', description: 'Основная валюта', value: 'USD' },
-    { key: 'notifications', description: 'Уведомления', value: 'enabled' },
-    { key: 'welcome_message', description: 'Приветственное сообщение', value: 'Добро пожаловать!' },
-    // Добавьте больше настроек по необходимости
-];
-
-// Стилизованный контейнер для таблицы
 const StyledTableContainer = styled(TableContainer)({
     marginTop: '20px',
     borderRadius: '8px',
@@ -43,103 +42,485 @@ const StyledTableContainer = styled(TableContainer)({
 });
 
 const SettingsManagementPage: React.FC = () => {
-    const [settings, setSettings] = useState<Setting[]>(mockSettings);
-    const [editingKey, setEditingKey] = useState<string | null>(null);
+    const [properties, setProperties] = useState<Property[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+    const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
+    const [newPropertyDialogOpen, setNewPropertyDialogOpen] = useState<boolean>(false);
+    const [newProperty, setNewProperty] = useState<Omit<Property, 'id'>>({
+        key: '',
+        displayName: '',
+        settingType: SettingType.STRING,
+        propertyGroup: PropertyGroup.MAIN,
+        description: '',
+        value: '',
+        removable: true
+    });
 
-    // Обработчик изменения количества элементов на странице
+    // Новые состояния для фильтрации и сортировки
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [selectedType, setSelectedType] = useState<SettingType | 'ALL'>('ALL');
+    const [selectedGroup, setSelectedGroup] = useState<PropertyGroup | 'ALL'>('ALL');
+    const [orderBy, setOrderBy] = useState<keyof Property>('key');
+    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+
+    // Загрузка настроек
+    useEffect(() => {
+        const fetchProperties = async () => {
+            // try {
+            //     const response = await axios.get<Property[]>('/api/v1/properties', {
+            //         headers: {
+            //             Authorization: `Bearer ${session?.token}`
+            //         }
+            //     });
+            //     setProperties(response.data);
+            //     setLoading(false);
+            // } catch (err) {
+            //     setError('Не удалось загрузить настройки');
+            //     setLoading(false);
+            // }
+                setProperties(mockSettings);
+                setLoading(false);
+        };
+
+        fetchProperties();
+    }, []);
+
     const handleItemsPerPageChange = (event: SelectChangeEvent<number>) => {
-        setItemsPerPage(event.target.value as number);
-        setCurrentPage(1); // Сброс на первую страницу
+        setItemsPerPage(Number(event.target.value));
+        setCurrentPage(1);
     };
 
-    // Обработчик изменения страницы
+    // Обработчики пагинации
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
     };
 
-    // Обработчик начала редактирования
-    const handleEdit = (key: string) => {
-        setEditingKey(key);
+    // Обработчики редактирования
+    const handleEdit = (id: number) => {
+        setEditingId(id);
     };
 
-    // Обработчик сохранения изменений
-    const handleSave = (key: string, newValue: string) => {
-        setSettings(prevSettings =>
-            prevSettings.map(setting =>
-                setting.key === key ? { ...setting, value: newValue } : setting
-            )
-        );
-        setEditingKey(null);
+    const handleSave = async (property: Property) => {
+        try {
+        //     const response = await axios.patch<Property>(
+        //         `/api/v1/properties/${property.id}`,
+        //         { value: property.value },
+        //         {
+        //             headers: {
+        //                 Authorization: `Bearer ${session?.token}`
+        //             }
+        //         }
+        //     );
+
+            // setProperties(prev => prev.map(p =>
+            //     p.id === property.id ? response.data : p
+            // ));
+            setProperties(prev => prev.map(p =>
+                p.id === property.id ? property : p
+            ));
+            setEditingId(null);
+        } catch (err) {
+            setError('Не удалось сохранить настройку');
+        }
     };
 
-    // Обработчик изменения значения
-    const handleValueChange = (key: string, value: string) => {
-        setSettings(prevSettings =>
-            prevSettings.map(setting =>
-                setting.key === key ? { ...setting, value } : setting
-            )
-        );
+    const handleValueChange = (id: number, value: string) => {
+        setProperties(prev => prev.map(p =>
+            p.id === id ? { ...p, value } : p
+        ));
+    };
+
+    // Обработчики удаления
+    const handleDeleteClick = (property: Property) => {
+        setPropertyToDelete(property);
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!propertyToDelete) return;
+
+        try {
+        //     await axios.delete(`/api/v1/properties/${propertyToDelete.id}`, {
+        //         headers: {
+        //             Authorization: `Bearer ${session?.token}`
+        //         }
+        //     });
+        //
+            setProperties(prev => prev.filter(p => p.id !== propertyToDelete.id));
+            setDeleteDialogOpen(false);
+        } catch (err) {
+            setError('Не удалось удалить настройку');
+        }
+    };
+
+    // Обработчики создания новой настройки
+    const handleNewPropertyChange = (field: keyof Omit<Property, 'id'>, value: any) => {
+        setNewProperty(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleCreateProperty = async () => {
+        try {
+            // const response = await axios.post<Property>(
+            //     '/api/v1/properties',
+            //     newProperty,
+            //     {
+            //         headers: {
+            //             Authorization: `Bearer ${session?.token}`
+            //         }
+            //     }
+            // );
+
+            // setProperties(prev => [...prev, response.data]);
+            setProperties(prev => [...prev, newProperty]);
+            setNewPropertyDialogOpen(false);
+            setNewProperty({
+                key: '',
+                displayName: '',
+                settingType: SettingType.STRING,
+                propertyGroup: PropertyGroup.MAIN,
+                description: '',
+                value: '',
+                removable: true
+            });
+        } catch (err) {
+            setError('Не удалось создать настройку');
+        }
     };
 
     // Вычисление индексов для пагинации
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = settings.slice(indexOfFirstItem, indexOfLastItem);
+
+    if (loading) return <div>Загрузка...</div>;
+    if (error) return <Alert severity="error">{error}</Alert>;
+
+    // Функция для сортировки
+    const stableSort = (array: Property[], comparator: (a: Property, b: Property) => number) => {
+        const stabilizedThis = array.map((el, index) => [el, index] as [Property, number]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map((el) => el[0]);
+    };
+
+    const getComparator = (order: 'asc' | 'desc', orderBy: keyof Property): (a: Property, b: Property) => number => {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(a, b, orderBy)
+            : (a, b) => -descendingComparator(a, b, orderBy);
+    };
+
+    const descendingComparator = (a: Property, b: Property, orderBy: keyof Property) => {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    };
+
+    // Функция для создания обработчика сортировки
+    const createSortHandler = (property: keyof Property) => () => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    // Функция фильтрации
+    const filteredProperties = properties.filter(property => {
+        const matchesSearch =
+            property.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            property.displayName.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesType = selectedType === 'ALL' || property.settingType === selectedType;
+        const matchesGroup = selectedGroup === 'ALL' || property.propertyGroup === selectedGroup;
+
+        return matchesSearch && matchesType && matchesGroup;
+    });
+
+    // Применяем сортировку
+    const sortedProperties = stableSort(filteredProperties, getComparator(order, orderBy));
+
+    // Обновляем пагинацию для отфильтрованных данных
+    const currentItems = sortedProperties.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Обработчик изменения типа при создании
+    const handleNewPropertyTypeChange = (type: SettingType) => {
+        let defaultValue = '';
+
+        switch (type) {
+            case SettingType.BOOLEAN:
+                defaultValue = 'false';
+                break;
+            case SettingType.NUMBER:
+                defaultValue = '0';
+                break;
+            case SettingType.SELECT:
+                defaultValue = '';
+                break;
+            case SettingType.IMAGE:
+                defaultValue = '';
+                break;
+            case SettingType.DATE:
+                defaultValue = new Date().toISOString();
+                break;
+            case SettingType.COLOR:
+                defaultValue = '#3f51b5';
+                break;
+            default:
+                defaultValue = '';
+        }
+
+        setNewProperty(prev => ({
+            ...prev,
+            settingType: type,
+            value: defaultValue,
+            allowedValues: type === SettingType.SELECT ? ['option1', 'option2'] : undefined
+        }));
+    };
+
+    // Форма создания новой настройки
+    const renderNewPropertyForm = () => {
+        return (
+            <Dialog
+                open={newPropertyDialogOpen}
+                onClose={() => setNewPropertyDialogOpen(false)}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle>Создание новой настройки</DialogTitle>
+                <DialogContent>
+                    <Box display="flex" flexDirection="column" gap={2} mt={2}>
+                        <TextField
+                            label="Ключ"
+                            value={newProperty.key}
+                            onChange={(e) => setNewProperty(prev => ({...prev, key: e.target.value}))}
+                            fullWidth
+                            required
+                        />
+                        <TextField
+                            label="Отображаемое имя"
+                            value={newProperty.displayName}
+                            onChange={(e) => setNewProperty(prev => ({...prev, displayName: e.target.value}))}
+                            fullWidth
+                            required
+                        />
+                        <TextField
+                            label="Описание"
+                            value={newProperty.description}
+                            onChange={(e) => setNewProperty(prev => ({...prev, description: e.target.value}))}
+                            fullWidth
+                            multiline
+                            rows={3}
+                        />
+                        <Select
+                            label="Тип настройки"
+                            value={newProperty.settingType}
+                            onChange={(e) => handleNewPropertyTypeChange(e.target.value as SettingType)}
+                            fullWidth
+                        >
+                            {Object.values(SettingType).map(type => (
+                                <MenuItem key={type} value={type}>{type}</MenuItem>
+                            ))}
+                        </Select>
+
+                        {newProperty.settingType === SettingType.SELECT && (
+                            <TextField
+                                label="Допустимые значения (через запятую)"
+                                value={newProperty.allowedValues?.join(',') || ''}
+                                onChange={(e) => setNewProperty(prev => ({
+                                    ...prev,
+                                    allowedValues: e.target.value.split(',').map(v => v.trim())
+                                }))}
+                                fullWidth
+                            />
+                        )}
+
+                        <Select
+                            label="Группа"
+                            value={newProperty.propertyGroup}
+                            onChange={(e) => setNewProperty(prev => ({
+                                ...prev,
+                                propertyGroup: e.target.value as PropertyGroup
+                            }))}
+                            fullWidth
+                        >
+                            {Object.values(PropertyGroup).map(group => (
+                                <MenuItem key={group} value={group}>{group}</MenuItem>
+                            ))}
+                        </Select>
+
+                        {renderEditControl(
+                            {...newProperty, id: 0}, // временный id для совместимости
+                            (value) => setNewProperty(prev => ({...prev, value}))
+                        )}
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setNewPropertyDialogOpen(false)}>Отмена</Button>
+                    <Button
+                        onClick={handleCreateProperty}
+                        variant="contained"
+                        startIcon={<SaveIcon />}
+                        disabled={!newProperty.key || !newProperty.value || !newProperty.displayName}
+                    >
+                        Создать
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
 
     return (
-        <SidebarPageBox sx={{width: '90%'}}>
-            <Typography variant="h4" gutterBottom>
-                Управление настройками
-            </Typography>
+        <SidebarPageBox sx={{ width: '90%' }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h4" gutterBottom>
+                    Управление настройками
+                </Typography>
+                <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={() => setNewPropertyDialogOpen(true)}
+                >
+                    Добавить настройку
+                </Button>
+            </Box>
 
             <Select
                 variant='outlined'
                 value={itemsPerPage}
                 onChange={handleItemsPerPageChange}
                 sx={{ marginBottom: '20px' }}
-
             >
-                <MenuItem selected value={20}>20</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
                 <MenuItem value={50}>50</MenuItem>
                 <MenuItem value={100}>100</MenuItem>
             </Select>
 
+            {/* Панель фильтрации и поиска */}
+            <Box display="flex" gap={2} mb={3} flexWrap="wrap">
+                <TextField
+                    variant="outlined"
+                    placeholder="Поиск по ключу или названию..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ minWidth: 300, flexGrow: 1 }}
+                />
+
+                <Select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value as SettingType | 'ALL')}
+                    displayEmpty
+                    sx={{ minWidth: 200 }}
+                >
+                    <MenuItem value="ALL">Все типы</MenuItem>
+                    {Object.values(SettingType).map(type => (
+                        <MenuItem key={type} value={type}>{propertyTypes.get(type)}</MenuItem>
+                    ))}
+                </Select>
+
+                <Select
+                    value={selectedGroup}
+                    onChange={(e) => setSelectedGroup(e.target.value as PropertyGroup | 'ALL')}
+                    displayEmpty
+                    sx={{ minWidth: 200 }}
+                >
+                    <MenuItem value="ALL">Все группы</MenuItem>
+                    {Object.values(PropertyGroup).map(group => (
+                        <MenuItem key={group} value={group}>{propertyGroups.get(group)}</MenuItem>
+                    ))}
+                </Select>
+            </Box>
+
+            {/* Таблица с возможностью сортировки */}
             <StyledTableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Ключ</TableCell>
-                            <TableCell>Описание</TableCell>
+                            <TableCell sortDirection={orderBy === 'key' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'key'}
+                                    direction={orderBy === 'key' ? order : 'asc'}
+                                    onClick={createSortHandler('key')}
+                                >
+                                    Ключ
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell sortDirection={orderBy === 'displayName' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'displayName'}
+                                    direction={orderBy === 'displayName' ? order : 'asc'}
+                                    onClick={createSortHandler('displayName')}
+                                >
+                                    Отображаемое имя
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'settingType'}
+                                    direction={orderBy === 'settingType' ? order : 'asc'}
+                                    onClick={createSortHandler('settingType')}
+                                >
+                                    Тип
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'propertyGroup'}
+                                    direction={orderBy === 'propertyGroup' ? order : 'asc'}
+                                    onClick={createSortHandler('propertyGroup')}
+                                >
+                                    Группа
+                                </TableSortLabel>
+                            </TableCell>
                             <TableCell>Значение</TableCell>
-                            <TableCell>Действие</TableCell>
+                            <TableCell>Действия</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {currentItems.map((setting) => (
-                            <TableRow key={setting.key}>
-                                <TableCell>{setting.key}</TableCell>
-                                <TableCell>{setting.description}</TableCell>
+                        {currentItems.map((property) => (
+                            <TableRow key={property.id}>
+                                <TableCell>{property.key}</TableCell>
+                                <TableCell>{property.displayName}</TableCell>
+                                <TableCell>{propertyTypes.get(property.settingType)}</TableCell>
+                                <TableCell>{propertyGroups.get(property.propertyGroup)}</TableCell>
                                 <TableCell>
-                                    {editingKey === setting.key ? (
-                                        <TextField
-                                            value={setting.value}
-                                            onChange={(e) => handleValueChange(setting.key, e.target.value)}
-                                            size="small"
-                                        />
+                                    {editingId === property.id ? (
+                                        renderEditControl(property, (value) => handleValueChange(property.id, value))
                                     ) : (
-                                        setting.value
+                                        renderValueDisplay(property)
                                     )}
                                 </TableCell>
                                 <TableCell>
-                                    {editingKey === setting.key ? (
-                                        <IconButton onClick={() => handleSave(setting.key, setting.value)}>
+                                    {editingId === property.id ? (
+                                        <IconButton onClick={() => handleSave(property)}>
                                             <SaveIcon />
                                         </IconButton>
                                     ) : (
-                                        <IconButton onClick={() => handleEdit(setting.key)}>
+                                        <IconButton onClick={() => handleEdit(property.id)}>
                                             <EditIcon />
+                                        </IconButton>
+                                    )}
+                                    {property.removable && (
+                                        <IconButton
+                                            onClick={() => handleDeleteClick(property)}
+                                            color="error"
+                                        >
+                                            <DeleteIcon />
                                         </IconButton>
                                     )}
                                 </TableCell>
@@ -150,11 +531,32 @@ const SettingsManagementPage: React.FC = () => {
             </StyledTableContainer>
 
             <Pagination
-                count={Math.ceil(settings.length / itemsPerPage)}
+                count={Math.ceil(sortedProperties.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}
             />
+
+            {/* Диалог удаления */}
+            <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+                <DialogTitle>Подтверждение удаления</DialogTitle>
+                <DialogContent>
+                    Вы уверены, что хотите удалить настройку "{propertyToDelete?.key}"?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteDialogOpen(false)}>Отмена</Button>
+                    <Button
+                        onClick={handleDeleteConfirm}
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                    >
+                        Удалить
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Диалог создания новой настройки */}
+            {renderNewPropertyForm()}
         </SidebarPageBox>
     );
 };
