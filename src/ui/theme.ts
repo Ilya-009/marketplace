@@ -1,9 +1,7 @@
 import {createTheme} from "@mui/material";
 import {blue, green} from "@mui/material/colors";
 
-export const primaryTextColor = '#000';
-
-export const MainTheme = createTheme({
+export const defaultTheme = createTheme({
     palette: {
         primary: {
             main: blue[500],

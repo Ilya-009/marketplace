@@ -34,6 +34,7 @@ export enum PropertyGroup {
 }
 
 type LoadPropertiesParam = void;
+type LoadPropertiesByKeysParam = {keys: string[]};
 type LoadPropertiesResult = Property[];
 
 type CreatePropertyParam = {
@@ -60,6 +61,13 @@ export const $properties = createStore<LoadPropertiesResult>([]);
 export const loadPropertiesFx = createEffect<LoadPropertiesParam, LoadPropertiesResult, AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/properties`).then(({ data }) => data);
+    }
+});
+
+export const loadPropertiesByKeysFx = createEffect<LoadPropertiesByKeysParam, LoadPropertiesResult, AxiosError>({
+    async handler({keys}) {
+        const keysStr = keys.join(',');
+        return await apiClient.get(`${baseUrl}/properties/by-keys?keys=${keysStr}`).then(({ data }) => data);
     }
 });
 
@@ -92,6 +100,7 @@ sample({
 });
 
 sample({
-    clock: loadPropertiesFx.doneData,
+    clock: [loadPropertiesFx.doneData, loadPropertiesByKeysFx.doneData],
+    fn: current => [...new Set([...current, ...$properties.getState()])],
     target: $properties
 });

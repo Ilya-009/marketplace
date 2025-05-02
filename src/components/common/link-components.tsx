@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import {Link as MuiLink, Link} from '@mui/material';
-import {MainTheme, primaryTextColor} from "../../ui";
 
 export const SmallLinkActive = styled(Link) `
-    color: ${MainTheme.palette.text.primary} !important;
+    color: ${({ theme }) => theme.palette.text.primary} !important;
 `;
 
 export const SmallLinkPassive = styled(Link)`
@@ -12,7 +11,7 @@ export const SmallLinkPassive = styled(Link)`
     transition: .5s;
 
     &:hover {
-        color: ${MainTheme.palette.text.primary} !important;
+        color: ${({ theme }) => theme.palette.text.primary} !important;
     }
 `;
 
@@ -21,16 +20,16 @@ export const SmallMenuLinkPassive = styled(Link)`
     transition: .5s;
 
     &:hover {
-        color: ${primaryTextColor} !important;
+        color: ${({ theme }) => theme.palette.text.primary} !important;
     }
 `;
 
 export const SmallMenuLinkActive = styled(Link)`
-    color: ${primaryTextColor} !important;
+    color: ${({ theme }) => theme.palette.text.primary} !important;
     transition: .5s;
     
     &:hover {
-        color: ${MainTheme.palette.text.primary} !important;
+        color: ${({ theme }) => theme.palette.text.primary} !important;
     }
 `;
 

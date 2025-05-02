@@ -17,7 +17,6 @@ import {useUnit} from "effector-react";
 import {$categories, GoodCategory} from "../../api";
 import styled from "styled-components";
 import {SmallMenuLinkActive, SmallMenuLinkPassive} from "../common";
-import {primaryTextColor} from "../../ui";
 
 type CatalogProps = {
     isOpen: boolean;
@@ -38,9 +37,9 @@ const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
 
     return (
         <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="xl" sx={{minHeight: 600}}>
-            <DialogTitle sx={{color: primaryTextColor}}>Каталог</DialogTitle>
+            <DialogTitle>Каталог</DialogTitle>
             <DialogContent>
-                <Stack direction="row" spacing={2} sx={{color: primaryTextColor}}>
+                <Stack direction="row" spacing={2}>
                     <Stack
                         spacing={1}
                         style={{overflowY: 'auto', width: '200px'}}

@@ -1,23 +1,22 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {AppBar, Box, Button, IconButton, Link, Stack, TextField} from '@mui/material';
+import {AppBar, Box, Button, IconButton, Link, Stack} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import {SmallLinkActive, SmallLinkPassive} from "../common";
+import {SmallLinkActive, SmallLinkPassive, StyledSearchField} from "../common";
 import LinkWithIcon from "./header-link.tsx";
 import {useUnit} from "effector-react";
 import {$loggedUser, $properties, $searchResults, executeSearch, UserRole} from "../../api";
 import {getImageProperty, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
-import {primaryTextColor} from "../../ui";
 import {AccountBox} from "@mui/icons-material";
 import StoreIcon from '@mui/icons-material/Store';
 import {SearchResultsDropdown} from "../catalog/search-dropdown.tsx";
 
-const SearchField = styled(TextField)`
+const SearchField = styled(StyledSearchField)`
     margin-left: 20px;
     flex-grow: 2;
 `;
@@ -77,7 +76,7 @@ const Header: React.FC = () => {
                 <Box sx={{ position: 'relative', flexGrow: 2 }}>
                     <SearchField
                         variant="outlined"
-                        sx={{ input: { color: primaryTextColor }, width: '100%' }}
+                        sx={{ width: '100%' }}
                         placeholder="Поиск товаров"
                         size="small"
                         onChange={handleSearchChange}

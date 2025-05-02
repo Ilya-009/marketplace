@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
@@ -15,10 +14,9 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
-import {validateSignInInputs} from "../components";
+import {StyledFormControlLabel, validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
 import {$authError, loginUserFx} from "../api";
-import {primaryTextColor} from "../ui";
 import {useUnit} from "effector-react";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -146,7 +144,6 @@ export default function SignIn() {
                                 required
                                 fullWidth
                                 variant="outlined"
-                                sx={{ input: { color: primaryTextColor } }}
                                 color={emailError ? 'error' : 'primary'}
                                 onInput={e => setEmail((e.target as HTMLInputElement).value)}
                             />
@@ -165,14 +162,12 @@ export default function SignIn() {
                                 required
                                 fullWidth
                                 variant="outlined"
-                                sx={{ input: { color: primaryTextColor } }}
                                 color={passwordError ? 'error' : 'primary'}
                                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
                             />
                         </FormControl>
-                        <FormControlLabel
+                        <StyledFormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
-                            sx={{ color: primaryTextColor }}
                             label="Запомнить меня"
                         />
                         <ForgotPassword open={open} handleClose={handleClose} />
@@ -195,7 +190,7 @@ export default function SignIn() {
                     </Box>
                     <Divider>или</Divider>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Typography sx={{ textAlign: 'center', color: primaryTextColor }}>
+                        <Typography sx={{ textAlign: 'center'}}>
                             Не имеете аккаунта?{' '}
                             <Link
                                 href="/signUp"

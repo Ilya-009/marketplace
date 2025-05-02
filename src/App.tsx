@@ -1,7 +1,5 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {MainPage, ProductCardPage} from "./pages";
-import {ThemeProvider} from "@mui/material";
-import {MainTheme} from "./ui";
 import {useCallback, useEffect} from "react";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
@@ -33,6 +31,8 @@ import CreateSupply from "./components/seller/supplies/create-supply.tsx";
 import CategoriesPage from "./pages/admin/categories-page.tsx";
 import SellerPage from "./pages/store/store-page.tsx";
 import AdminSidebar from "./components/admin/admin-sidebar.tsx";
+import {CombinedThemeProvider} from "./ui";
+import CssBaseline from "@mui/material/CssBaseline";
 
 function App() {
     useEffect(() => {
@@ -44,7 +44,8 @@ function App() {
     const getLoggedUserFn = useCallback(() => loadLoggedUser(), []);
 
     return (
-        <ThemeProvider theme={MainTheme}>
+        <CombinedThemeProvider>
+            <CssBaseline />
             <BrowserRouter>
                 <Routes>
                     <Route path="/signUp" element={<SignUp />} />
@@ -101,7 +102,7 @@ function App() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
-        </ThemeProvider>
+        </CombinedThemeProvider>
     )
 }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link, Typography} from '@mui/material';
 import styled from 'styled-components';
-import {MainTheme} from "../../ui/theme.ts";
 
 const StyledLink = styled(Link)`
     display: flex;
@@ -10,7 +9,7 @@ const StyledLink = styled(Link)`
     transition: .5s ease-in-out;
 
     &:hover {
-        color: ${MainTheme.palette.primary.main};
+        color: ${({ theme }) => theme.palette.primary.main};
     }
 `;
 

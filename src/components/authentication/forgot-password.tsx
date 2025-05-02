@@ -6,12 +6,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import {primaryTextColor} from "../../ui";
+import styled from 'styled-components';
 
 interface ForgotPasswordProps {
     open: boolean;
     handleClose: () => void;
 }
+
+const EmailInput = styled(OutlinedInput)`
+    color: ${({ theme }) => theme.palette.text.primary} !important;
+`;
 
 export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
     return (
@@ -34,7 +38,7 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
                 <DialogContentText>
                     Введите адрес электронной почты и мы отправим ссылку для восстановления пароля
                 </DialogContentText>
-                <OutlinedInput
+                <EmailInput
                     autoFocus
                     required
                     margin="dense"
@@ -43,7 +47,6 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
                     placeholder="Арес эл. почты"
                     type="email"
                     fullWidth
-                    sx={{ color: primaryTextColor }}
                 />
             </DialogContent>
             <DialogActions sx={{ pb: 3, px: 3 }}>

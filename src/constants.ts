@@ -1,5 +1,4 @@
 import {OrganizationType, GoodStatus, PropertyGroup, SettingType, OrderStatus, SupplyStatus} from "./api";
-import {MainTheme} from "./ui";
 
 type GoodStatusData = {
     label: string;
@@ -291,7 +290,7 @@ export const propertyTypes = new Map<SettingType, PropertyTypeData>([
     [SettingType.SELECT, {name: 'Селектор', defaultValue: ''}],
     [SettingType.IMAGE, {name: 'Картинка', defaultValue: ''}],
     [SettingType.DATE, {name: 'Дата', defaultValue: new Date().toISOString()}],
-    [SettingType.COLOR, {name: 'Цвет', defaultValue: MainTheme.palette.primary.main}],
+    [SettingType.COLOR, {name: 'Цвет', defaultValue: '#000'}],
 ]);
 
 export const propertyGroups = new Map<PropertyGroup, string>([
