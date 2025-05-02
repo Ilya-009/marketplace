@@ -1,9 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Avatar, Box, Card, CardContent, Grid, Tab, Tabs, Typography} from '@mui/material';
-import {$orders, loadCustomerOrders, OrderStatus} from '../api/models/orders';
 import {useUnit} from "effector-react";
-import {$allGoods, $customer, $properties, loadGoodsByIds} from "../api";
-import {getProperty} from "../services";
+import {$allGoods, $customer, $properties, loadGoodsByIds, $orders, loadCustomerOrders, OrderStatus} from "../api";
+import {getImageProperty} from "../services";
 
 const OrdersPage: React.FC = () => {
     const [status, setStatus] = useState<OrderStatus>(OrderStatus.CREATED);
@@ -26,7 +25,7 @@ const OrdersPage: React.FC = () => {
     }, [orders]);
 
     const emptyImage = useMemo(() => {
-        return getProperty(properties, 'no.images.img');
+        return getImageProperty(properties, 'no.images.img');
     }, [properties]);
 
     // Фильтрация заказов по статусу

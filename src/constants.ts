@@ -1,12 +1,15 @@
-import {OrganizationType} from "./api/models/store.ts";
-import {GoodStatus, PropertyGroup, SettingType} from "./api";
-import {OrderStatus} from "./api/models/orders.ts";
-import {SupplyStatus} from "./api/models/supply.ts";
+import {OrganizationType, GoodStatus, PropertyGroup, SettingType, OrderStatus, SupplyStatus} from "./api";
+import {MainTheme} from "./ui";
 
 type GoodStatusData = {
     label: string;
     actionLabel: string;
     color: string;
+};
+
+type PropertyTypeData = {
+    name: string;
+    defaultValue: string;
 };
 
 export const countries: string[] = [
@@ -281,14 +284,14 @@ export const supplyStatuses = new Map<SupplyStatus, string>([
     [SupplyStatus.CANCELLED, 'Отменена'],
 ]);
 
-export const propertyTypes = new Map<SettingType, string>([
-    [SettingType.BOOLEAN, 'Логическое'],
-    [SettingType.STRING, 'Строка'],
-    [SettingType.NUMBER, 'Число'],
-    [SettingType.SELECT, 'Селектор'],
-    [SettingType.IMAGE, 'Картинка'],
-    [SettingType.DATE, 'Дата'],
-    [SettingType.COLOR, 'Цвет'],
+export const propertyTypes = new Map<SettingType, PropertyTypeData>([
+    [SettingType.BOOLEAN, {name: 'Логическое', defaultValue: 'false'}],
+    [SettingType.STRING, {name: 'Строка', defaultValue: ''}],
+    [SettingType.NUMBER, {name: 'Число', defaultValue: '0'}],
+    [SettingType.SELECT, {name: 'Селектор', defaultValue: ''}],
+    [SettingType.IMAGE, {name: 'Картинка', defaultValue: ''}],
+    [SettingType.DATE, {name: 'Дата', defaultValue: new Date().toISOString()}],
+    [SettingType.COLOR, {name: 'Цвет', defaultValue: MainTheme.palette.primary.main}],
 ]);
 
 export const propertyGroups = new Map<PropertyGroup, string>([

@@ -20,7 +20,7 @@ import Header from "../components/header/header.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUnit } from "effector-react";
 import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodsByIds} from "../api";
-import { findGoodById, getProperty } from "../services";
+import {findGoodById, getImageProperty} from "../services";
 import {
     $deliveryMethods,
     $paymentMethods, createNewOrder,
@@ -72,7 +72,7 @@ const CheckoutPage: React.FC = () => {
     }, [cart]);
 
     const emptyImage = useMemo(() => {
-        return getProperty(properties, 'no.images.img');
+        return getImageProperty(properties, 'no.images.img');
     }, [properties]);
 
     const cartGoods: CartGood[] = useMemo(() => {
@@ -190,7 +190,7 @@ const CheckoutPage: React.FC = () => {
                                         <ListItemAvatar>
                                             <Grid item xs={2}>
                                                 <img
-                                                    src={`http://localhost:8080/files/images/${cartElem.good.goodImages[0]?.image ?? emptyImage}`}
+                                                    src={cartElem.good.goodImages[0]?.image ? `http://localhost:8080/files/images/${cartElem.good.goodImages[0]?.image}` : emptyImage}
                                                     alt={cartElem.good.name}
                                                     style={{ width: 50, height: 50, marginRight: 10 }}
                                                 />

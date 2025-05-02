@@ -10,7 +10,7 @@ import {SmallLinkActive, SmallLinkPassive} from "../common";
 import LinkWithIcon from "./header-link.tsx";
 import {useUnit} from "effector-react";
 import {$loggedUser, $properties, $searchResults, executeSearch, UserRole} from "../../api";
-import {getProperty, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
+import {getImageProperty, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
 import {primaryTextColor} from "../../ui";
 import {AccountBox} from "@mui/icons-material";
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
     const properties = useUnit($properties);
     const searchResults = useUnit($searchResults);
     const loggedUser = useUnit($loggedUser);
-    const logoImageSrc = getProperty(properties, 'logo.image');
+    const logoImageSrc = getImageProperty(properties, 'logo.image');
 
     const [open, setOpen] = useState(false);
 

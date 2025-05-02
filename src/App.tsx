@@ -36,11 +36,12 @@ import AdminSidebar from "./components/admin/admin-sidebar.tsx";
 
 function App() {
     useEffect(() => {
+        loadLoggedUser();
         loadProperties();
         loadCategories();
     }, []);
 
-    const getLoggedUserFn = useCallback(() => loadLoggedUser(), [])
+    const getLoggedUserFn = useCallback(() => loadLoggedUser(), []);
 
     return (
         <ThemeProvider theme={MainTheme}>
@@ -88,7 +89,8 @@ function App() {
                         <PageWithSidebar header={<Header/>}
                                          sidebar={<AdminSidebar/>}
                                          requiredRoles={[UserRole.ADMIN]}
-                                         initFunction={getLoggedUserFn} />
+                                         initFunction={getLoggedUserFn}
+                        />
                     }>
                         <Route path="properties" element={<SettingsManagementPage />} />
                         <Route path="categories" element={<CategoriesPage />} />

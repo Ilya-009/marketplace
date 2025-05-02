@@ -19,7 +19,7 @@ import Header from "../components/header/header.tsx";
 import {$allGoods} from "../api";
 import {ConfirmModal} from "../components/common/confirm-modal.tsx";
 import {MainPageBox} from "../components";
-import {findGoodById, getProperty} from "../services";
+import {findGoodById, getImageProperty} from "../services";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
@@ -53,7 +53,7 @@ const CartPage: React.FC = () => {
     }, [allGoods, cart, selectedItems]);
 
     const emptyImage = useMemo(() => {
-        return getProperty(properties, 'no.images.img');
+        return getImageProperty(properties, 'no.images.img');
     }, [properties]);
 
     // Обработчик изменения количества
@@ -141,7 +141,7 @@ const CartPage: React.FC = () => {
                                                 onChange={() => handleSelectItem(item.goodId)}
                                             />
                                             <img
-                                                src={`http://localhost:8080/files/images/${good.goodImages[0]?.image ?? emptyImage}`}
+                                                src={good.goodImages[0]?.image ? `http://localhost:8080/files/images/${good.goodImages[0]?.image}` : emptyImage}
                                                 alt={good.name}
                                                 style={{width: 100, height: 100, marginLeft: 10}}
                                             />

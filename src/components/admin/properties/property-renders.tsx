@@ -7,6 +7,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers";
 import {MuiColorInput} from "mui-color-input";
 import dayjs from "dayjs";
+import {getImagePropertyValue} from "../../../services";
 
 export const renderValueDisplay = (property: Property) => {
     switch (property.settingType) {
@@ -16,7 +17,7 @@ export const renderValueDisplay = (property: Property) => {
             return property.fileName ? (
                 <Box display="flex" alignItems="center">
                     <Avatar
-                        src={property.value}
+                        src={getImagePropertyValue(property)}
                         variant="rounded"
                         sx={{ width: 40, height: 40, mr: 1 }}
                     >

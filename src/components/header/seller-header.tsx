@@ -2,11 +2,11 @@ import React from 'react';
 import { AppBar, Box, Link, Stack } from '@mui/material';
 import { useUnit } from "effector-react";
 import { $properties } from "../../api";
-import { getProperty } from "../../services";
+import {getImageProperty} from "../../services";
 
 const SellerHeader: React.FC = () => {
     const properties = useUnit($properties);
-    const logoImageSrc = getProperty(properties, 'logo.image');
+    const logoImageSrc = getImageProperty(properties, 'logo.image');
 
     return (
         <AppBar position="static" sx={{ padding: 2, borderRadius: '0 0 10px 10px', marginBottom: '2rem' }} color='transparent'>

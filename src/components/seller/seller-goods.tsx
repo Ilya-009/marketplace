@@ -23,7 +23,7 @@ import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsBySto
 import {useUnit} from "effector-react";
 import {$store} from "../../api";
 import {goodStatuses} from "../../constants.ts";
-import {getProperty} from "../../services";
+import {getImageProperty} from "../../services";
 import {EditProfileLink} from "../common";
 import {useNavigate} from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -41,7 +41,7 @@ const SellerGoods: React.FC = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const emptyImage = useMemo(() => {
-        return getProperty(properties, 'no.images.img');
+        return getImageProperty(properties, 'no.images.img');
     }, [properties]);
 
     useEffect(() => {
@@ -140,7 +140,7 @@ const SellerGoods: React.FC = () => {
                             <TableRow key={good.id}>
                                 <TableCell>{good.id}</TableCell>
                                 <TableCell>
-                                    <img src={`http://localhost:8080/files/images/${good.goodImages[0]?.image ?? emptyImage}`}
+                                    <img src={good.goodImages[0]?.image ? `http://localhost:8080/files/images/${good.goodImages[0]?.image}` : emptyImage}
                                          alt={good.name}
                                          width="50"
                                          height="50" />

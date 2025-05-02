@@ -26,7 +26,15 @@ import {
     Search as SearchIcon
 } from '@mui/icons-material';
 import { SidebarPageBox } from "../../components";
-import {mockSettings, Property, PropertyGroup, SettingType} from "../../api";
+import {
+    createPropertyFx,
+    deleteProperty,
+    loadPropertiesFx,
+    Property,
+    PropertyGroup,
+    SettingType,
+    updatePropertyFx
+} from "../../api";
 import styled from "styled-components";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -71,20 +79,14 @@ const SettingsManagementPage: React.FC = () => {
     // Загрузка настроек
     useEffect(() => {
         const fetchProperties = async () => {
-            // try {
-            //     const response = await axios.get<Property[]>('/api/v1/properties', {
-            //         headers: {
-            //             Authorization: `Bearer ${session?.token}`
-            //         }
-            //     });
-            //     setProperties(response.data);
-            //     setLoading(false);
-            // } catch (err) {
-            //     setError('Не удалось загрузить настройки');
-            //     setLoading(false);
-            // }
-                setProperties(mockSettings);
+            try {
+                const response = await loadPropertiesFx();
+                setProperties(response);
                 setLoading(false);
+            } catch (err) {
+                setError('Не удалось загрузить настройки');
+                setLoading(false);
+            }
         };
 
         fetchProperties();
@@ -107,22 +109,14 @@ const SettingsManagementPage: React.FC = () => {
 
     const handleSave = async (property: Property) => {
         try {
-        //     const response = await axios.patch<Property>(
-        //         `/api/v1/properties/${property.id}`,
-        //         { value: property.value },
-        //         {
-        //             headers: {
-        //                 Authorization: `Bearer ${session?.token}`
-        //             }
-        //         }
-        //     );
+            const response = await updatePropertyFx({id: property.id, value: property.value});
 
-            // setProperties(prev => prev.map(p =>
-            //     p.id === property.id ? response.data : p
-            // ));
             setProperties(prev => prev.map(p =>
-                p.id === property.id ? property : p
+                p.id === property.id ? response : p
             ));
+            // setProperties(prev => prev.map(p =>
+            //     p.id === property.id ? property : p
+            // ));
             setEditingId(null);
         } catch (err) {
             setError('Не удалось сохранить настройку');
@@ -145,38 +139,23 @@ const SettingsManagementPage: React.FC = () => {
         if (!propertyToDelete) return;
 
         try {
-        //     await axios.delete(`/api/v1/properties/${propertyToDelete.id}`, {
-        //         headers: {
-        //             Authorization: `Bearer ${session?.token}`
-        //         }
-        //     });
-        //
             setProperties(prev => prev.filter(p => p.id !== propertyToDelete.id));
             setDeleteDialogOpen(false);
+            deleteProperty({id: propertyToDelete.id});
         } catch (err) {
             setError('Не удалось удалить настройку');
         }
     };
 
     // Обработчики создания новой настройки
-    const handleNewPropertyChange = (field: keyof Omit<Property, 'id'>, value: any) => {
-        setNewProperty(prev => ({ ...prev, [field]: value }));
-    };
-
     const handleCreateProperty = async () => {
         try {
-            // const response = await axios.post<Property>(
-            //     '/api/v1/properties',
-            //     newProperty,
-            //     {
-            //         headers: {
-            //             Authorization: `Bearer ${session?.token}`
-            //         }
-            //     }
-            // );
+            setLoading(true);
+            // TODO: Реализовать функционал создания настроек с типом IMAGE
+            const createdProperty = await createPropertyFx(newProperty);
+            setLoading(false);
 
-            // setProperties(prev => [...prev, response.data]);
-            setProperties(prev => [...prev, newProperty]);
+            setProperties(prev => [...prev, createdProperty]);
             setNewPropertyDialogOpen(false);
             setNewProperty({
                 key: '',
@@ -253,36 +232,13 @@ const SettingsManagementPage: React.FC = () => {
 
     // Обработчик изменения типа при создании
     const handleNewPropertyTypeChange = (type: SettingType) => {
-        let defaultValue = '';
-
-        switch (type) {
-            case SettingType.BOOLEAN:
-                defaultValue = 'false';
-                break;
-            case SettingType.NUMBER:
-                defaultValue = '0';
-                break;
-            case SettingType.SELECT:
-                defaultValue = '';
-                break;
-            case SettingType.IMAGE:
-                defaultValue = '';
-                break;
-            case SettingType.DATE:
-                defaultValue = new Date().toISOString();
-                break;
-            case SettingType.COLOR:
-                defaultValue = '#3f51b5';
-                break;
-            default:
-                defaultValue = '';
-        }
+        const defaultValue = propertyTypes.get(type)?.defaultValue ?? '';
 
         setNewProperty(prev => ({
             ...prev,
             settingType: type,
             value: defaultValue,
-            allowedValues: type === SettingType.SELECT ? ['option1', 'option2'] : undefined
+            allowedValues: type === SettingType.SELECT ? ['вариант1', 'вариант2'] : undefined
         }));
     };
 
@@ -429,7 +385,7 @@ const SettingsManagementPage: React.FC = () => {
                 >
                     <MenuItem value="ALL">Все типы</MenuItem>
                     {Object.values(SettingType).map(type => (
-                        <MenuItem key={type} value={type}>{propertyTypes.get(type)}</MenuItem>
+                        <MenuItem key={type} value={type}>{propertyTypes.get(type)?.name}</MenuItem>
                     ))}
                 </Select>
 
@@ -496,7 +452,7 @@ const SettingsManagementPage: React.FC = () => {
                             <TableRow key={property.id}>
                                 <TableCell>{property.key}</TableCell>
                                 <TableCell>{property.displayName}</TableCell>
-                                <TableCell>{propertyTypes.get(property.settingType)}</TableCell>
+                                <TableCell>{propertyTypes.get(property.settingType)?.name}</TableCell>
                                 <TableCell>{propertyGroups.get(property.propertyGroup)}</TableCell>
                                 <TableCell>
                                     {editingId === property.id ? (
