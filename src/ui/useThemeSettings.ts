@@ -5,17 +5,17 @@ import {defaultTheme} from "./theme.ts";
 import {getColorProperty, getSelectProperty} from "../services";
 
 const uiKeys = [
+    'theme.ui.mode',
     'theme.light.primary.main',
     'theme.light.primary.contrastText',
     'theme.light.secondary.main',
     'theme.light.text.primary',
-
-    'theme.ui.mode',
-
     'theme.dark.primary.main',
     'theme.dark.primary.contrastText',
     'theme.dark.secondary.main',
-    'theme.dark.text.primary'
+    'theme.dark.text.primary',
+    'theme.light.background',
+    'theme.dark.background'
 ];
 
 export const useThemeSettings = (): Theme => {
@@ -32,6 +32,7 @@ export const useThemeSettings = (): Theme => {
                     const primaryLightContrastTextColor = getColorProperty(response, 'theme.light.primary.contrastText');
                     const secondaryLightColorMain = getColorProperty(response, 'theme.light.secondary.main');
                     const themeLightPrimaryText = getColorProperty(response, 'theme.light.text.primary');
+                    const themeLightBackground = getColorProperty(response, 'theme.light.background');
 
                     const lightTheme = createTheme({
                         palette: {
@@ -45,10 +46,10 @@ export const useThemeSettings = (): Theme => {
                             text: {
                                 primary: themeLightPrimaryText ?? '#000'
                             },
-                            mode: "light"
-                            // background: {
-                            //     paper: '#fff'
-                            // }
+                            mode: "light",
+                            background: {
+                                default: themeLightBackground ?? '#fff'
+                            }
                         },
                     });
 
@@ -58,6 +59,7 @@ export const useThemeSettings = (): Theme => {
                     const primaryDarkContrastTextColor = getColorProperty(response, 'theme.dark.primary.contrastText');
                     const secondaryDarkColorMain = getColorProperty(response, 'theme.dark.secondary.main');
                     const themeDarkPrimaryText = getColorProperty(response, 'theme.dark.text.primary');
+                    const themeDarkBackground = getColorProperty(response, 'theme.dark.background');
 
                     const lightTheme = createTheme({
                         palette: {
@@ -71,10 +73,10 @@ export const useThemeSettings = (): Theme => {
                             text: {
                                 primary: themeDarkPrimaryText ?? '#000'
                             },
-                            mode: "dark"
-                            // background: {
-                            //     paper: '#121212'
-                            // }
+                            mode: "dark",
+                            background: {
+                                default: themeDarkBackground ?? '#121212',
+                            }
                         },
                     });
 
