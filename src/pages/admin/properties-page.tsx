@@ -23,7 +23,7 @@ import {
     Save as SaveIcon,
     Delete as DeleteIcon,
     Add as AddIcon,
-    Search as SearchIcon
+    Search as SearchIcon, Cancel
 } from '@mui/icons-material';
 import { SidebarPageBox } from "../../components";
 import {
@@ -114,13 +114,14 @@ const SettingsManagementPage: React.FC = () => {
             setProperties(prev => prev.map(p =>
                 p.id === property.id ? response : p
             ));
-            // setProperties(prev => prev.map(p =>
-            //     p.id === property.id ? property : p
-            // ));
             setEditingId(null);
         } catch (err) {
             setError('Не удалось сохранить настройку');
         }
+    };
+
+    const handleCancel = () => {
+        setEditingId(null);
     };
 
     const handleValueChange = (id: number, value: string) => {
@@ -463,9 +464,14 @@ const SettingsManagementPage: React.FC = () => {
                                 </TableCell>
                                 <TableCell>
                                     {editingId === property.id ? (
-                                        <IconButton onClick={() => handleSave(property)}>
-                                            <SaveIcon />
-                                        </IconButton>
+                                        <>
+                                            <IconButton onClick={() => handleSave(property)}>
+                                                <SaveIcon />
+                                            </IconButton>
+                                            <IconButton onClick={handleCancel}>
+                                                <Cancel />
+                                            </IconButton>
+                                        </>
                                     ) : (
                                         <IconButton onClick={() => handleEdit(property.id)}>
                                             <EditIcon />
