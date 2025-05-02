@@ -4,13 +4,15 @@ import {MainPageBox, PageRoundedContainer} from "../components";
 import {Grid2, Typography} from "@mui/material";
 import ProductCard from "../components/good/ProductCard.tsx";
 import {useUnit} from "effector-react";
-import {$allGoods, $recommendedGoods, loadGoodsWithDiscounts, loadRecommendedGoods} from "../api";
+import {$allGoods, $recommendedGoods, loadGoodsWithDiscounts, loadRecommendedGoods, MarketplaceType} from "../api";
 import Footer from "../components/common/footer.tsx";
+import {getMarketplaceType} from "../services";
 
 export const MainPage: React.FC = () => {
     const goods = useUnit($allGoods);
     const recommendedGoods = useUnit($recommendedGoods);
     const goodsWithDiscount = useMemo(() => goods.filter(g => g.discount), [goods]);
+    const marketplaceType = getMarketplaceType();
 
     useEffect(() => {
         loadGoodsWithDiscounts();
@@ -21,7 +23,9 @@ export const MainPage: React.FC = () => {
         <MainPageBox>
             <Header />
             <PageRoundedContainer>
-                <Typography variant='h6'>Товары со скидкой</Typography>
+                <Typography variant='h6'>
+                    {marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'} со скидкой
+                </Typography>
                 <Grid2 container spacing={3}>
                     {goodsWithDiscount.map((product) => (
                         <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
@@ -41,16 +45,6 @@ export const MainPage: React.FC = () => {
                     ))}
                 </Grid2>
             </PageRoundedContainer>
-            {/*<Banner />*/}
-            {/*<Container>*/}
-            {/*    <Grid container spacing={2}>*/}
-            {/*        {products.map(product => (*/}
-            {/*            <Grid item xs={12} sm={6} md={4} key={product.id}>*/}
-            {/*                <ProductCard title={product.title} image={product.image} price={product.price} />*/}
-            {/*            </Grid>*/}
-            {/*        ))}*/}
-            {/*    </Grid>*/}
-            {/*</Container>*/}
             <Footer />
         </MainPageBox>
     );

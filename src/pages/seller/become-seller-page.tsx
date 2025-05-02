@@ -194,7 +194,7 @@ export default function BecomeSellerPage() {
                             />
                         </FormControl>
                         <FormControl>
-                            <FormLabel>Основная категория товаров</FormLabel>
+                            <FormLabel>Основная категория</FormLabel>
                             <Select
                                 required
                                 variant='outlined'

@@ -34,12 +34,12 @@ import {
     GoodDiscount,
     GoodStatus,
     loadCategories,
-    loadGoodByIdFx,
+    loadGoodByIdFx, MarketplaceType,
     ModifyGoodType,
     updateGoodFx
 } from "../../../api";
 import {useUnit} from "effector-react";
-import {extractIdFromPath, getCategoryPathMapFromArray} from "../../../services";
+import {extractIdFromPath, getCategoryPathMapFromArray, getMarketplaceType} from "../../../services";
 import {goodStatuses} from "../../../constants.ts";
 
 const StyledDropzone = styled.div`
@@ -134,6 +134,8 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
     const match = useMatch('/seller/goods/:id');
     const goodId = extractIdFromPath(match);
     const navigate = useNavigate();
+    const marketplaceType = getMarketplaceType();
+
     const categoriesStore = useUnit($categories);
     const loggedUser = useUnit($loggedUser);
     const categories = useMemo(() => getCategoryPathMapFromArray(categoriesStore),
@@ -321,7 +323,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                 <Grid item xs={12}>
                                     <TextField
                                         fullWidth
-                                        label="Название товара"
+                                        label={marketplaceType === MarketplaceType.GOODS ? 'Название товара' : 'Название услуги'}
                                         name="name"
                                         value={good.name}
                                         onChange={handleInputChange}
@@ -331,7 +333,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                 <Grid item xs={12}>
                                     <TextField
                                         fullWidth
-                                        label="Описание товара"
+                                        label={marketplaceType === MarketplaceType.GOODS ? 'Описание товара' : 'Описание услуги'}
                                         name="description"
                                         value={good.description}
                                         onChange={handleInputChange}
@@ -380,7 +382,9 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
 
                     <Card sx={{ mt: 3 }}>
                         <CardContent>
-                            <Typography variant="h6" gutterBottom>Фотографии товара</Typography>
+                            <Typography variant="h6" gutterBottom>
+                                Фотографии {marketplaceType === MarketplaceType.GOODS ? 'товара' : 'услуги'}
+                            </Typography>
                             <StyledDropzone {...getRootProps()}>
                                 <input {...getInputProps()} />
                                 <CloudUploadIcon fontSize="large" />
@@ -532,7 +536,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                 startIcon={<SaveIcon />}
                                 type="submit"
                             >
-                                Создать товар
+                                Создать {marketplaceType === MarketplaceType.GOODS ? 'товар' : 'услугу'}
                             </Button>
                         ) : (
                             <>
@@ -546,16 +550,6 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                 >
                                     Сохранить изменения
                                 </Button>
-                                {/*<Button*/}
-                                {/*    fullWidth*/}
-                                {/*    variant="contained"*/}
-                                {/*    color='error'*/}
-                                {/*    size="large"*/}
-                                {/*    startIcon={<DeleteIcon />}*/}
-                                {/*    onClick={handleRemoveFromSale}*/}
-                                {/*>*/}
-                                {/*    Снять с продажи*/}
-                                {/*</Button>*/}
                                 {getStatusButtons(good?.status ?? GoodStatus.DRAFT, handleStatusChanged)}
                             </>
                         )}

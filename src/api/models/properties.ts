@@ -33,6 +33,11 @@ export enum PropertyGroup {
     DELIVERY = 'DELIVERY'
 }
 
+export enum MarketplaceType {
+    GOODS,
+    SERVICES
+}
+
 type LoadPropertiesParam = void;
 type LoadPropertiesByKeysParam = {keys: string[]};
 type LoadPropertiesResult = Property[];
@@ -56,7 +61,7 @@ type UpdatePropertyValueParam = {
 
 export const loadProperties = createEvent<LoadPropertiesParam>();
 export const deleteProperty = createEvent<DeletePropertyParam>();
-export const $properties = createStore<LoadPropertiesResult>([]);
+export const $properties = createStore<Property[]>([]);
 
 export const loadPropertiesFx = createEffect<LoadPropertiesParam, LoadPropertiesResult, AxiosError>({
     async handler() {

@@ -12,12 +12,12 @@ import {
 import Header from "../components/header/header.tsx";
 import {useMatch} from "react-router-dom";
 import {useUnit} from "effector-react";
-import {$categories, findCategoryById} from "../api";
+import {$categories, findCategoryById, MarketplaceType} from "../api";
 import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
 import {$goodsByCategory, loadGoodsByCategory, SortOption} from "../api";
 import ProductCard from "../components/good/ProductCard.tsx";
-import {extractIdFromPath, getGoodRating, getMaxGoodPrice, getMinGoodPrice} from "../services";
+import {extractIdFromPath, getGoodRating, getMarketplaceType, getMaxGoodPrice, getMinGoodPrice} from "../services";
 import {MainPageBox} from "../components";
 
 const MainContainer = styled(Box)(() => ({
@@ -42,6 +42,7 @@ export const CategoryPage: React.FC = () => {
     const match = useMatch('/catalog/:id');
     const categoryId = extractIdFromPath(match);
     const selectedCategory = findCategoryById(categories, categoryId as number);
+    const marketplaceType = getMarketplaceType();
 
     const [sortBy, setSortBy] = useState<SortOption>('popular');
     const goods = useUnit($goodsByCategory);
@@ -103,7 +104,7 @@ export const CategoryPage: React.FC = () => {
                     <Container maxWidth="xl">
                         <CustomHeader>
                             <Typography variant="h5" component="h1">
-                                {selectedCategory?.name} ({filteredGoods.length} товаров)
+                                {selectedCategory?.name} ({filteredGoods.length} {marketplaceType === MarketplaceType.GOODS ? 'товаров' : 'услуг'})
                             </Typography>
                             <FormControl sx={{ minWidth: 200 }}>
                                 <Select

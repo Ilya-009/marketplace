@@ -23,7 +23,7 @@ import {
     $store,
     Good,
     loadRandomGoodsByStoreIdFx, loadSellerOrdersFx,
-    loadSuppliesFx,
+    loadSuppliesFx, MarketplaceType,
     Order,
     OrderStatus,
     Supply,
@@ -32,9 +32,11 @@ import {
 import {loadStoreAnalyticsFx, StoreSummary} from "../../api/models/analytics.ts";
 import {useUnit} from "effector-react";
 import {goodStatuses, orderStatuses, supplyStatuses} from "../../constants.ts";
+import {getMarketplaceType} from "../../services";
 
 const SellerMainPage: React.FC = () => {
     const store = useUnit($store);
+    const marketplaceType = getMarketplaceType();
 
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState<StoreSummary | null>(null);
@@ -124,7 +126,7 @@ const SellerMainPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            {marketplaceType === MarketplaceType.GOODS && <Grid item xs={12} sm={6} md={3}>
                 <Card>
                     <CardContent>
                         <Box display="flex" alignItems="center">
@@ -138,7 +140,7 @@ const SellerMainPage: React.FC = () => {
                         </Box>
                     </CardContent>
                 </Card>
-            </Grid>
+            </Grid>}
             <Grid item xs={12} sm={6} md={3}>
                 <Card>
                     <CardContent>
@@ -156,12 +158,12 @@ const SellerMainPage: React.FC = () => {
             </Grid>
         </Grid>
 
-        {/* Товары */}
+        {/* Товары / услуги */}
         <Grid container spacing={3} mb={4}>
             <Grid item xs={12} md={6}>
                 <Paper elevation={3} sx={{ p: 2 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="h6">Ваши товары</Typography>
+                        <Typography variant="h6">Ваши {marketplaceType === MarketplaceType.GOODS ? 'товары' : 'услуги'} </Typography>
                         <Button
                             endIcon={<ArrowForward />}
                             onClick={() => navigate('/seller/goods')}
@@ -174,7 +176,7 @@ const SellerMainPage: React.FC = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Изображение</TableCell>
-                                    <TableCell>Товар</TableCell>
+                                    <TableCell>{marketplaceType === MarketplaceType.GOODS ? 'Товар' : 'Услуга'}</TableCell>
                                     <TableCell align="right">Цена</TableCell>
                                     <TableCell>Статус</TableCell>
                                 </TableRow>
@@ -213,59 +215,61 @@ const SellerMainPage: React.FC = () => {
             </Grid>
 
             {/* Активные поставки */}
-            <Grid item xs={12} md={6}>
-                <Paper elevation={3} sx={{ p: 2 }}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="h6">Активные поставки</Typography>
-                        <Button
-                            endIcon={<ArrowForward />}
-                            onClick={() => navigate('/seller/supplies')}
-                        >
-                            Все поставки
-                        </Button>
-                    </Box>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Товар</TableCell>
-                                    <TableCell align="right">Количество</TableCell>
-                                    <TableCell>Статус</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {supplies
-                                    .filter(s => s.status === 'PENDING')
-                                    .slice(0, 3)
-                                    .flatMap(supply =>
-                                        supply.supplyGoods.map((item, index) => {
-                                            const good = getGoodById(item.goodId);
-                                            return (
-                                                <TableRow key={`${supply.id}-${index}`} hover>
-                                                    <TableCell>{good?.name || 'Неизвестный товар'}</TableCell>
-                                                    <TableCell align="right">{item.quantity}</TableCell>
-                                                    <TableCell>
-                                                        <Box
-                                                            component="span"
-                                                            sx={{
-                                                                p: 0.5,
-                                                                borderRadius: 1,
-                                                                bgcolor: 'warning.light',
-                                                                color: 'common.white'
-                                                            }}
-                                                        >
-                                                            {supplyStatuses.get(supply.status)}
-                                                        </Box>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })
-                                    )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
-            </Grid>
+            {marketplaceType === MarketplaceType.GOODS && (
+                <Grid item xs={12} md={6}>
+                    <Paper elevation={3} sx={{ p: 2 }}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                            <Typography variant="h6">Активные поставки</Typography>
+                            <Button
+                                endIcon={<ArrowForward />}
+                                onClick={() => navigate('/seller/supplies')}
+                            >
+                                Все поставки
+                            </Button>
+                        </Box>
+                        <TableContainer>
+                            <Table size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Товар</TableCell>
+                                        <TableCell align="right">Количество</TableCell>
+                                        <TableCell>Статус</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {supplies
+                                        .filter(s => s.status === 'PENDING')
+                                        .slice(0, 3)
+                                        .flatMap(supply =>
+                                            supply.supplyGoods.map((item, index) => {
+                                                const good = getGoodById(item.goodId);
+                                                return (
+                                                    <TableRow key={`${supply.id}-${index}`} hover>
+                                                        <TableCell>{good?.name}</TableCell>
+                                                        <TableCell align="right">{item.quantity}</TableCell>
+                                                        <TableCell>
+                                                            <Box
+                                                                component="span"
+                                                                sx={{
+                                                                    p: 0.5,
+                                                                    borderRadius: 1,
+                                                                    bgcolor: 'warning.light',
+                                                                    color: 'common.white'
+                                                                }}
+                                                            >
+                                                                {supplyStatuses.get(supply.status)}
+                                                            </Box>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })
+                                        )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                </Grid>
+            )}
         </Grid>
 
         {/* Последние заказы */}

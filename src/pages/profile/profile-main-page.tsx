@@ -3,6 +3,8 @@ import {Box, Typography, Card, CardContent, Grid, TextField, Button} from '@mui/
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell} from 'recharts';
 import {EditProfileLink, SidebarPageBox} from "../../components";
 import {Link} from "react-router-dom";
+import {getMarketplaceType} from "../../services";
+import {MarketplaceType} from "../../api";
 
 // Данные для графиков
 const purchaseData = [
@@ -21,6 +23,8 @@ const reviewData = [
 const COLORS = ['#128a00', '#ff0000'];
 
 const ProfileMainPage: React.FC = () => {
+    const marketplaceType = getMarketplaceType();
+
     return <SidebarPageBox>
         <Typography variant="h5" gutterBottom>
             Мои данные
@@ -32,7 +36,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary">
-                            Купленные товары
+                            {marketplaceType === MarketplaceType.GOODS ? 'Купленные товары' : 'Оказанные услуги'}
                         </Typography>
                         <Typography variant="h4">142</Typography>
                     </CardContent>
@@ -52,7 +56,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary">
-                            Созданные заказы
+                            Оформлено заказов
                         </Typography>
                         <Typography variant="h4">56</Typography>
                     </CardContent>

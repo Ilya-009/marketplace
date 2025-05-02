@@ -14,9 +14,9 @@ import {
     Paper,
     Typography
 } from '@mui/material';
-import {Order} from "../../../api/models/orders.ts";
-import {Good} from "../../../api";
+import {Good, MarketplaceType, Order} from "../../../api";
 import {orderStatuses} from "../../../constants.ts";
+import {getMarketplaceType} from "../../../services";
 
 interface OrderDetailsModalProps {
     order: Order;
@@ -25,6 +25,8 @@ interface OrderDetailsModalProps {
 }
 
 const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, goods, onClose }) => {
+    const marketplaceType = getMarketplaceType();
+
     return (
         <Dialog open={true} onClose={onClose}>
             <DialogTitle>Детали заказа #{order.id}</DialogTitle>
@@ -36,7 +38,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, goods, onC
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Название товара</TableCell>
+                                <TableCell>Название {marketplaceType === MarketplaceType.GOODS ? 'товара' : 'услуги'} </TableCell>
                                 <TableCell>Количество</TableCell>
                                 <TableCell>Цена</TableCell>
                                 <TableCell>Стоимость</TableCell>
@@ -48,7 +50,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, goods, onC
                                 if (relatedGood) {
                                     return (
                                         <TableRow key={orderGood.id}>
-                                            <TableCell>{orderGood.goodId}</TableCell>
+                                            <TableCell>{relatedGood.name}</TableCell>
                                             <TableCell>{orderGood.quantity}</TableCell>
                                             <TableCell>{relatedGood.price}</TableCell>
                                             <TableCell>{orderGood.quantity * relatedGood.price}</TableCell>

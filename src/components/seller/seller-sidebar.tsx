@@ -3,10 +3,10 @@ import {Box, List, ListItem, ListItemButton, ListItemText, Typography} from '@mu
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
-import {$loggedUser} from "../../api";
+import {$loggedUser, $store, loadStoreByUser, MarketplaceType} from "../../api";
 import {useUnit} from "effector-react";
-import {$store, loadStoreByUser} from "../../api";
 import StoreIcon from '@mui/icons-material/Store';
+import {getMarketplaceType} from "../../services";
 
 const Sidebar = styled(Box)`
     width: 250px;
@@ -30,14 +30,31 @@ const StoreName = styled(Typography)`
     font-size: 18px;
 `;
 
-const sections = [
-    {id: 'main', label: 'Главная', path: 'main'},
-    {id: 'goods-prices', label: 'Товары и цены', path: 'goods'},
-    {id: 'supplies', label: 'Поставки', path: 'supplies'},
-    {id: 'orders', label: 'Заказы', path: 'orders'},
-    {id: 'analytics', label: 'Аналитика', path: 'analytics'},
-    {id: 'reviews', label: 'Отзывы', path: 'reviews'},
-];
+const makeSections = () => {
+    const marketplaceType = getMarketplaceType();
+    const isGoods = marketplaceType === MarketplaceType.GOODS;
+
+    let sections = [
+        {id: 'main', label: 'Главная', path: 'main'},
+        {
+            id: 'goods-prices',
+            label: isGoods ? 'Товары и цены' : 'Услуги и цены',
+            path: 'goods'
+        }
+    ];
+
+    if (isGoods) {
+        sections.push({id: 'supplies', label: 'Поставки', path: 'supplies'});
+    }
+
+    sections = [
+        ...sections,
+        {id: 'orders', label: 'Заказы', path: 'orders'},
+        {id: 'analytics', label: 'Аналитика', path: 'analytics'},
+        {id: 'reviews', label: 'Отзывы', path: 'reviews'}
+    ];
+    return sections;
+}
 
 const SellerSidebar: React.FC = () => {
     const location = useLocation();
@@ -62,7 +79,7 @@ const SellerSidebar: React.FC = () => {
 
             {/* Список разделов */}
             <List>
-                {sections.map((section) => (
+                {makeSections().map((section) => (
                     <ListItem key={section.id} disablePadding>
                         <ListItemButton
                             component={Link}
@@ -74,11 +91,11 @@ const SellerSidebar: React.FC = () => {
                     </ListItem>
                 ))}
 
-                <ListItem key='logout' disablePadding onClick={() => navigate('/profile/main')}>
-                    <ListItemButton component={Link}>
-                        <ListItemText primary='Войти как покупатель'/>
-                    </ListItemButton>
-                </ListItem>
+                {/*<ListItem key='logout' disablePadding onClick={() => navigate('/profile/main')}>*/}
+                {/*    <ListItemButton component={Link}>*/}
+                {/*        <ListItemText primary='Войти как покупатель'/>*/}
+                {/*    </ListItemButton>*/}
+                {/*</ListItem>*/}
             </List>
         </Sidebar>
     </>;

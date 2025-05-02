@@ -36,7 +36,7 @@ export const useThemeSettings = (): Theme => {
                         text: {
                             primary: themePrimaryText ?? '#000'
                         }
-                    }
+                    },
                 });
 
                 setTheme(newTheme);

@@ -19,11 +19,11 @@ import {
     Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsByStoreId} from "../../api";
+import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsByStoreId, MarketplaceType} from "../../api";
 import {useUnit} from "effector-react";
 import {$store} from "../../api";
 import {goodStatuses} from "../../constants.ts";
-import {getImageProperty} from "../../services";
+import {getImageProperty, getMarketplaceType} from "../../services";
 import {EditProfileLink} from "../common";
 import {useNavigate} from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -40,6 +40,7 @@ const SellerGoods: React.FC = () => {
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
+    const marketplaceType = getMarketplaceType();
     const emptyImage = useMemo(() => {
         return getImageProperty(properties, 'no.images.img');
     }, [properties]);
@@ -90,7 +91,7 @@ const SellerGoods: React.FC = () => {
     return (
         <Box>
             <Typography variant="h4" gutterBottom>
-                Товары и цены
+                {marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'} и цены
             </Typography>
             <Button
                 variant="contained"
@@ -98,7 +99,7 @@ const SellerGoods: React.FC = () => {
                 startIcon={<AddIcon />}
                 onClick={handleCreateNewGood}
             >
-                Добавить товар
+                Добавить {marketplaceType === MarketplaceType.GOODS ? 'товар' : 'услугу'}
             </Button>
             <Tabs value={selectedStatus} onChange={handleStatusChange}>
                 <Tab label="Все" value="ALL" />
@@ -109,7 +110,7 @@ const SellerGoods: React.FC = () => {
             <TextField
                 variant="outlined"
                 sx={{ input: { color: 'text.primary' }, width: '100%', my: 2 }}
-                placeholder="Поиск товаров"
+                placeholder={marketplaceType === MarketplaceType.GOODS ? 'Поиск товаров' : 'Поиск услуг'}
                 size="small"
                 value={searchQuery}
                 onChange={handleSearchChange}

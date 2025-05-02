@@ -12,7 +12,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    CircularProgress, TextField
+    TextField
 } from '@mui/material';
 
 import {
@@ -35,10 +35,12 @@ import {DatePicker} from "@mui/x-date-pickers";
 import {CircularLoader, SidebarPageBox} from "../../components";
 import {loadStoreAnalyticsFx, StoreAnalytics} from "../../api/models/analytics.ts";
 import {useUnit} from "effector-react";
-import {$store} from "../../api";
+import {$store, MarketplaceType} from "../../api";
+import {getMarketplaceType} from "../../services";
 
 const AnalyticsPage: React.FC = () => {
     const store = useUnit($store);
+    const marketplaceType = getMarketplaceType();
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<StoreAnalytics | null>(null);
@@ -162,7 +164,7 @@ const AnalyticsPage: React.FC = () => {
             {/* График топ товаров */}
             <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
                 <Typography variant="h6" gutterBottom>
-                    Топ товаров по выручке
+                    Топ {marketplaceType === MarketplaceType.GOODS ? 'товаров' : 'услуг'} по выручке
                 </Typography>
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart
@@ -180,10 +182,10 @@ const AnalyticsPage: React.FC = () => {
                 </ResponsiveContainer>
             </Paper>
 
-            {/* Таблица топ товаров */}
+            {/* Таблица топ товаров / услуг */}
             <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
-                    Детализация по товарам
+                    Детализация по {marketplaceType === MarketplaceType.GOODS ? 'товарам' : 'услугам'}
                 </Typography>
                 <TableContainer>
                     <Table>

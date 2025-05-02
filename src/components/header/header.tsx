@@ -9,8 +9,8 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import {SmallLinkActive, SmallLinkPassive, StyledSearchField} from "../common";
 import LinkWithIcon from "./header-link.tsx";
 import {useUnit} from "effector-react";
-import {$loggedUser, $properties, $searchResults, executeSearch, UserRole} from "../../api";
-import {getImageProperty, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
+import {$loggedUser, $properties, $searchResults, executeSearch, MarketplaceType, UserRole} from "../../api";
+import {getImageProperty, getMarketplaceType, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
 import {AccountBox} from "@mui/icons-material";
 import StoreIcon from '@mui/icons-material/Store';
@@ -26,6 +26,7 @@ const Header: React.FC = () => {
     const searchResults = useUnit($searchResults);
     const loggedUser = useUnit($loggedUser);
     const logoImageSrc = getImageProperty(properties, 'logo.image');
+    const marketplaceType = getMarketplaceType();
 
     const [open, setOpen] = useState(false);
 
@@ -77,7 +78,7 @@ const Header: React.FC = () => {
                     <SearchField
                         variant="outlined"
                         sx={{ width: '100%' }}
-                        placeholder="Поиск товаров"
+                        placeholder={marketplaceType === MarketplaceType.GOODS ? 'Поиск товаров' : 'Поиск услуг'}
                         size="small"
                         onChange={handleSearchChange}
                         InputProps={{
@@ -96,7 +97,7 @@ const Header: React.FC = () => {
                         : <LinkWithIcon icon={<LoginIcon />} label='Войти' href='/signIn' />
                     }
                     {isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER) && (
-                        <LinkWithIcon icon={<StoreIcon />} label='Мой магазин' href='/store/main' />
+                        <LinkWithIcon icon={<StoreIcon />} label='Мой магазин' href='/seller/main' />
                     )}
                     <LinkWithIcon icon={<FavoriteIcon />} label='Избранное' href='#' />
                     <LinkWithIcon icon={<ShoppingCartIcon />} label='Корзина' href='/cart' />

@@ -218,8 +218,8 @@ const CartPage: React.FC = () => {
 
         <ConfirmModal
             isOpen={confirmModalOpen}
-            title='Удалить товар?'
-            content='Вы точно хотите удалить выбранный товар? Отменить данное действие будет невозможно.'
+            title='Удалить?'
+            content='Вы точно хотите удалить выбранное? Отменить данное действие будет невозможно.'
             cancelBtnText='Отмена'
             submitBtnText='Удалить'
             onCancel={() => setConfirmModalOpen(false)}

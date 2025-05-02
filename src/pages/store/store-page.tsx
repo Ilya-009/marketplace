@@ -16,9 +16,9 @@ import {
     loadGoodsByStoreIdFx,
     $storeUnsecure,
     loadStoreUnsecure,
-    loadGoodsByCategoryFx
+    loadGoodsByCategoryFx, MarketplaceType
 } from "../../api";
-import {extractIdFromPath, getMaxGoodPrice} from "../../services";
+import {extractIdFromPath, getMarketplaceType, getMaxGoodPrice} from "../../services";
 import {useUnit} from "effector-react";
 import {MainPageBox} from "../../components";
 import Header from "../../components/header/header.tsx";
@@ -39,6 +39,8 @@ const ContentContainer = styled(Box)(() => ({
 const SellerPage: React.FC = () => {
     const match = useMatch('/store/:id');
     const storeId = extractIdFromPath(match);
+    const marketplaceType = getMarketplaceType();
+
     const [priceRange, setPriceRange] = useState({
         startRange: 0,
         endRange: 10000
@@ -149,7 +151,7 @@ const SellerPage: React.FC = () => {
                                         />
                                         <Chip
                                             avatar={<Avatar>{filteredGoods.length}</Avatar>}
-                                            label="Товаров в магазине"
+                                            label={(marketplaceType === MarketplaceType.GOODS ? 'Товаров' : 'Услуг') + 'в магазине'}
                                             variant="outlined"
                                         />
                                         <Chip

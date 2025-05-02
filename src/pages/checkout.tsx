@@ -19,8 +19,8 @@ import { MainPageBox } from "../components";
 import Header from "../components/header/header.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUnit } from "effector-react";
-import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodsByIds} from "../api";
-import {findGoodById, getImageProperty} from "../services";
+import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodsByIds, MarketplaceType} from "../api";
+import {findGoodById, getImageProperty, getMarketplaceType} from "../services";
 import {
     $deliveryMethods,
     $paymentMethods, createNewOrder,
@@ -38,6 +38,7 @@ type CartGood = {
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const marketplaceType = getMarketplaceType();
 
     const properties = useUnit($properties);
     const cart = useUnit($cart);
@@ -181,7 +182,7 @@ const CheckoutPage: React.FC = () => {
                         </FormControl>
 
                         <Typography variant="h6" gutterBottom>
-                            Товары в заказе
+                            {marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'} в заказе
                         </Typography>
                         <List>
                             {cartGoods.map((cartElem) => {
@@ -220,7 +221,7 @@ const CheckoutPage: React.FC = () => {
 
                         <Box sx={{ marginBottom: '20px' }}>
                             <Typography variant="body1">
-                                Сумма за товары: {totalProductsCost} руб.
+                                Сумма: {totalProductsCost} руб.
                             </Typography>
                             {deliveryCost > 0 && (
                                 <Typography variant="body1">

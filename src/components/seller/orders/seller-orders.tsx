@@ -14,7 +14,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import {$orders, loadSellerOrders, Order, OrderStatus} from "../../../api";
+import {$orders, loadSellerOrders, MarketplaceType, Order, OrderStatus} from "../../../api";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from "@mui/x-date-pickers";
@@ -24,11 +24,13 @@ import {useUnit} from "effector-react";
 import {$allGoods, loadGoodsByIds} from "../../../api";
 import OrderDetailsModal from "./order-details-modal.tsx";
 import ConfirmationDialog from "../../common/confirmation-dialog.tsx";
+import {getMarketplaceType} from "../../../services";
 
 const OrdersList: React.FC = () => {
     const seller = useUnit($store);
     const orders = useUnit($orders);
     const goods = useUnit($allGoods);
+    const marketplaceType = getMarketplaceType();
 
     useEffect(() => {
         if (seller?.id && seller.id > 0) {
@@ -141,7 +143,7 @@ const OrdersList: React.FC = () => {
                         <TableRow>
                             <TableCell>Номер заказа</TableCell>
                             <TableCell>Статус</TableCell>
-                            <TableCell>Товары</TableCell>
+                            <TableCell>{marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'}</TableCell>
                             <TableCell>Общая стоимость</TableCell>
                             <TableCell>Дата оформления</TableCell>
                             <TableCell>Действия</TableCell> {/* Новый столбец */}
