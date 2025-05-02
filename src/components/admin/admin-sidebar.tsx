@@ -1,12 +1,13 @@
 import React from 'react';
-import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
+import {Box, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material';
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 
 const Sidebar = styled(Box)`
     width: 250px;
-    background-color: #f5f5f5;
-    border-right: 1px solid #e0e0e0;
+    //background-color: ${({ theme }) => theme.palette.background.paper};
+    background-image: linear-gradient(rgba(255, 255, 255, 0.051), rgba(255, 255, 255, 0.051));
+    //border-right: 1px solid #e0e0e0;
     border-radius: 12px;
     margin: 16px;
     padding: 16px;

@@ -95,7 +95,7 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 </Typography>
                 <Typography
                     variant="body2"
-                    color="text.secondary"
+                    // color="text.secondary"
                     sx={{
                         mb: 1,
                         display: '-webkit-box',

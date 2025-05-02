@@ -10,7 +10,7 @@ import {getMarketplaceType} from "../../services";
 
 const Sidebar = styled(Box)`
     width: 250px;
-    background-color: #f5f5f5;
+    //background-color: #f5f5f5;
     border-right: 1px solid #e0e0e0;
     border-radius: 12px;
     margin: 16px;
@@ -58,7 +58,6 @@ const makeSections = () => {
 
 const SellerSidebar: React.FC = () => {
     const location = useLocation();
-    const navigate = useNavigate();
 
     const user = useUnit($loggedUser);
     const store = useUnit($store);

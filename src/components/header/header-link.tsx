@@ -7,6 +7,7 @@ const StyledLink = styled(Link)`
     flex-direction: column;
     align-items: center;
     transition: .5s ease-in-out;
+    color: ${({ theme }) => theme.palette.text.primary} !important;
 
     &:hover {
         color: ${({ theme }) => theme.palette.primary.main};
@@ -21,7 +22,7 @@ interface LinkWithIconProps {
 
 const LinkWithIcon: React.FC<LinkWithIconProps> = ({icon, label, href}) => {
     return (
-        <StyledLink href={href} color='#000'>
+        <StyledLink href={href}>
             {icon}
             <Typography variant="caption" style={{marginTop: 4}}>
                 {label}
