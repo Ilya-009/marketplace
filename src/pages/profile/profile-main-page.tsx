@@ -5,29 +5,31 @@ import {EditProfileLink, SidebarPageBox} from "../../components";
 import {Link} from "react-router-dom";
 import {getMarketplaceType} from "../../services";
 import {MarketplaceType} from "../../api";
-
-// Данные для графиков
-const purchaseData = [
-    {name: 'Янв', value: 12},
-    {name: 'Фев', value: 19},
-    {name: 'Мар', value: 8},
-    {name: 'Апр', value: 15},
-    {name: 'Май', value: 10},
-];
-
-const reviewData = [
-    {name: 'Положительные', value: 15},
-    {name: 'Отрицательные', value: 3},
-];
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const COLORS = ['#128a00', '#ff0000'];
 
 const ProfileMainPage: React.FC = () => {
     const marketplaceType = getMarketplaceType();
+    const {t} = useLanguage();
+
+    // Данные для графиков
+    const purchaseData = [
+        {name: t('common.months.jan'), value: 12},
+        {name: t('common.months.feb'), value: 19},
+        {name: t('common.months.mar'), value: 8},
+        {name: t('common.months.apr'), value: 15},
+        {name: t('common.months.may'), value: 10},
+    ];
+
+    const reviewData = [
+        {name: t('customer.profile.myData.stats.reviews.positive'), value: 15},
+        {name: t('customer.profile.myData.stats.reviews.negative'), value: 3},
+    ];
 
     return <SidebarPageBox>
         <Typography variant="h5" gutterBottom>
-            Мои данные
+            {t('customer.profile.tabs.personalData')}
         </Typography>
 
         {/* Карточки с общей информацией */}
@@ -36,7 +38,10 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary">
-                            {marketplaceType === MarketplaceType.GOODS ? 'Купленные товары' : 'Оказанные услуги'}
+                            {marketplaceType === MarketplaceType.GOODS
+                                ? t('customer.profile.myData.stats.bought.goods')
+                                : t('customer.profile.myData.stats.bought.services')
+                            }
                         </Typography>
                         <Typography variant="h4">142</Typography>
                     </CardContent>
@@ -46,7 +51,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary">
-                            Написано отзывов
+                            {t('customer.profile.myData.stats.reviews.brief')}
                         </Typography>
                         <Typography variant="h4">23</Typography>
                     </CardContent>
@@ -56,7 +61,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary">
-                            Оформлено заказов
+                            {t('customer.profile.myData.stats.orders')}
                         </Typography>
                         <Typography variant="h4">56</Typography>
                     </CardContent>
@@ -70,7 +75,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary" gutterBottom>
-                            Статистика покупок
+                            {t('customer.profile.myData.stats.bought.header')}
                         </Typography>
                         <BarChart width={500} height={300} data={purchaseData}>
                             <CartesianGrid strokeDasharray="3 3"/>
@@ -86,7 +91,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary" gutterBottom>
-                            Отзывы
+                            {t('customer.profile.myData.stats.reviews.header')}
                         </Typography>
                         <PieChart width={500} height={300}>
                             <Pie
@@ -113,19 +118,19 @@ const ProfileMainPage: React.FC = () => {
         </Grid>
 
         {/* Форма применения промокода */}
-        <Card sx={{marginBottom: 4}}>
-            <CardContent>
-                <Typography variant="h6" color="textSecondary" gutterBottom>
-                    Применить промокод
-                </Typography>
-                <Box component="form" sx={{display: 'flex', gap: 2}}>
-                    <TextField fullWidth label="Введите промокод" variant="outlined"/>
-                    <Button variant="contained" color="primary">
-                        Применить
-                    </Button>
-                </Box>
-            </CardContent>
-        </Card>
+        {/*<Card sx={{marginBottom: 4}}>*/}
+        {/*    <CardContent>*/}
+        {/*        <Typography variant="h6" color="textSecondary" gutterBottom>*/}
+        {/*            Применить промокод*/}
+        {/*        </Typography>*/}
+        {/*        <Box component="form" sx={{display: 'flex', gap: 2}}>*/}
+        {/*            <TextField fullWidth label="Введите промокод" variant="outlined"/>*/}
+        {/*            <Button variant="contained" color="primary">*/}
+        {/*                Применить*/}
+        {/*            </Button>*/}
+        {/*        </Box>*/}
+        {/*    </CardContent>*/}
+        {/*</Card>*/}
 
         {/* Условия оплаты и возврата */}
         <Grid container spacing={3}>
@@ -133,7 +138,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <EditProfileLink component={Link} to="payment-policy">
-                            Условия оплаты
+                            {t('customer.profile.myData.paymentPolicy')}
                         </EditProfileLink>
                     </CardContent>
                 </Card>
@@ -142,7 +147,7 @@ const ProfileMainPage: React.FC = () => {
                 <Card>
                     <CardContent>
                         <EditProfileLink component={Link} to="return-policy">
-                            Условия возврата
+                            {t('customer.profile.myData.returnPolicy')}
                         </EditProfileLink>
                     </CardContent>
                 </Card>

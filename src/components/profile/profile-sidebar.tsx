@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import {EditProfileLink} from "../common";
 import {$customer, logOut} from "../../api";
 import {useUnit} from "effector-react";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const Sidebar = styled(Box)`
     width: 250px;
-    background-color: #f5f5f5;
-    border-right: 1px solid #e0e0e0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.051), rgba(255, 255, 255, 0.051));
     border-radius: 12px;
     margin: 16px;
     padding: 16px;
@@ -34,19 +34,18 @@ const UserName = styled(Typography)`
     font-size: 18px;
 `;
 
-const sections = [
-    {id: 'main', label: 'Мои данные', path: 'main'},
-    // {id: 'payment-methods', label: 'Способы оплаты', path: 'payment-methods'},
-    {id: 'my-cart', label: 'Моя корзина', path: '/cart'},
-    {id: 'my-orders', label: 'Мои заказы', path: 'orders'},
-    {id: 'address', label: 'Мои адреса', path: 'address'},
-    // {id: 'purchased-items', label: 'Купленные товары', path: 'purchased-items'},
-    {id: 'my-reviews', label: 'Мои отзывы', path: 'my-reviews'},
-];
-
 const ProfileSidebar: React.FC = () => {
     const location = useLocation();
     const customer = useUnit($customer);
+    const {t} = useLanguage();
+
+    const sections = [
+        {id: 'main', label: t('customer.profile.tabs.personalData'), path: 'main'},
+        {id: 'my-cart', label: t('customer.profile.tabs.myCart'), path: '/cart'},
+        {id: 'my-orders', label: t('customer.profile.tabs.myOrders'), path: 'orders'},
+        {id: 'address', label: t('customer.profile.tabs.myAddresses'), path: 'address'},
+        {id: 'my-reviews', label: t('customer.profile.tabs.myReviews'), path: 'my-reviews'},
+    ];
 
     return <>
         <Sidebar>
@@ -54,7 +53,7 @@ const ProfileSidebar: React.FC = () => {
                 <UserAvatar alt="User Avatar" src="/path/to/avatar.jpg"/>
                 <UserName>{customer.firstName} {customer.lastName}</UserName>
                 <EditProfileLink component={Link} to="personalInfo">
-                    Редактировать профиль
+                    {t('customer.profile.edit')}
                 </EditProfileLink>
             </UserInfo>
 
@@ -74,7 +73,7 @@ const ProfileSidebar: React.FC = () => {
 
                 <ListItem key='logout' disablePadding>
                     <ListItemButton component={Link} onClick={() => logOut()}>
-                        <ListItemText primary='Выйти из аккаунта'/>
+                        <ListItemText primary={t('customer.profile.exit')}/>
                     </ListItemButton>
                 </ListItem>
             </List>

@@ -7,12 +7,14 @@ import {useUnit} from "effector-react";
 import {$allGoods, $recommendedGoods, loadGoodsWithDiscounts, loadRecommendedGoods, MarketplaceType} from "../api";
 import Footer from "../components/common/footer.tsx";
 import {getMarketplaceType} from "../services";
+import {useLanguage} from "../locales/language-context.tsx";
 
 export const MainPage: React.FC = () => {
     const goods = useUnit($allGoods);
     const recommendedGoods = useUnit($recommendedGoods);
     const goodsWithDiscount = useMemo(() => goods.filter(g => g.discount), [goods]);
     const marketplaceType = getMarketplaceType();
+    const {t} = useLanguage();
 
     useEffect(() => {
         loadGoodsWithDiscounts();
@@ -24,7 +26,7 @@ export const MainPage: React.FC = () => {
             <Header />
             <PageRoundedContainer>
                 <Typography variant='h6'>
-                    {marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'} со скидкой
+                    {marketplaceType === MarketplaceType.GOODS ? t('main.page.goods.discount') : t('main.page.services.discount')}
                 </Typography>
                 <Grid2 container spacing={3}>
                     {goodsWithDiscount.map((product) => (
@@ -36,7 +38,7 @@ export const MainPage: React.FC = () => {
             </PageRoundedContainer>
 
             <PageRoundedContainer>
-                <Typography variant='h6'>Рекомендации</Typography>
+                <Typography variant='h6'>{t('main.page.recommended')}</Typography>
                 <Grid2 container spacing={3}>
                     {recommendedGoods.map((product) => (
                         <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>

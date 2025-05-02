@@ -27,12 +27,14 @@ import {getImageProperty, getMarketplaceType} from "../../services";
 import {EditProfileLink} from "../common";
 import {useNavigate} from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const SellerGoods: React.FC = () => {
     const store = useUnit($store);
     const goods = useUnit($storeGoods);
     const properties = useUnit($properties);
     const navigate = useNavigate();
+    const {t} = useLanguage();
 
     const [filteredGoods, setFilteredGoods] = useState<Good[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<GoodStatus | 'ALL'>('ALL');
@@ -110,7 +112,7 @@ const SellerGoods: React.FC = () => {
             <TextField
                 variant="outlined"
                 sx={{ input: { color: 'text.primary' }, width: '100%', my: 2 }}
-                placeholder={marketplaceType === MarketplaceType.GOODS ? 'Поиск товаров' : 'Поиск услуг'}
+                placeholder={marketplaceType === MarketplaceType.GOODS ? t('main.header.search.goods') : t('main.header.search.services')}
                 size="small"
                 value={searchQuery}
                 onChange={handleSearchChange}

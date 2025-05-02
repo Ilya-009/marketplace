@@ -17,6 +17,7 @@ import {useUnit} from "effector-react";
 import {$categories, GoodCategory} from "../../api";
 import styled from "styled-components";
 import {SmallMenuLinkActive, SmallMenuLinkPassive} from "../common";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 type CatalogProps = {
     isOpen: boolean;
@@ -30,6 +31,7 @@ const CustomCatalogListItem = styled(ListItem)`
 const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
     const categories = useUnit($categories);
     const [selectedCategory, setSelectedCategory] = useState<GoodCategory | undefined>();
+    const {t} = useLanguage();
 
     const handleCategoryClick = (category: GoodCategory) => {
         setSelectedCategory(category);
@@ -37,7 +39,7 @@ const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
 
     return (
         <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="xl" sx={{minHeight: 600}}>
-            <DialogTitle>Каталог</DialogTitle>
+            <DialogTitle>{t('main.header.catalog')}</DialogTitle>
             <DialogContent>
                 <Stack direction="row" spacing={2}>
                     <Stack
@@ -85,7 +87,7 @@ const CategoryCatalog = ({isOpen, handleClose} : CatalogProps) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
-                    Закрыть
+                    {t('main.control.close')}
                 </Button>
             </DialogActions>
         </Dialog>

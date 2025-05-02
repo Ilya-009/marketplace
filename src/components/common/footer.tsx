@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import styled from 'styled-components';
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const StyledFooter = styled(Box)`
   background-color: #1976d2;
@@ -10,9 +11,10 @@ const StyledFooter = styled(Box)`
 `;
 
 const Footer: React.FC = () => {
+    const {t} = useLanguage();
     return (
         <StyledFooter>
-            <Typography variant="body1">© 2025 Маркетплейс. Все права защищены.</Typography>
+            <Typography variant="body1">{t('footer.bannerText')}</Typography>
         </StyledFooter>
     );
 };

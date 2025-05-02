@@ -33,6 +33,7 @@ import SellerPage from "./pages/store/store-page.tsx";
 import AdminSidebar from "./components/admin/admin-sidebar.tsx";
 import {CombinedThemeProvider} from "./ui";
 import CssBaseline from "@mui/material/CssBaseline";
+import {LanguageProvider} from "./locales/language-context.tsx";
 
 function App() {
     useEffect(() => {
@@ -40,68 +41,69 @@ function App() {
         loadProperties();
         loadCategories();
     }, []);
-
     const getLoggedUserFn = useCallback(() => loadLoggedUser(), []);
 
     return (
         <CombinedThemeProvider>
-            <CssBaseline />
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/signUp" element={<SignUp />} />
-                    <Route path="/signIn" element={<SignIn />} />
-                    <Route path="/catalog/:id" element={<CategoryPage />} />
-                    <Route path="/goods/:id" element={<ProductCardPage />} />
-                    <Route path="cart" element={<CartPage />} />
-                    <Route path="checkout" element={<CheckoutPage/>} />
-                    <Route path="/become-seller" element={<BecomeSellerPage/>} />
-                    <Route path="/store/:id" element={<SellerPage/>} />
+            <LanguageProvider>
+                <CssBaseline/>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/signUp" element={<SignUp/>}/>
+                        <Route path="/signIn" element={<SignIn/>}/>
+                        <Route path="/catalog/:id" element={<CategoryPage/>}/>
+                        <Route path="/goods/:id" element={<ProductCardPage/>}/>
+                        <Route path="cart" element={<CartPage/>}/>
+                        <Route path="checkout" element={<CheckoutPage/>}/>
+                        <Route path="/become-seller" element={<BecomeSellerPage/>}/>
+                        <Route path="/store/:id" element={<SellerPage/>}/>
 
-                    <Route path="/seller" element={
-                        <PageWithSidebar header={<SellerHeader/>}
-                                         sidebar={<SellerSidebar/>}
-                                         requiredRoles={[UserRole.SELLER]}/>
-                    }>
-                        <Route path="main" element={<SellerMainPage/>} />
-                        <Route path="edit" element={<StoreEditPage/>} />
-                        <Route path="goods/new" element={<CreateGoodPage isCreate/>} />
-                        <Route path="goods/:id" element={<CreateGoodPage isCreate={false} />} />
-                        <Route path="goods" element={<SellerGoodsPage/>} />
-                        <Route path="supplies" element={<SuppliesList/>} />
-                        <Route path="supplies/new" element={<CreateSupply/>} />
-                        <Route path="orders" element={<SellerOrdersPage/>} />
-                        <Route path="analytics" element={<SellerAnalyticsPage/>} />
-                        <Route path="reviews" element={<SellerReviewsPage/>} />
-                    </Route>
+                        <Route path="/seller" element={
+                            <PageWithSidebar header={<SellerHeader/>}
+                                             sidebar={<SellerSidebar/>}
+                                             requiredRoles={[UserRole.SELLER]}/>
+                        }>
+                            <Route path="main" element={<SellerMainPage/>}/>
+                            <Route path="edit" element={<StoreEditPage/>}/>
+                            <Route path="goods/new" element={<CreateGoodPage isCreate/>}/>
+                            <Route path="goods/:id" element={<CreateGoodPage isCreate={false}/>}/>
+                            <Route path="goods" element={<SellerGoodsPage/>}/>
+                            <Route path="supplies" element={<SuppliesList/>}/>
+                            <Route path="supplies/new" element={<CreateSupply/>}/>
+                            <Route path="orders" element={<SellerOrdersPage/>}/>
+                            <Route path="analytics" element={<SellerAnalyticsPage/>}/>
+                            <Route path="reviews" element={<SellerReviewsPage/>}/>
+                        </Route>
 
-                    <Route path="/profile" element={
-                        <PageWithSidebar
-                            header={<Header/>}
-                            sidebar={<ProfileSidebar/>}
-                            requiredRoles={[UserRole.CUSTOMER]}
-                        />
-                    }>
-                        <Route path="main" element={<ProfileMainPage />} />
-                        <Route path="personalInfo" element={<EditProfile />} />
-                        <Route path="orders" element={<OrdersPage />} />
-                        <Route path="address" element={<AddressPage />} />
-                    </Route>
-                    <Route path="/admin" element={
-                        <PageWithSidebar header={<Header/>}
-                                         sidebar={<AdminSidebar/>}
-                                         requiredRoles={[UserRole.ADMIN]}
-                                         initFunction={getLoggedUserFn}
-                        />
-                    }>
-                        <Route path="properties" element={<SettingsManagementPage />} />
-                        <Route path="categories" element={<CategoriesPage />} />
-                        {/*<Route path="stats" element={} />*/}
-                    </Route>
-                    <Route path="/" element={<MainPage />} />
-                    <Route path="/404" element={<NotFoundPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </BrowserRouter>
+                        <Route path="/profile" element={
+                            <PageWithSidebar
+                                header={<Header/>}
+                                sidebar={<ProfileSidebar/>}
+                                // requiredRoles={[UserRole.CUSTOMER]}
+                            />
+                        }>
+                            <Route path="main" element={<ProfileMainPage/>}/>
+                            <Route path="personalInfo" element={<EditProfile/>}/>
+                            <Route path="orders" element={<OrdersPage/>}/>
+                            <Route path="address" element={<AddressPage/>}/>
+                        </Route>
+                        <Route path="/admin" element={
+                            <PageWithSidebar header={<Header/>}
+                                             sidebar={<AdminSidebar/>}
+                                             requiredRoles={[UserRole.ADMIN]}
+                                             initFunction={getLoggedUserFn}
+                            />
+                        }>
+                            <Route path="properties" element={<SettingsManagementPage/>}/>
+                            <Route path="categories" element={<CategoriesPage/>}/>
+                            {/*<Route path="stats" element={} />*/}
+                        </Route>
+                        <Route path="/" element={<MainPage/>}/>
+                        <Route path="/404" element={<NotFoundPage/>}/>
+                        <Route path="*" element={<NotFoundPage/>}/>
+                    </Routes>
+                </BrowserRouter>
+            </LanguageProvider>
         </CombinedThemeProvider>
     )
 }

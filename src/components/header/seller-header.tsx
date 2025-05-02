@@ -3,6 +3,7 @@ import { AppBar, Box, Link, Stack } from '@mui/material';
 import { useUnit } from "effector-react";
 import { $properties } from "../../api";
 import {getImageProperty} from "../../services";
+import LanguageSwitcher from "../common/language-change-select.tsx";
 
 const SellerHeader: React.FC = () => {
     const properties = useUnit($properties);
@@ -23,6 +24,7 @@ const SellerHeader: React.FC = () => {
                             src={logoImageSrc}
                         />
                     </Link>
+                    <LanguageSwitcher/>
                 </Stack>
             </Stack>
         </AppBar>
