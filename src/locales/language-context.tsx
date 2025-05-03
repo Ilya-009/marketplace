@@ -19,16 +19,7 @@ const LanguageContext = createContext<LanguageContextType>({
 });
 
 export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-    const [language, setLanguage] = useState<Language>();
-
-    useEffect(() => {
-        const saved = localStorage.getItem('language');
-        if (saved) {
-            setLanguage(saved as Language);
-            return;
-        }
-        setLanguage('ru');
-    }, [])
+    const [language, setLanguage] = useState<Language>(localStorage.getItem('language') as Language ?? 'ru');
 
     useEffect(() => {
         if (language) {
