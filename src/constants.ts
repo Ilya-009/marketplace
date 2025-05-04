@@ -1,4 +1,4 @@
-import {OrganizationType, GoodStatus, PropertyGroup, SettingType, OrderStatus, SupplyStatus} from "./api";
+import {OrganizationType, GoodStatus, PropertyGroup, SettingType, OrderStatus, SupplyStatus, UserRole} from "./api";
 
 type GoodStatusData = {
     label: string;
@@ -258,6 +258,13 @@ export const organizationTypes = new Map<OrganizationType, string>([
     [OrganizationType.PAO, 'ПАО'],
     [OrganizationType.ZAO, 'ЗАО'],
     [OrganizationType.OAO, 'ОАО'],
+])
+
+export const userRoles = new Map<UserRole, string>([
+    [UserRole.ADMIN, 'Администратор'],
+    [UserRole.ROLE_MASTER_ADMIN, 'Мастер админ'],
+    [UserRole.SELLER, 'Продавец'],
+    [UserRole.CUSTOMER, 'Покупатель']
 ]);
 
 export const goodStatuses = new Map<GoodStatus, GoodStatusData>([

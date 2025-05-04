@@ -9,3 +9,4 @@ export * from './orders';
 export * from './store';
 export * from './supply';
 export * from './store-unsecure';
+export * from './user';

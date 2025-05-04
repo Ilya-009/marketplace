@@ -34,6 +34,7 @@ import AdminSidebar from "./components/admin/admin-sidebar.tsx";
 import {CombinedThemeProvider} from "./ui";
 import CssBaseline from "@mui/material/CssBaseline";
 import {LanguageProvider} from "./locales/language-context.tsx";
+import UsersManagementPage from "./pages/admin/users-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -90,13 +91,13 @@ function App() {
                         <Route path="/admin" element={
                             <PageWithSidebar header={<Header/>}
                                              sidebar={<AdminSidebar/>}
-                                             requiredRoles={[UserRole.ADMIN]}
+                                             requiredRoles={[UserRole.ADMIN, UserRole.ROLE_MASTER_ADMIN]}
                                              initFunction={getLoggedUserFn}
                             />
                         }>
                             <Route path="properties" element={<SettingsManagementPage/>}/>
                             <Route path="categories" element={<CategoriesPage/>}/>
-                            {/*<Route path="stats" element={} />*/}
+                            <Route path="users" element={<UsersManagementPage/>} />
                         </Route>
                         <Route path="/" element={<MainPage/>}/>
                         <Route path="/404" element={<NotFoundPage/>}/>

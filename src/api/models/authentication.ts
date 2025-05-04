@@ -21,6 +21,7 @@ type LoginUserParam = {
 export enum UserRole {
     USER = 'ROLE_USER',
     ADMIN = 'ROLE_ADMIN',
+    ROLE_MASTER_ADMIN = 'ROLE_MASTER_ADMIN',
     CUSTOMER = 'ROLE_CUSTOMER',
     SELLER = 'ROLE_SELLER',
 }
