@@ -3,20 +3,19 @@ import {SidebarPageBox} from "../../components";
 import {useUnit} from "effector-react";
 import {
     $isUserLoading,
-    $loggedUser,
-    createMewUserFx,
+    $loggedUser, changeUserStatusFx,
     loadAllUsersFx,
     updateUserFx,
     UserInfo,
-    UserRole
+    UserRole, UserStatus
 } from "../../api";
 import {useNavigate} from "react-router-dom";
 import {isUserAuthenticatedWithRole} from "../../services";
 import {
     Alert,
     Box,
-    Button, CircularProgress, IconButton,
-    Paper, Snackbar,
+    Button, Chip, CircularProgress, IconButton, MenuItem,
+    Paper, Select, Snackbar,
     Table,
     TableBody,
     TableCell,
@@ -25,15 +24,14 @@ import {
     TableRow, TextField,
     Typography
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import {Edit as EditIcon} from "@mui/icons-material";
+import {Edit as EditIcon, Settings} from "@mui/icons-material";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {userRoles} from "../../constants.ts";
+import {userRoles, userStatuses} from "../../constants.ts";
 
 const UsersManagementPage: React.FC = () => {
     const [loggedUser, isUserLoading] = useUnit([$loggedUser, $isUserLoading]);
@@ -50,14 +48,16 @@ const UsersManagementPage: React.FC = () => {
         }
     }, [hasAccess, isUserLoading, navigate]);
 
-    const [users, setUsers] = useState<UserInfo[]>([]);
+    const [users, setUsers] = useState<(UserInfo & { status: UserStatus })[]>([]);
     const [loading, setLoading] = useState(true);
     const [openEdit, setOpenEdit] = useState(false);
-    const [openCreate, setOpenCreate] = useState(false);
-    const [currentUser, setCurrentUser] = useState<Partial<UserInfo>>({
+    const [openStatus, setOpenStatus] = useState(false);
+    const [currentUser, setCurrentUser] = useState<Partial<UserInfo & { status: UserStatus, statusComment: string }>>({
         email: '',
         phone: '',
-        roles: []
+        roles: [],
+        status: UserStatus.ACTIVE,
+        statusComment: ''
     });
     const [snackbar, setSnackbar] = useState({
         open: false,
@@ -71,7 +71,10 @@ const UsersManagementPage: React.FC = () => {
             try {
                 setLoading(true);
                 const response = await loadAllUsersFx();
-                setUsers(response);
+                setUsers(response.map(user => ({
+                    ...user,
+                    status: user.status || UserStatus.ACTIVE // Дефолтный статус
+                })));
             } finally {
                 setLoading(false);
             }
@@ -89,31 +92,49 @@ const UsersManagementPage: React.FC = () => {
         setOpenEdit(true);
     };
 
-    const handleCreateClick = () => {
-        setCurrentUser({ email: '', phone: '', roles: [] });
-        setOpenCreate(true);
+    const handleStatusClick = (user: UserInfo) => {
+        setCurrentUser({ ...user });
+        setOpenStatus(true);
     };
 
     const handleClose = () => {
         setOpenEdit(false);
-        setOpenCreate(false);
+        setOpenStatus(false);
     };
 
     const saveUser = async () => {
-        if (currentUser.id) {
-            // Обновление существующего пользователя
-            const updatedUser = await updateUserFx(currentUser as UserInfo);
-            setUsers(users.map(user =>
-                user.id === currentUser.id ? updatedUser : user
-            ));
-            showSnackbar('Пользователь успешно обновлен', 'success');
-        } else {
-            // Создание нового пользователя
-            const createdUser = await createMewUserFx(currentUser as UserInfo);
-            setUsers([...users, createdUser]);
-            showSnackbar('Пользователь успешно создан', 'success');
+        try {
+            if (currentUser.id) {
+                // Обновление существующего пользователя
+                const updatedUser = await updateUserFx(currentUser as UserInfo);
+                setUsers(users.map(user =>
+                    user.id === currentUser.id ? { ...updatedUser, status: currentUser.status || UserStatus.ACTIVE } : user
+                ));
+                showSnackbar('Пользователь успешно обновлен', 'success');
+            }
+            handleClose();
+        } catch (error) {
+            showSnackbar('Ошибка при обновлении пользователя', 'error');
         }
-        handleClose();
+    };
+
+    const updateStatus = async (newStatus: UserStatus) => {
+        try {
+            if (currentUser.id) {
+                await changeUserStatusFx({
+                    id: currentUser.id,
+                    status: newStatus,
+                    comment: currentUser.statusComment
+                });
+                setUsers(users.map(user =>
+                    user.id === currentUser.id ? { ...user, status: newStatus } : user
+                ));
+                showSnackbar('Статус пользователя обновлен', 'success');
+                handleClose();
+            }
+        } catch (error) {
+            showSnackbar('Ошибка при изменении статуса', 'error');
+        }
     };
 
     const handleRoleChange = (role: UserRole, checked: boolean) => {
@@ -133,6 +154,15 @@ const UsersManagementPage: React.FC = () => {
         setCurrentUser(prev => ({ ...prev, [name]: value }));
     };
 
+    const getStatusColor = (status: UserStatus) => {
+        switch (status) {
+            case UserStatus.ACTIVE: return 'success';
+            case UserStatus.BANNED: return 'error';
+            case UserStatus.ON_CHECK: return 'warning';
+            default: return 'info';
+        }
+    };
+
     if (loading && users.length === 0) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -145,13 +175,6 @@ const UsersManagementPage: React.FC = () => {
         <SidebarPageBox sx={{ width: '90%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4">Управление пользователями</Typography>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleCreateClick}
-                >
-                    Добавить пользователя
-                </Button>
             </Box>
 
             <TableContainer component={Paper}>
@@ -162,6 +185,7 @@ const UsersManagementPage: React.FC = () => {
                             <TableCell>Email</TableCell>
                             <TableCell>Телефон</TableCell>
                             <TableCell>Роли</TableCell>
+                            <TableCell>Статус</TableCell>
                             <TableCell>Действия</TableCell>
                         </TableRow>
                     </TableHead>
@@ -175,8 +199,18 @@ const UsersManagementPage: React.FC = () => {
                                     {user.roles.map(r => userRoles.get(r)).join(', ')}
                                 </TableCell>
                                 <TableCell>
+                                    <Chip
+                                        label={user.status}
+                                        color={getStatusColor(user.status)}
+                                        size="small"
+                                    />
+                                </TableCell>
+                                <TableCell>
                                     <IconButton onClick={() => handleEditClick(user)}>
                                         <EditIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => handleStatusClick(user)}>
+                                        <Settings />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -185,22 +219,9 @@ const UsersManagementPage: React.FC = () => {
                 </Table>
             </TableContainer>
 
-            {/* Модальное окно подтверждения удаления */}
-            {/*<ConfirmModal*/}
-            {/*    isOpen={openConfirm}*/}
-            {/*    title='Подтвердите удаление?'*/}
-            {/*    content='Вы точно хотите удалить выбранное? Отменить данное действие будет невозможно.'*/}
-            {/*    cancelBtnText='Отмена'*/}
-            {/*    submitBtnText='Удалить'*/}
-            {/*    onCancel={handleClose}*/}
-            {/*    onSubmit={confirmDelete}*/}
-            {/*/>*/}
-
-            {/* Модальное окно редактирования/создания */}
-            <Dialog open={openEdit || openCreate} onClose={handleClose} fullWidth maxWidth="sm">
-                <DialogTitle>
-                    {openCreate ? 'Создание пользователя' : 'Редактирование пользователя'}
-                </DialogTitle>
+            {/* Модальное окно редактирования */}
+            <Dialog open={openEdit} onClose={handleClose} fullWidth maxWidth="sm">
+                <DialogTitle>Редактирование пользователя</DialogTitle>
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
                         <TextField
@@ -228,7 +249,7 @@ const UsersManagementPage: React.FC = () => {
                                         onChange={(e) => handleRoleChange(role, e.target.checked)}
                                     />
                                 }
-                                label={role.replace('ROLE_', '')}
+                                label={userRoles.get(role)}
                             />
                         ))}
                     </Box>
@@ -237,6 +258,62 @@ const UsersManagementPage: React.FC = () => {
                     <Button onClick={handleClose}>Отмена</Button>
                     <Button onClick={saveUser} variant="contained">
                         Сохранить
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Модальное окно изменения статуса */}
+            <Dialog open={openStatus} onClose={handleClose} fullWidth maxWidth="xs">
+                <DialogTitle>Изменение статуса пользователя</DialogTitle>
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Typography>Текущий статус:
+                            <Chip
+                                label={currentUser.status}
+                                color={getStatusColor(currentUser.status as UserStatus)}
+                                sx={{ ml: 1 }}
+                            />
+                        </Typography>
+                        <Typography variant="subtitle1">Новый статус:</Typography>
+                        <Select
+                            value={currentUser.status || UserStatus.ACTIVE}
+                            onChange={(e) => setCurrentUser(prev => ({
+                                ...prev,
+                                status: e.target.value as UserStatus
+                            }))}
+                            fullWidth
+                        >
+                            {Object.values(UserStatus).map(status => (
+                                <MenuItem key={status} value={status}>
+                                    <Chip
+                                        label={status}
+                                        color={getStatusColor(status)}
+                                        size="small"
+                                        sx={{ mr: 1 }}
+                                    />
+                                    {userStatuses.get(status)}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <Typography variant="subtitle1">Комментарий:</Typography>
+                        <TextField
+                            name="comment"
+                            value={currentUser.statusComment || ''}
+                            onChange={(e) => setCurrentUser(prev => ({
+                                ...prev,
+                                statusComment: e.target.value
+                            }))}
+                            fullWidth
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Отмена</Button>
+                    <Button
+                        onClick={() => updateStatus(currentUser.status as UserStatus)}
+                        variant="contained"
+                    >
+                        Обновить статус
                     </Button>
                 </DialogActions>
             </Dialog>

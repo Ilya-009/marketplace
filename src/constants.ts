@@ -1,4 +1,13 @@
-import {OrganizationType, GoodStatus, PropertyGroup, SettingType, OrderStatus, SupplyStatus, UserRole} from "./api";
+import {
+    OrganizationType,
+    GoodStatus,
+    PropertyGroup,
+    SettingType,
+    OrderStatus,
+    SupplyStatus,
+    UserRole,
+    UserStatus
+} from "./api";
 
 type GoodStatusData = {
     label: string;
@@ -306,4 +315,10 @@ export const propertyGroups = new Map<PropertyGroup, string>([
     [PropertyGroup.LOGIC, 'Логика'],
     [PropertyGroup.PAYMENT, 'Оплата'],
     [PropertyGroup.DELIVERY, 'Доставка'],
+]);
+
+export const userStatuses = new Map<UserStatus, string>([
+    [UserStatus.ACTIVE, 'Активный'],
+    [UserStatus.BANNED, 'Заблокирован'],
+    [UserStatus.ON_CHECK, 'На проверке']
 ]);

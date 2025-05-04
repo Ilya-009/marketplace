@@ -26,17 +26,25 @@ export enum UserRole {
     SELLER = 'ROLE_SELLER',
 }
 
+export enum UserStatus {
+    ACTIVE = 'ACTIVE',
+    BANNED = 'BANNED',
+    ON_CHECK = 'ON_CHECK'
+}
+
 export type UserInfo = {
     id: number;
     email: string;
     phone: string;
     roles: UserRole[];
+    status: UserStatus;
 };
 export const defaultUserInfo: UserInfo = {
     id: -1,
     email: '',
     phone: '',
-    roles: [UserRole.USER]
+    roles: [UserRole.USER],
+    status: UserStatus.ACTIVE
 };
 
 type LoadLoggedUserResult = UserInfo;
