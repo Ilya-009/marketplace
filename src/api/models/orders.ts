@@ -29,6 +29,7 @@ export interface OrderGood {
 export interface PaymentMethod {
     id: number;
     name: string;
+    isActive: boolean;
 }
 
 export interface DeliveryMethod {
@@ -53,6 +54,12 @@ export type CreateNewOrderParam = {
         quantity: number;
     }>;
 };
+
+type UpdatePaymentMethodParam = {
+    id: number;
+    name: string;
+    isActive: boolean;
+}[];
 
 export const $orders = createStore<Order[]>([]);
 export const $paymentMethods = createStore<PaymentMethod[]>([]);
@@ -83,11 +90,19 @@ const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({
         await apiClient.post(`${baseUrl}/orders`, order);
     }
 });
-const loadPaymentMethodsFx = createEffect<void, PaymentMethod[], AxiosError>({
+
+export const loadPaymentMethodsFx = createEffect<void, PaymentMethod[], AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/orders/paymentMethods`).then(({ data }) => data);
     }
 });
+
+export const updatePaymentMethodsFx = createEffect<UpdatePaymentMethodParam, void, AxiosError>({
+    async handler(param) {
+        return await apiClient.put(`${baseUrl}/orders/paymentMethods`, param).then(({ data }) => data);
+    }
+});
+
 const loadDeliveryMethodsFx = createEffect<void, DeliveryMethod[], AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/orders/deliveryMethods`).then(({ data }) => data);
@@ -108,10 +123,6 @@ sample({
     target: createNewOrderFx
 });
 
-sample({
-    clock: loadPaymentMethods,
-    target: loadPaymentMethodsFx
-});
 sample({
     clock: loadPaymentMethodsFx.doneData,
     target: $paymentMethods

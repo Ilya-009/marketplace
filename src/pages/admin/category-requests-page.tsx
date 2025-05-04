@@ -85,10 +85,6 @@ const CategoryRequestsPage: React.FC = () => {
 
         try {
             setLoading(true);
-            // const response = await axios.patch<CategoryRequest>(
-            //     `${API_URL}/${selectedRequest.id}/status`,
-            //     { status: newStatus }
-            // );
             const response = await updateCategoryRequestFx({id: selectedRequest.id, status: newStatus});
 
             setRequests(requests.map(req =>
