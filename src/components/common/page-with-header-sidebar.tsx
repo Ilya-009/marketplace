@@ -4,7 +4,7 @@ import {Box} from "@mui/material";
 import {Outlet, useNavigate} from "react-router-dom";
 import {useUnit} from "effector-react";
 import {$isUserLoading, $loggedUser, UserRole} from "../../api";
-import {isUserAuthenticatedWithRole} from "../../services";
+import {isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import {CircularLoader} from "./loader.tsx";
 
 type PageProps = {
@@ -31,8 +31,12 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
 
     useEffect(() => {
         // Выполняем редирект только после загрузки данных
-        if (!isUserLoading && !hasAccess) {
-            navigate('/404');
+        if (!isUserAuthenticated()) {
+            navigate('/signIn');
+        } else {
+            if (!isUserLoading && !hasAccess) {
+                navigate('/4o4');
+            }
         }
     }, [hasAccess, isUserLoading, navigate]);
 

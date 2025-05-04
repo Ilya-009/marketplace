@@ -42,11 +42,11 @@ const UsersManagementPage: React.FC = () => {
         return isUserAuthenticatedWithRole(loggedUser, UserRole.ROLE_MASTER_ADMIN);
     }, [isUserLoading, loggedUser]);
 
-    useEffect(() => {
-        if (!isUserLoading && !hasAccess) {
-            navigate('/404');
-        }
-    }, [hasAccess, isUserLoading, navigate]);
+    // useEffect(() => {
+    //     if (!isUserLoading && !hasAccess) {
+    //         navigate('/404');
+    //     }
+    // }, [hasAccess, isUserLoading, navigate]);
 
     const [users, setUsers] = useState<(UserInfo & { status: UserStatus })[]>([]);
     const [loading, setLoading] = useState(true);

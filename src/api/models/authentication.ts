@@ -163,7 +163,7 @@ sample({
 
 sample({
     clock: [loginUserFx.fail, changePasswordFx.fail],
-    fn: () => 'Неверный логин или пароль',
+    fn: () => 'Неверный логин или пароль или доступ запрещен',
     target: $authError
 });
 sample({

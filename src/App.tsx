@@ -101,6 +101,7 @@ function App() {
                         </Route>
                         <Route path="/" element={<MainPage/>}/>
                         <Route path="/404" element={<NotFoundPage/>}/>
+                        <Route path="/403" element={<NotFoundPage/>}/>
                         <Route path="*" element={<NotFoundPage/>}/>
                     </Routes>
                 </BrowserRouter>
