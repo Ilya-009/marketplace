@@ -34,8 +34,9 @@ export interface PaymentMethod {
 
 export interface DeliveryMethod {
     id: number;
-    price: number;
     name: string;
+    price: number;
+    minOrderSum: number;
 }
 
 type LoadCustomerOrdersParam = {
@@ -60,6 +61,16 @@ type UpdatePaymentMethodParam = {
     name: string;
     isActive: boolean;
 }[];
+
+type CreateDeliveryMethodParam = {
+    name: string;
+    price: number;
+    minOrderSum: number;
+};
+
+type DeleteDeliveryMethodParam = {
+    id: number;
+};
 
 export const $orders = createStore<Order[]>([]);
 export const $paymentMethods = createStore<PaymentMethod[]>([]);
@@ -103,9 +114,32 @@ export const updatePaymentMethodsFx = createEffect<UpdatePaymentMethodParam, voi
     }
 });
 
-const loadDeliveryMethodsFx = createEffect<void, DeliveryMethod[], AxiosError>({
+export const loadDeliveryMethodsFx = createEffect<void, DeliveryMethod[], AxiosError>({
     async handler() {
         return await apiClient.get(`${baseUrl}/orders/deliveryMethods`).then(({ data }) => data);
+    }
+});
+
+export const createDeliveryMethodFx = createEffect<CreateDeliveryMethodParam, DeliveryMethod, AxiosError>({
+    async handler(param) {
+        return await apiClient.post(`${baseUrl}/orders/deliveryMethods`, param).then(({ data }) => data);
+    }
+});
+
+export const updateDeliveryMethodFx = createEffect<DeliveryMethod, DeliveryMethod, AxiosError>({
+    async handler(param) {
+        const data = {
+            name: param.name,
+            price: param.price,
+            minOrderSum: param.minOrderSum
+        };
+        return await apiClient.put(`${baseUrl}/orders/deliveryMethods/${param.id}`, data).then(({ data }) => data);
+    }
+});
+
+export const deleteDeliveryMethodFx = createEffect<DeleteDeliveryMethodParam, void, AxiosError>({
+    async handler({id}) {
+        return await apiClient.delete(`${baseUrl}/orders/deliveryMethods/${id}`).then(({ data }) => data);
     }
 });
 

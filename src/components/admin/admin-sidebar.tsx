@@ -24,6 +24,7 @@ const sections = [
     {id: 'categories', label: 'Категории', path: 'categories'},
     {id: 'categoryRequests', label: 'Запросы на добавление категорий', path: 'categoryRequests'},
     {id: 'paymentMethods', label: 'Способы оплаты', path: 'paymentMethods'},
+    {id: 'deliveryMethods', label: 'Способы доставки', path: 'deliveryMethods'},
     {id: 'users', label: 'Пользователи и роли', path: 'users'}
 ];
 

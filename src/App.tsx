@@ -37,6 +37,7 @@ import {LanguageProvider} from "./locales/language-context.tsx";
 import UsersManagementPage from "./pages/admin/users-page.tsx";
 import CategoryRequestsPage from "./pages/admin/category-requests-page.tsx";
 import PaymentMethodsPage from "./pages/admin/payment-methods-page.tsx";
+import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -101,6 +102,7 @@ function App() {
                             <Route path="categories" element={<CategoriesPage/>}/>
                             <Route path="categoryRequests" element={<CategoryRequestsPage/>}/>
                             <Route path="paymentMethods" element={<PaymentMethodsPage/>}/>
+                            <Route path="deliveryMethods" element={<DeliveryMethodsPage/>}/>
                             <Route path="users" element={<UsersManagementPage/>} />
                         </Route>
                         <Route path="/" element={<MainPage/>}/>
