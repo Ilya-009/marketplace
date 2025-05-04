@@ -36,6 +36,21 @@ export interface GoodImage {
     image: string;
 }
 
+export interface CategoryRequest {
+    id: number;
+    reason: string;
+    categoryName: string;
+    status: CategoryRequestStatus;
+    createdAt: Date;
+    updatedAt: Date;
+}
+export enum CategoryRequestStatus {
+    NEW = 'NEW',
+    IN_PROGRESS = 'IN_PROGRESS',
+    FINISHED = 'FINISHED',
+    DENIED = 'DENIED'
+}
+
 export enum SearchResultType {
     GOOD = 'GOOD',
     CATEGORY = 'CATEGORY',
@@ -76,6 +91,15 @@ type LoadGoodsByStoreIdParam = {storeId: number};
 type LoadRandomGoodsByStoreIdParam = {storeId: number, count: number};
 export const loadGoodsByStoreId = createEvent<LoadGoodsByStoreIdParam>();
 export const $storeGoods = createStore<Array<Good>>([]);
+
+export type CreateNewCategoryRequestParam = {
+    categoryName: string;
+    reason: string;
+};
+type UpdateCategoryRequestParam = {
+    id: number;
+    status: CategoryRequestStatus;
+};
 
 export type ModifyGoodType = {
     name: string;
@@ -215,6 +239,28 @@ export const changeGoodStatusFx = createEffect<ChangeGoodStatusParam, void, Axio
     }
 });
 
+export const getCategoryRequestFx = createEffect<void, CategoryRequest[], AxiosError>({
+    async handler() {
+        return await apiClient.get(`${baseUrl}/goods/categories/requests`).then(({ data }) => data);
+    }
+});
+
+export const createNewCategoryRequestFx = createEffect<CreateNewCategoryRequestParam, void, AxiosError>({
+    async handler(param) {
+        await apiClient.post(`${baseUrl}/goods/categories/requests`, param);
+    }
+});
+
+export const updateCategoryRequestFx = createEffect<UpdateCategoryRequestParam, CategoryRequest, AxiosError>({
+    async handler(param) {
+        return await apiClient.patch(`${baseUrl}/goods/categories/requests/${param.id}`, param.status, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(({ data }) => data);
+    }
+});
+
 sample({
     clock: loadGoodsByCategory,
     target: loadGoodsByCategoryFx
@@ -265,10 +311,6 @@ sample({
     target: $recommendedGoods
 });
 
-sample({
-    clock: loadGoodsByStoreId,
-    target: loadGoodsByStoreIdFx
-});
 sample({
     clock: [loadGoodsByStoreIdFx.doneData, loadRandomGoodsByStoreIdFx.doneData],
     target: $storeGoods

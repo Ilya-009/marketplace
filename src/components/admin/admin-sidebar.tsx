@@ -22,7 +22,7 @@ const UserInfo = styled(Box)`
 const sections = [
     {id: 'properties', label: 'Настройки', path: 'properties'},
     {id: 'categories', label: 'Категории', path: 'categories'},
-    {id: 'analytics', label: 'Аналитика и отчеты', path: 'stats'},
+    {id: 'categoryRequests', label: 'Запросы на добавление категорий', path: 'categoryRequests'},
     {id: 'users', label: 'Пользователи и роли', path: 'users'}
 ];
 

@@ -35,6 +35,7 @@ import {CombinedThemeProvider} from "./ui";
 import CssBaseline from "@mui/material/CssBaseline";
 import {LanguageProvider} from "./locales/language-context.tsx";
 import UsersManagementPage from "./pages/admin/users-page.tsx";
+import CategoryRequestsPage from "./pages/admin/category-requests-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -97,6 +98,7 @@ function App() {
                         }>
                             <Route path="properties" element={<SettingsManagementPage/>}/>
                             <Route path="categories" element={<CategoriesPage/>}/>
+                            <Route path="categoryRequests" element={<CategoryRequestsPage/>}/>
                             <Route path="users" element={<UsersManagementPage/>} />
                         </Route>
                         <Route path="/" element={<MainPage/>}/>

@@ -41,6 +41,8 @@ import {
 import {useUnit} from "effector-react";
 import {extractIdFromPath, getCategoryPathMapFromArray, getMarketplaceType} from "../../../services";
 import {goodStatuses} from "../../../constants.ts";
+import AddIcon from "@mui/icons-material/Add";
+import CreateCategoryRequestModal from "../../../components/good/create-category-request-modal.tsx";
 
 const StyledDropzone = styled.div`
   border: 2px dashed #ccc;
@@ -154,6 +156,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         discountType: DiscountType.PERCENTAGE,
         discountValue: 0
     });
+    const [categoryCreationRequestModalOpen, setCategoryCreationRequestModalOpen] = useState(false);
 
     useEffect(() => {
         loadCategories();
@@ -553,9 +556,25 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                 {getStatusButtons(good?.status ?? GoodStatus.DRAFT, handleStatusChanged)}
                             </>
                         )}
+                        <Typography variant="h6" mt={3}>Нет нужной категории? </Typography>
+                        <Button
+                            fullWidth
+                            variant='outlined'
+                            size="large"
+                            startIcon={<AddIcon />}
+                            onClick={() => setCategoryCreationRequestModalOpen(true)}
+                        >
+                            Оформить заявку на добавление категории
+                        </Button>
+
                     </Box>
                 </Grid>
             </Grid>
+
+            <CreateCategoryRequestModal
+                open={categoryCreationRequestModalOpen}
+                onClose={() => setCategoryCreationRequestModalOpen(false)}
+            />
         </Box>
     );
 };
