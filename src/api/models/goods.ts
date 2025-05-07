@@ -15,6 +15,11 @@ export interface Good {
     goodImages: Array<GoodImage>;
     reviews: Array<Review>;
     discount?: GoodDiscount;
+    isService?: boolean;
+    duration?: number;
+    durationUnit?: DurationUnit;
+    isOnline?: boolean;
+    serviceSlots?: ServiceSlot[];
 }
 export enum GoodStatus {
     DRAFT = 'DRAFT',
@@ -23,6 +28,20 @@ export enum GoodStatus {
     REMOVED_FROM_SELL = 'REMOVED_FROM_SELL',
     ARCHIVED = 'ARCHIVED',
     BLOCKED = 'BLOCKED'
+}
+export enum DurationUnit {
+    MINUTES = 'MINUTES',
+    HOURS = 'HOURS',
+    DAYS = 'DAYS',
+    MONTHS = 'MONTHS',
+    YEARS = 'YEARS'
+}
+
+export interface ServiceSlot {
+    id: number;
+    startDateTime: Date;
+    endDateTime: Date;
+    isBooked: boolean;
 }
 
 export interface GoodDiscount {

@@ -2,11 +2,9 @@ import {Box, styled} from '@mui/material';
 import Gallery from "./gallery.tsx";
 import ProductInfo from "./good-info.tsx";
 import PriceDelivery from "./delivery.tsx";
-import {ReviewsContainer} from "./reviews.tsx";
-import ReviewCard from "./reviews.tsx";
-import {DeliveryMethod, Good, Store} from "../../../api";
-import {calculatePriceBeforeDiscount, getGoodRating} from "../../../services";
-import {addToCart} from "../../../api";
+import ReviewCard, {ReviewsContainer} from "./reviews.tsx";
+import {addToCart, DeliveryMethod, Good, MarketplaceType, Store} from "../../../api";
+import {calculatePriceBeforeDiscount, getGoodRating, getMarketplaceType} from "../../../services";
 
 const ProductCardContainer = styled(Box)(() => ({
     display: 'flex',
@@ -51,6 +49,8 @@ const ProductCard = ({good, deliveryMethods, store}: ProductCardProps) => {
         addToCart({goodId: good.id});
     };
 
+    const marketplaceType = getMarketplaceType();
+
     return <ProductCardContainer>
         <MainContent>
             <GallerySection>
@@ -64,12 +64,23 @@ const ProductCard = ({good, deliveryMethods, store}: ProductCardProps) => {
                     store={store}
                     description={good.description}
                 />
-                <PriceDelivery
-                    price={good.price}
-                    oldPrice={good.discount ? calculatePriceBeforeDiscount(good.price, good.discount) : undefined}
-                    deliveryMethods={deliveryMethods}
-                    addToCart={onAddToCartBtnClick}
-                />
+                {marketplaceType === MarketplaceType.GOODS ?
+                    <PriceDelivery
+                        price={good.price}
+                        oldPrice={good.discount ? calculatePriceBeforeDiscount(good.price, good.discount) : undefined}
+                        deliveryMethods={deliveryMethods}
+                        addToCart={onAddToCartBtnClick}
+                    />
+                    : <PriceDelivery
+                        price={good.price}
+                        oldPrice={good.discount ? calculatePriceBeforeDiscount(good.price, good.discount) : undefined}
+                        deliveryMethods={[]}
+                        addToCart={onAddToCartBtnClick}
+                        isService={true}
+                        serviceSlots={good.serviceSlots}
+                        duration={good.duration}
+                        durationUnit={good.durationUnit}
+                    />}
             </InfoSection>
         </MainContent>
         <ReviewsContainer>
