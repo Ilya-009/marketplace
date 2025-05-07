@@ -1,2 +1,3 @@
 export * from './seller-sidebar';
-export * from './seller-goods';
+export * from './goods/seller-goods.tsx';
+export * from './goods';

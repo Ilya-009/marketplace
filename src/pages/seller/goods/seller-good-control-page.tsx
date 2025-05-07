@@ -29,13 +29,13 @@ import {
     $loggedUser,
     changeGoodStatusFx,
     createNewGoodFx,
-    DiscountType,
+    DiscountType, DurationUnit,
     Good,
     GoodDiscount,
     GoodStatus,
     loadCategories,
     loadGoodByIdFx, MarketplaceType,
-    ModifyGoodType,
+    ModifyGoodType, ServiceSlot,
     updateGoodFx
 } from "../../../api";
 import {useUnit} from "effector-react";
@@ -43,6 +43,7 @@ import {extractIdFromPath, getCategoryPathMapFromArray, getMarketplaceType} from
 import {goodStatuses} from "../../../constants.ts";
 import AddIcon from "@mui/icons-material/Add";
 import CreateCategoryRequestModal from "../../../components/good/create-category-request-modal.tsx";
+import ServiceSlotsEditor from "../../../components/seller/goods/service-slots-editor.tsx";
 
 const StyledDropzone = styled.div`
   border: 2px dashed #ccc;
@@ -132,7 +133,7 @@ const getStatusButtons = (currentStatus: GoodStatus, onClickCallback: (status: G
     }, []);
 };
 
-const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPageProps) => {
+const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodPageProps) => {
     const match = useMatch('/seller/goods/:id');
     const goodId = extractIdFromPath(match);
     const navigate = useNavigate();
@@ -147,9 +148,14 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         name: '',
         description: '',
         price: 0,
-        categoryId: -1
+        categoryId: -1,
+        isService: marketplaceType === MarketplaceType.SERVICES,
+        duration: 1,
+        durationUnit: DurationUnit.HOURS,
+        isOnline: false,
+        serviceSlots: []
     });
-    const [images, setImages] = useState<{image: string; file?: File}[]>([]);
+    const [images, setImages] = useState<{ image: string; file?: File }[]>([]);
     const [existingImages, setExistingImages] = useState<string[]>([]);
     const [hasDiscount, setHasDiscount] = useState(false);
     const [discount, setDiscount] = useState<GoodDiscount>({
@@ -164,23 +170,26 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
 
     useEffect(() => {
         if (!isCreate && goodId) {
-            loadGoodByIdFx({id: goodId}).then(response => {
+            loadGoodByIdFx({ id: goodId }).then(response => {
                 const good = response as Good;
                 const modifyGoodType: ModifyGoodType = {
                     name: good.name,
                     description: good.description,
                     price: good.price,
                     status: good.status,
-                    categoryId: good.categoryId
+                    categoryId: good.categoryId,
+                    isService: good.isService,
+                    duration: good.duration,
+                    durationUnit: good.durationUnit,
+                    isOnline: good.isOnline,
+                    serviceSlots: good.serviceSlots || []
                 };
                 setGood(modifyGoodType);
 
-                // Загрузка существующих изображений
                 if (good.goodImages && good.goodImages.length > 0) {
                     setExistingImages(good.goodImages.map(img => `http://localhost:8080/files/images/${img.image}`));
                 }
 
-                // Загрузка скидки, если есть
                 if (good.discount) {
                     setHasDiscount(true);
                     setDiscount({
@@ -204,7 +213,6 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
 
         setImages(prev => [...prev, ...newImages]);
 
-        // Update images with data URLs when loaded
         acceptedFiles.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = () => {
@@ -229,9 +237,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
 
     const removeImage = (index: number, isExisting: boolean) => {
         if (isExisting) {
-            // const imageToDelete = existingImages[index];
             setExistingImages(prev => prev.filter((_, i) => i !== index));
-            // setImagesToDelete(prev => [...prev, imageToDelete]);
         } else {
             setImages(prev => prev.filter((_, i) => i !== index));
         }
@@ -261,6 +267,22 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         }));
     };
 
+    const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGood(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 }));
+    };
+
+    const handleDurationUnitChange = (e: any) => {
+        setGood(prev => ({ ...prev, durationUnit: e.target.value }));
+    };
+
+    const handleIsOnlineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGood(prev => ({ ...prev, isOnline: e.target.checked }));
+    };
+
+    const handleServiceSlotsChange = (slots: ServiceSlot[]) => {
+        setGood(prev => ({ ...prev, serviceSlots: slots }));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -272,13 +294,20 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
             categoryId: good.categoryId,
             userId: loggedUser.id,
             images: images.map(img => img.file as File),
-            discount: hasDiscount ? discount : undefined
+            discount: hasDiscount ? discount : undefined,
+            isService: marketplaceType === MarketplaceType.SERVICES,
+            duration: good.duration,
+            durationUnit: good.durationUnit,
+            isOnline: good.isOnline,
+            serviceSlots: good.serviceSlots
         };
 
         if (isCreate) {
-            await createNewGoodFx(formData);
+            console.log('create');
+            // await createNewGoodFx(formData);
         } else if (goodId) {
             await updateGoodFx({ id: goodId, ...formData });
+            console.log('update');
         }
     };
 
@@ -306,7 +335,11 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
         <Box component="form" onSubmit={handleSubmit}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                 <Typography variant="h4">
-                    {isCreate ? 'Создание нового товара' : 'Редактирование товара'}
+                    {(isCreate
+                            ? 'Создание нового '
+                            : 'Редактирование ')
+                        + (marketplaceType === MarketplaceType.GOODS ? 'товара' : 'услуги')
+                    }
                 </Typography>
                 <Button
                     variant="outlined"
@@ -379,6 +412,53 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                                         </Select>
                                     </FormControl>
                                 </Grid>
+
+                                {marketplaceType === MarketplaceType.SERVICES && (
+                                    <>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                fullWidth
+                                                label="Длительность выполнения"
+                                                name="duration"
+                                                type="number"
+                                                value={good.duration}
+                                                onChange={handleDurationChange}
+                                                InputProps={{
+                                                    inputProps: { min: 1 }
+                                                }}
+                                                required
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl fullWidth>
+                                                <InputLabel>Единица измерения</InputLabel>
+                                                <Select
+                                                    value={good.durationUnit}
+                                                    onChange={handleDurationUnitChange}
+                                                    label="Единица измерения"
+                                                    required
+                                                >
+                                                    <MenuItem value={DurationUnit.MINUTES}>Минуты</MenuItem>
+                                                    <MenuItem value={DurationUnit.HOURS}>Часы</MenuItem>
+                                                    <MenuItem value={DurationUnit.DAYS}>Дни</MenuItem>
+                                                    <MenuItem value={DurationUnit.MONTHS}>Месяцы</MenuItem>
+                                                    <MenuItem value={DurationUnit.YEARS}>Годы</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch
+                                                        checked={good.isOnline}
+                                                        onChange={handleIsOnlineChange}
+                                                    />
+                                                }
+                                                label="Онлайн услуга"
+                                            />
+                                        </Grid>
+                                    </>
+                                )}
                             </Grid>
                         </CardContent>
                     </Card>
@@ -434,27 +514,16 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                             )}
                         </CardContent>
                     </Card>
+
+                    {marketplaceType === MarketplaceType.SERVICES && (
+                        <ServiceSlotsEditor
+                            slots={good.serviceSlots || []}
+                            onSlotsChange={handleServiceSlotsChange}
+                        />
+                    )}
                 </Grid>
 
                 <Grid item xs={12} md={4}>
-                    {/*<Card>*/}
-                    {/*    <CardContent>*/}
-                    {/*        <Typography variant="h6" gutterBottom>Статус товара</Typography>*/}
-                    {/*        <FormControl fullWidth>*/}
-                    {/*            <InputLabel id="status-label">Статус</InputLabel>*/}
-                    {/*            <Select*/}
-                    {/*                labelId="status-label"*/}
-                    {/*                label="Статус"*/}
-                    {/*                value={good.status}*/}
-                    {/*                onChange={(e) => setGood(prev => ({ ...prev, status: e.target.value }))}*/}
-                    {/*            >*/}
-                    {/*                <MenuItem value="ON_SALE">В продаже</MenuItem>*/}
-                    {/*                <MenuItem value="READY_FOR_SELL">Готов к продаже</MenuItem>*/}
-                    {/*            </Select>*/}
-                    {/*        </FormControl>*/}
-                    {/*    </CardContent>*/}
-                    {/*</Card>*/}
-
                     <Card sx={{ mt: 3 }}>
                         <CardContent>
                             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -566,7 +635,6 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({isCreate}: CreateGoodPag
                         >
                             Оформить заявку на добавление категории
                         </Button>
-
                     </Box>
                 </Grid>
             </Grid>

@@ -158,6 +158,10 @@ sample({
 });
 
 sample({
+    clock: loadPaymentMethods,
+    target: loadPaymentMethodsFx
+});
+sample({
     clock: loadPaymentMethodsFx.doneData,
     target: $paymentMethods
 });

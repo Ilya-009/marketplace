@@ -9,12 +9,7 @@ import {SmallLinkActive, SmallLinkPassive, StyledSearchField} from "../common";
 import LinkWithIcon from "./header-link.tsx";
 import {useUnit} from "effector-react";
 import {$loggedUser, $properties, $searchResults, executeSearch, MarketplaceType, UserRole} from "../../api";
-import {
-    getImageProperty,
-    getMarketplaceType, getSelectProperty,
-    isUserAuthenticated,
-    isUserAuthenticatedWithRole
-} from "../../services";
+import {getImageProperty, getMarketplaceType, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
 import {AccountBox} from "@mui/icons-material";
 import StoreIcon from '@mui/icons-material/Store';
@@ -107,7 +102,7 @@ const Header: React.FC = () => {
                     {isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER) && (
                         <LinkWithIcon icon={<StoreIcon />} label={t('main.header.links.myStore')} href='/seller/main' />
                     )}
-                    {marketplaceType === 'Товары' && (
+                    {marketplaceType === MarketplaceType.GOODS && (
                         <LinkWithIcon icon={<ShoppingCartIcon />} label={t('main.header.links.cart')} href='/cart' />
                     )}
                 </Stack>

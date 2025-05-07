@@ -1,34 +1,43 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
     Box,
-    Typography,
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    FormControl,
-    FormLabel,
     Button,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
     Grid,
-    Paper,
     List,
     ListItem,
     ListItemAvatar,
     ListItemText,
+    Paper,
+    Radio,
+    RadioGroup,
+    Typography,
 } from '@mui/material';
-import { MainPageBox } from "../components";
+import {MainPageBox} from "../components";
 import Header from "../components/header/header.tsx";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useUnit } from "effector-react";
-import {$allGoods, $cart, $customer, $properties, CartItem, Good, loadGoodsByIds, MarketplaceType} from "../api";
-import {findGoodById, getImageProperty, getMarketplaceType} from "../services";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {useUnit} from "effector-react";
 import {
+    $addresses,
+    $allGoods,
+    $cart,
+    $customer,
     $deliveryMethods,
-    $paymentMethods, createNewOrder,
+    $paymentMethods,
+    $properties,
+    CartItem,
+    createNewOrder,
     CreateNewOrderParam,
+    Good,
+    loadAddresses,
     loadDeliveryMethods,
-    loadPaymentMethods
-} from '../api';
-import {$addresses, loadAddresses} from "../api";
+    loadGoodsByIds,
+    loadPaymentMethods,
+    MarketplaceType
+} from "../api";
+import {findGoodById, getImageProperty, getMarketplaceType} from "../services";
 
 type CartGood = {
     cartItem: CartItem,
@@ -57,7 +66,9 @@ const CheckoutPage: React.FC = () => {
         [searchParams, cart]);
 
     useEffect(() => {
-        loadDeliveryMethods();
+        if (marketplaceType === MarketplaceType.GOODS) {
+            loadDeliveryMethods();
+        }
         loadPaymentMethods();
     }, []);
 
@@ -141,45 +152,51 @@ const CheckoutPage: React.FC = () => {
                                 value={paymentMethodId}
                                 onChange={(e) => setPaymentMethodId(parseInt(e.target.value))}
                             >
-                                {paymentMethods.map((paymentMethod) => (
-                                    <FormControlLabel
-                                        key={paymentMethod.id}
-                                        value={paymentMethod.id}
-                                        control={<Radio/>}
-                                        label={paymentMethod.name}
-                                    />
-                                ))}
+                                {paymentMethods
+                                    .filter(method => marketplaceType === MarketplaceType.GOODS ? true : method.name !== 'Наличные')
+                                    .map((paymentMethod) => (
+                                        <FormControlLabel
+                                            key={paymentMethod.id}
+                                            value={paymentMethod.id}
+                                            control={<Radio/>}
+                                            label={paymentMethod.name}
+                                        />
+                                    ))}
                             </RadioGroup>
                         </FormControl>
 
-                        <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
-                            <FormLabel component="legend">Способ доставки</FormLabel>
-                            <RadioGroup
-                                value={deliveryMethodId}
-                                onChange={(e) => setDeliveryMethodId(parseInt(e.target.value))}
-                            >
-                                {deliveryMethods.map(deliveryMethod => (
-                                    <FormControlLabel key={deliveryMethod.id} value={deliveryMethod.id} control={<Radio />} label={deliveryMethod.name} />
-                                ))}
-                            </RadioGroup>
-                        </FormControl>
+                        {marketplaceType === MarketplaceType.GOODS && (
+                            <>
+                                <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
+                                    <FormLabel component="legend">Способ доставки</FormLabel>
+                                    <RadioGroup
+                                        value={deliveryMethodId}
+                                        onChange={(e) => setDeliveryMethodId(parseInt(e.target.value))}
+                                    >
+                                        {deliveryMethods.map(deliveryMethod => (
+                                            <FormControlLabel key={deliveryMethod.id} value={deliveryMethod.id} control={<Radio />} label={deliveryMethod.name} />
+                                        ))}
+                                    </RadioGroup>
+                                </FormControl>
 
-                        <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
-                            <FormLabel component="legend">Адрес доставки</FormLabel>
-                            <RadioGroup
-                                value={selectedAddressId}
-                                onChange={(e) => setSelectedAddressId(parseInt(e.target.value))}
-                            >
-                                {customerAddresses.map(address => (
-                                    <FormControlLabel
-                                        key={address.id}
-                                        value={address.id}
-                                        control={<Radio />}
-                                        label={`${address.city}, ${address.street}, ${address.houseNumber}, кв. ${address.flatNumber}`}
-                                    />
-                                ))}
-                            </RadioGroup>
-                        </FormControl>
+                                <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
+                                    <FormLabel component="legend">Адрес доставки</FormLabel>
+                                    <RadioGroup
+                                        value={selectedAddressId}
+                                        onChange={(e) => setSelectedAddressId(parseInt(e.target.value))}
+                                    >
+                                        {customerAddresses.map(address => (
+                                            <FormControlLabel
+                                                key={address.id}
+                                                value={address.id}
+                                                control={<Radio />}
+                                                label={`${address.city}, ${address.street}, ${address.houseNumber}, кв. ${address.flatNumber}`}
+                                            />
+                                        ))}
+                                    </RadioGroup>
+                                </FormControl>
+                            </>
+                        )}
 
                         <Typography variant="h6" gutterBottom>
                             {marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'} в заказе
@@ -216,13 +233,15 @@ const CheckoutPage: React.FC = () => {
                             sx={{ marginBottom: '20px' }}
                             onClick={handleSubmit}
                         >
-                            Оформить заказ
+                            {marketplaceType === MarketplaceType.GOODS ? 'Оформить заказ' : 'Забронировать'}
                         </Button>
 
                         <Box sx={{ marginBottom: '20px' }}>
-                            <Typography variant="body1">
-                                Сумма: {totalProductsCost} руб.
-                            </Typography>
+                            {marketplaceType === MarketplaceType.GOODS &&
+                                <Typography variant="body1">
+                                    Сумма: {totalProductsCost} руб.
+                                </Typography>
+                            }
                             {deliveryCost > 0 && (
                                 <Typography variant="body1">
                                     Стоимость доставки: {deliveryCost} руб.

@@ -19,15 +19,15 @@ import {
     Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsByStoreId, MarketplaceType} from "../../api";
+import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsByStoreId, MarketplaceType} from "../../../api";
 import {useUnit} from "effector-react";
-import {$store} from "../../api";
-import {goodStatuses} from "../../constants.ts";
-import {getImageProperty, getMarketplaceType} from "../../services";
-import {EditProfileLink} from "../common";
+import {$store} from "../../../api";
+import {goodStatuses} from "../../../constants.ts";
+import {getImageProperty, getMarketplaceType} from "../../../services";
+import {EditProfileLink} from "../../common";
 import {useNavigate} from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
-import {useLanguage} from "../../locales/language-context.tsx";
+import {useLanguage} from "../../../locales/language-context.tsx";
 
 const SellerGoods: React.FC = () => {
     const store = useUnit($store);

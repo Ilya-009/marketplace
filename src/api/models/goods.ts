@@ -38,7 +38,7 @@ export enum DurationUnit {
 }
 
 export interface ServiceSlot {
-    id: number;
+    id?: number;
     startDateTime: Date;
     endDateTime: Date;
     isBooked: boolean;
@@ -126,6 +126,11 @@ export type ModifyGoodType = {
     price: number;
     status?: GoodStatus;
     categoryId: number;
+    isService?: boolean;
+    duration?: number;
+    durationUnit?: DurationUnit;
+    isOnline?: boolean;
+    serviceSlots?: ServiceSlot[];
 };
 export type CreateNewGoodParam = ModifyGoodType & {
     userId: number;
@@ -240,7 +245,7 @@ export const updateGoodFx = createEffect<UpdateGoodParam, boolean, AxiosError>({
             formData.append('images', file);
         });
 
-        const response = await apiClient.post(`${baseUrl}/goods`, formData, {
+        const response = await apiClient.put(`${baseUrl}/goods/${param.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -328,6 +333,11 @@ sample({
 sample({
     clock: loadRecommendedGoodsFx.doneData,
     target: $recommendedGoods
+});
+
+sample({
+    clock: loadGoodsByStoreId,
+    target: loadGoodsByStoreIdFx
 });
 
 sample({
