@@ -28,7 +28,6 @@ import {
     $categories,
     $loggedUser,
     changeGoodStatusFx,
-    createNewGoodFx,
     DiscountType, DurationUnit,
     Good,
     GoodDiscount,
@@ -110,7 +109,7 @@ const getStatusButtons = (currentStatus: GoodStatus, onClickCallback: (status: G
             shownStatuses = [];
             break;
         case GoodStatus.DRAFT:
-            shownStatuses = [GoodStatus.ACTIVE];
+            shownStatuses = [GoodStatus.ON_MODERATION];
             break;
         case GoodStatus.ARCHIVED:
             shownStatuses = [GoodStatus.ACTIVE];

@@ -70,6 +70,19 @@ export enum CategoryRequestStatus {
     DENIED = 'DENIED'
 }
 
+export interface GoodRequest {
+    id: number;
+    goodId: number;
+    status: GoodRequestStatus;
+    createdAt: Date;
+    comment: string;
+}
+export enum GoodRequestStatus {
+    UNHANDLED = 'UNHANDLED',
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED'
+}
+
 export enum SearchResultType {
     GOOD = 'GOOD',
     CATEGORY = 'CATEGORY',
@@ -118,6 +131,11 @@ export type CreateNewCategoryRequestParam = {
 type UpdateCategoryRequestParam = {
     id: number;
     status: CategoryRequestStatus;
+};
+type UpdateGoodRequestParam = {
+    id: number;
+    status: GoodRequestStatus;
+    comment?: string;
 };
 
 export type ModifyGoodType = {
@@ -272,6 +290,18 @@ export const getCategoryRequestFx = createEffect<void, CategoryRequest[], AxiosE
 export const createNewCategoryRequestFx = createEffect<CreateNewCategoryRequestParam, void, AxiosError>({
     async handler(param) {
         await apiClient.post(`${baseUrl}/goods/categories/requests`, param);
+    }
+});
+
+export const getGoodRequestsFx = createEffect<void, GoodRequest[], AxiosError>({
+    async handler() {
+        return await apiClient.get(`${baseUrl}/goods/requests`).then(({ data }) => data);
+    }
+});
+
+export const updateGoodRequestFx = createEffect<UpdateGoodRequestParam, void, AxiosError>({
+    async handler(param) {
+        return await apiClient.put(`${baseUrl}/goods/requests/${param.id}`, param).then(({ data }) => data);
     }
 });
 

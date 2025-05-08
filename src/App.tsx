@@ -38,6 +38,7 @@ import UsersManagementPage from "./pages/admin/users-page.tsx";
 import CategoryRequestsPage from "./pages/admin/category-requests-page.tsx";
 import PaymentMethodsPage from "./pages/admin/payment-methods-page.tsx";
 import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
+import GoodRequestsPage from "./pages/admin/good-requests-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -101,6 +102,7 @@ function App() {
                             <Route path="properties" element={<SettingsManagementPage/>}/>
                             <Route path="categories" element={<CategoriesPage/>}/>
                             <Route path="categoryRequests" element={<CategoryRequestsPage/>}/>
+                            <Route path="goodRequests" element={<GoodRequestsPage/>}/>
                             <Route path="paymentMethods" element={<PaymentMethodsPage/>}/>
                             <Route path="deliveryMethods" element={<DeliveryMethodsPage/>}/>
                             <Route path="users" element={<UsersManagementPage/>} />

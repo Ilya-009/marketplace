@@ -59,7 +59,7 @@ const CheckoutPage: React.FC = () => {
 
     const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
     const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
-    const [selectedAddressId, setSelectedAddressId] = useState<number>(1); // Состояние для выбранного адреса
+    const [selectedAddressId, setSelectedAddressId] = useState<number>(1);
 
     const selectedGoodIds = useMemo(() =>
         searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? cart.map(c => c.goodId),
