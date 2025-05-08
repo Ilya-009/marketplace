@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {
-    Box, Button,
+    Box,
+    Button,
     IconButton,
     InputAdornment,
     MenuItem,
@@ -19,9 +20,20 @@ import {
     Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {$properties, $storeGoods, DiscountType, Good, GoodStatus, loadGoodsByStoreId, MarketplaceType} from "../../../api";
+import {
+    $goodRequests,
+    $properties,
+    $store,
+    $storeGoods,
+    DiscountType,
+    getGoodRequestsFx,
+    Good,
+    GoodRequestStatus,
+    GoodStatus,
+    loadGoodsByStoreId,
+    MarketplaceType
+} from "../../../api";
 import {useUnit} from "effector-react";
-import {$store} from "../../../api";
 import {goodStatuses} from "../../../constants.ts";
 import {getImageProperty, getMarketplaceType} from "../../../services";
 import {EditProfileLink} from "../../common";
@@ -33,6 +45,7 @@ const SellerGoods: React.FC = () => {
     const store = useUnit($store);
     const goods = useUnit($storeGoods);
     const properties = useUnit($properties);
+    const goodRequests = useUnit($goodRequests);
     const navigate = useNavigate();
     const {t} = useLanguage();
 
@@ -46,6 +59,14 @@ const SellerGoods: React.FC = () => {
     const emptyImage = useMemo(() => {
         return getImageProperty(properties, 'no.images.img');
     }, [properties]);
+
+    useEffect(() => {
+        getGoodRequestsFx();
+    }, []);
+
+    useEffect(() => {
+        console.log(goodRequests);
+    }, [goodRequests]);
 
     useEffect(() => {
         if (store?.id && store?.id > 0) {
@@ -135,6 +156,9 @@ const SellerGoods: React.FC = () => {
                             <TableCell>Название</TableCell>
                             <TableCell>Статус</TableCell>
                             <TableCell>Цена до скидки</TableCell>
+                            {goodRequests.some(rq => rq.status === GoodRequestStatus.REJECTED) && (
+                                <TableCell>Причина</TableCell>
+                            )}
                             <TableCell>Цена</TableCell>
                         </TableRow>
                     </TableHead>
@@ -154,6 +178,9 @@ const SellerGoods: React.FC = () => {
                                     </EditProfileLink>
                                 </TableCell>
                                 <TableCell>{goodStatuses.get(good.status)?.label}</TableCell>
+                                {goodRequests.some(rq => rq.status === GoodRequestStatus.REJECTED) && (
+                                    <TableCell>{goodRequests.find(rq => rq.goodId === good.id)?.comment}</TableCell>
+                                )}
                                 <TableCell>{good.discount ? good.price : '-'}</TableCell>
                                 <TableCell>
                                     {good.discount

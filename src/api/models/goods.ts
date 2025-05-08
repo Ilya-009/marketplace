@@ -124,6 +124,8 @@ type LoadRandomGoodsByStoreIdParam = {storeId: number, count: number};
 export const loadGoodsByStoreId = createEvent<LoadGoodsByStoreIdParam>();
 export const $storeGoods = createStore<Array<Good>>([]);
 
+export const $goodRequests = createStore<Array<GoodRequest>>([]);
+
 export type CreateNewCategoryRequestParam = {
     categoryName: string;
     reason: string;
@@ -304,7 +306,6 @@ export const updateGoodRequestFx = createEffect<UpdateGoodRequestParam, void, Ax
         return await apiClient.put(`${baseUrl}/goods/requests/${param.id}`, param).then(({ data }) => data);
     }
 });
-
 export const updateCategoryRequestFx = createEffect<UpdateCategoryRequestParam, CategoryRequest, AxiosError>({
     async handler(param) {
         return await apiClient.patch(`${baseUrl}/goods/categories/requests/${param.id}`, param.status, {
@@ -373,6 +374,11 @@ sample({
 sample({
     clock: [loadGoodsByStoreIdFx.doneData, loadRandomGoodsByStoreIdFx.doneData],
     target: $storeGoods
+});
+
+sample({
+    clock: getGoodRequestsFx.doneData,
+    target: $goodRequests
 });
 
 $allGoods.on(loadGoodByIdFx.doneData, (goods, good) => {

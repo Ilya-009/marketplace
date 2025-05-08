@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {
     Alert,
-    Box, Button,
+    Box,
+    Button,
     CircularProgress,
     Dialog,
     DialogActions,
@@ -30,7 +31,8 @@ import {
     GoodRequest,
     GoodRequestStatus,
     loadGoodsByIds,
-    MarketplaceType, updateGoodRequestFx,
+    MarketplaceType,
+    updateGoodRequestFx,
 } from "../../api";
 import {SidebarPageBox} from "../../components";
 import {getMarketplaceType} from "../../services";
@@ -57,9 +59,10 @@ const GoodRequestsPage: React.FC = () => {
         try {
             setLoading(true);
             const response = await getGoodRequestsFx();
-            const goodIds = response.map(rq => rq.goodId);
+            const requests = response.filter(rq => rq.status === GoodRequestStatus.UNHANDLED);
+            const goodIds = requests.map(rq => rq.goodId);
             loadGoodsByIds({ids: goodIds});
-            setRequests(response);
+            setRequests(requests);
         } catch (err) {
             setError('Не удалось загрузить заявки');
             showSnackbar('Ошибка при загрузке заявок', 'error');
@@ -88,15 +91,17 @@ const GoodRequestsPage: React.FC = () => {
 
     const handleRejectClick = () => {
         setRejectionDialogOpen(true);
-        handleMenuClose();
+        setAnchorEl(null);
     };
 
     const handleRejectionDialogClose = () => {
         setRejectionDialogOpen(false);
         setRejectionReason('');
+        setSelectedRequest(null);
     };
 
     const updateStatus = async (newStatus: GoodRequestStatus, reason?: string) => {
+        console.log(selectedRequest);
         if (!selectedRequest) return;
 
         try {

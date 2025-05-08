@@ -28,6 +28,7 @@ import {
     $categories,
     $loggedUser,
     changeGoodStatusFx,
+    createNewGoodFx,
     DiscountType, DurationUnit,
     Good,
     GoodDiscount,
@@ -102,7 +103,7 @@ const getStatusButtons = (currentStatus: GoodStatus, onClickCallback: (status: G
     let shownStatuses: GoodStatus[];
     switch (currentStatus) {
         case GoodStatus.ACTIVE:
-            shownStatuses = [GoodStatus.DRAFT, GoodStatus.REMOVED_FROM_SELL];
+            shownStatuses = [GoodStatus.REMOVED_FROM_SELL];
             break;
         case GoodStatus.ON_MODERATION:
         case GoodStatus.BLOCKED:
@@ -302,11 +303,9 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
         };
 
         if (isCreate) {
-            console.log('create');
-            // await createNewGoodFx(formData);
+            await createNewGoodFx(formData);
         } else if (goodId) {
             await updateGoodFx({ id: goodId, ...formData });
-            console.log('update');
         }
     };
 
@@ -316,6 +315,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
                 id: goodId,
                 status: targetStatus
             }).then(() => navigate('/seller/goods'));
+            window.location.reload();
         }
     };
 
