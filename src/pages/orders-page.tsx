@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Avatar, Box, Card, CardContent, Grid, Tab, Tabs, Typography} from '@mui/material';
+import {Avatar, Box, Card, CardContent, Grid, Link, Tab, Tabs, Typography} from '@mui/material';
 import {useUnit} from "effector-react";
 import {$allGoods, $customer, $properties, loadGoodsByIds, $orders, loadCustomerOrders, OrderStatus} from "../api";
-import {getImageProperty} from "../services";
+import {getStringProperty} from "../services";
 
 const OrdersPage: React.FC = () => {
     const [status, setStatus] = useState<OrderStatus>(OrderStatus.CREATED);
@@ -25,7 +25,7 @@ const OrdersPage: React.FC = () => {
     }, [orders]);
 
     const emptyImage = useMemo(() => {
-        return getImageProperty(properties, 'no.images.img');
+        return getStringProperty(properties, 'no.images.img');
     }, [properties]);
 
     // Фильтрация заказов по статусу
@@ -85,7 +85,14 @@ const OrdersPage: React.FC = () => {
                                             return '';
                                         }
 
-                                        return <Avatar key={orderGood.id} src={good.goodImages[0]?.image ?? emptyImage} alt={`Product ${orderGood.goodId}`} />;
+                                        return <Link href={'/goods/' + good.id} target='_blank' rel='noopener'>
+                                            <Avatar key={orderGood.id}
+                                                    variant='square'
+                                                    sx={{ width: 56, height: 56 }}
+                                                    src={`http://localhost:8080/files/images/${good.goodImages[0]?.image ?? emptyImage}`}
+                                                    alt={`Product ${orderGood.goodId}`}
+                                            />
+                                        </Link>
                                     })}
                                 </Box>
                             </Grid>
