@@ -35,3 +35,15 @@ export const formatDateTime = (
         .replace('mm', minutes)
         .replace('ss', seconds);
 };
+
+export const limitString = (str: string, limitChars: number = 20): string => {
+    if (str == null) {
+        return '';
+    }
+
+    if (str.length < limitChars) {
+        return str;
+    }
+
+    return str.substring(0, limitChars) + '...';
+};

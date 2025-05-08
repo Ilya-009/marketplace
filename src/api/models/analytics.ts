@@ -58,7 +58,11 @@ export const loadStoreAnalyticsFx = createEffect<LoadStoreAnalyticsParam, StoreA
             url = `${baseUrl}/analytics/store?storeId=${storeId}`;
         }
 
-        return await apiClient.get(url).then(({ data }) => data);
+        const response: StoreAnalytics = await apiClient.get(url).then(({ data }) => data);
+        // response.salesOverTime.map(sale => {
+        //     return {...sale, date: formatDate(new Date(sale.date))}
+        // });
+        return response;
     }
 });
 

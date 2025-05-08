@@ -12,7 +12,7 @@ import {
     ListItemText,
     Paper,
     Radio,
-    RadioGroup,
+    RadioGroup, TextField,
     Typography,
 } from '@mui/material';
 import {MainPageBox} from "../components";
@@ -60,6 +60,7 @@ const CheckoutPage: React.FC = () => {
     const [paymentMethodId, setPaymentMethodId] = useState<number>(1);
     const [deliveryMethodId, setDeliveryMethodId] = useState<number>(1);
     const [selectedAddressId, setSelectedAddressId] = useState<number>(1);
+    const [orderComment, setOrderComment] = useState<string>('');
 
     const selectedGoodIds = useMemo(() =>
         searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? cart.map(c => c.goodId),
@@ -129,7 +130,8 @@ const CheckoutPage: React.FC = () => {
                     goodId: cartGood.good.id,
                     quantity: cartGood.cartItem.quantity
                 }
-            }, [])
+            }, []),
+            comment: orderComment
         };
         createNewOrder(order);
         navigate('/profile/main');
@@ -200,6 +202,20 @@ const CheckoutPage: React.FC = () => {
                             </>
                         )}
 
+                        {/* Добавлен блок с комментарием к заказу */}
+                        <Box sx={{ marginBottom: '20px' }}>
+                            <TextField
+                                fullWidth
+                                label="Комментарий к заказу"
+                                placeholder="Укажите дополнительные пожелания или детали"
+                                multiline
+                                rows={4}
+                                value={orderComment}
+                                onChange={(e) => setOrderComment(e.target.value)}
+                                variant="outlined"
+                            />
+                        </Box>
+
                         <Typography variant="h6" gutterBottom>
                             {marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'} в заказе
                         </Typography>
@@ -225,7 +241,7 @@ const CheckoutPage: React.FC = () => {
                     </Paper>
                 </Grid>
 
-                {/* Правая часть: Итоговая сумма и промокод */}
+                {/* Правая часть: Итоговая сумма */}
                 <Grid item xs={12} md={4}>
                     <Paper sx={{ padding: '20px' }}>
                         <Button

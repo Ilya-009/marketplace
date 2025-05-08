@@ -10,6 +10,7 @@ export interface Order {
     orderGoods: Array<OrderGood>;
     paymentMethod: PaymentMethod;
     deliveryMethod: DeliveryMethod;
+    comment?: string;
 }
 
 export enum OrderStatus {
@@ -54,6 +55,7 @@ export type CreateNewOrderParam = {
         goodId: number;
         quantity: number;
     }>;
+    comment: string;
 };
 
 type UpdatePaymentMethodParam = {

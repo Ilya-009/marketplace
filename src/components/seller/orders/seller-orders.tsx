@@ -25,6 +25,7 @@ import {$allGoods, loadGoodsByIds} from "../../../api";
 import OrderDetailsModal from "./order-details-modal.tsx";
 import ConfirmationDialog from "../../common/confirmation-dialog.tsx";
 import {getMarketplaceType} from "../../../services";
+import {limitString} from "../../../services/type-utils.ts";
 
 const OrdersList: React.FC = () => {
     const seller = useUnit($store);
@@ -146,6 +147,7 @@ const OrdersList: React.FC = () => {
                             <TableCell>{marketplaceType === MarketplaceType.GOODS ? 'Товары' : 'Услуги'}</TableCell>
                             <TableCell>Общая стоимость</TableCell>
                             <TableCell>Дата оформления</TableCell>
+                            <TableCell>Комментарий к заказу</TableCell>
                             <TableCell>Действия</TableCell> {/* Новый столбец */}
                         </TableRow>
                     </TableHead>
@@ -162,6 +164,7 @@ const OrdersList: React.FC = () => {
                                 </TableCell>
                                 <TableCell>{calculateTotalCost(order)}</TableCell>
                                 <TableCell>{order.createdAt}</TableCell>
+                                <TableCell>{order.comment != null ? limitString(order.comment as string) : null}</TableCell>
                                 <TableCell>
                                     <Button onClick={() => handleOpenOrderModal(order)} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
                                         Детали

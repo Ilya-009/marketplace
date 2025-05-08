@@ -33,6 +33,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, goods, onC
             <DialogContent>
                 <Typography variant="body1">Дата создания: {order.createdAt}</Typography>
                 <Typography variant="body1">Статус: {orderStatuses.get(order.status)}</Typography>
+                <Typography variant="body1">Комментарий к заказу: {order.comment}</Typography>
 
                 <TableContainer component={Paper} style={{ marginTop: 16 }}>
                     <Table>
