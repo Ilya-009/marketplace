@@ -70,7 +70,7 @@ const CheckoutPage: React.FC = () => {
             loadDeliveryMethods();
         }
         loadPaymentMethods();
-    }, []);
+    }, [marketplaceType]);
 
     useEffect(() => {
         if (customer.id > 0) {
@@ -179,22 +179,24 @@ const CheckoutPage: React.FC = () => {
                                     </RadioGroup>
                                 </FormControl>
 
-                                <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
-                                    <FormLabel component="legend">Адрес доставки</FormLabel>
-                                    <RadioGroup
-                                        value={selectedAddressId}
-                                        onChange={(e) => setSelectedAddressId(parseInt(e.target.value))}
-                                    >
-                                        {customerAddresses.map(address => (
-                                            <FormControlLabel
-                                                key={address.id}
-                                                value={address.id}
-                                                control={<Radio />}
-                                                label={`${address.city}, ${address.street}, ${address.houseNumber}, кв. ${address.flatNumber}`}
-                                            />
-                                        ))}
-                                    </RadioGroup>
-                                </FormControl>
+                                {deliveryMethodId !== 2 && (
+                                    <FormControl component="fieldset" sx={{ marginBottom: '20px' }}>
+                                        <FormLabel component="legend">Адрес доставки</FormLabel>
+                                        <RadioGroup
+                                            value={selectedAddressId}
+                                            onChange={(e) => setSelectedAddressId(parseInt(e.target.value))}
+                                        >
+                                            {customerAddresses.map(address => (
+                                                <FormControlLabel
+                                                    key={address.id}
+                                                    value={address.id}
+                                                    control={<Radio />}
+                                                    label={`${address.city}, ${address.street}, ${address.houseNumber}, кв. ${address.flatNumber}`}
+                                                />
+                                            ))}
+                                        </RadioGroup>
+                                    </FormControl>
+                                )}
                             </>
                         )}
 
