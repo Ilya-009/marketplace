@@ -1,4 +1,3 @@
-import {Review} from "./reviews.ts";
 import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
 import {apiClient, baseUrl} from "../lib";
@@ -13,7 +12,6 @@ export interface Good {
     storeId: number;
     categoryId: number;
     goodImages: Array<GoodImage>;
-    reviews: Array<Review>;
     discount?: GoodDiscount;
     isService?: boolean;
     duration?: number;

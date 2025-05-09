@@ -45,7 +45,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     return (
         <ProductInfoContainer>
             <Typography variant="h4">{name}</Typography>
-            {/*<Typography variant="body1">Rating: {rating} ({reviewsCount} отзывов, {questionsCount} вопросов)</Typography>*/}
             <Typography variant="body1">Рейтинг: {rating} ({reviewsCount} отзывов)</Typography>
             <ShopInfo onClick={handleStoreInfoClick}>
                 <img src={`http://localhost:8080/files/images/${store.logoImage}`} alt={store.name} width="20" height="20" />

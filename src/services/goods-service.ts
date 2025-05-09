@@ -1,13 +1,13 @@
-import {DiscountType, Good, GoodCategory, GoodDiscount} from "../api";
+import {DiscountType, Good, GoodCategory, GoodDiscount, Review} from "../api";
 
-export const getGoodRating = (good: Good) => {
-    if (!good.reviews?.length) {
+export const getGoodRating = (reviews: Review[]) => {
+    if (!reviews?.length) {
         return 0;
     }
 
-    return good.reviews.length ?
-        good.reviews.reduce((acc, curr) => acc + curr.mark, 0)
-        / good.reviews.length
+    return reviews.length ?
+        reviews.reduce((acc, curr) => acc + curr.mark, 0)
+        / reviews.length
         : 0;
 };
 

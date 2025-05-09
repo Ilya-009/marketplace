@@ -1,9 +1,9 @@
-import {useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {Box, Card, CardContent, Chip, IconButton, Rating, Typography} from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import {styled} from '@mui/material/styles';
-import {DiscountType, Good, GoodDiscount} from "../../api";
+import {DiscountType, Good, GoodDiscount, loadLoadGoodReviewsFx, Review} from "../../api";
 import {getGoodRating} from "../../services";
 import {useNavigate} from "react-router-dom";
 
@@ -52,12 +52,20 @@ const getDiscountLabelText = (discount: GoodDiscount): string => {
 
 const ProductCard = ({ good }: ProductCardProps) => {
     const [isFavorite, setIsFavorite] = useState(false);
-    const rating = getGoodRating(good);
+    const [reviews, setReviews] = useState<Review[]>([]);
     const navigate = useNavigate();
 
     const onGoodCardClick = () => {
         navigate(`/goods/${good.id}`);
     };
+
+    useEffect(() => {
+        loadLoadGoodReviewsFx({goodId: good.id}).then(response => {
+            setReviews(response);
+        });
+    }, [good]);
+
+    const rating = useMemo(() => getGoodRating(reviews), [reviews]);
 
     return (
         <StyledCard elevation={1} onClick={onGoodCardClick}>
@@ -73,7 +81,6 @@ const ProductCard = ({ good }: ProductCardProps) => {
                     ? <img src={`http://localhost:8080/files/images/${good.goodImages[0]?.image}`} alt={good.name} loading="lazy"/>
                     : <img src='http://localhost:8080/files/images/no-photo.jpg' alt={good.name} loading="lazy"/>
                 }
-
             </ImageContainer>
             <CardContent sx={{ flexGrow: 1, p: 2 }}>
                 <Box sx={{ mb: 1 }}>
@@ -95,7 +102,6 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 </Typography>
                 <Typography
                     variant="body2"
-                    // color="text.secondary"
                     sx={{
                         mb: 1,
                         display: '-webkit-box',
@@ -108,9 +114,9 @@ const ProductCard = ({ good }: ProductCardProps) => {
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <Rating value={rating} precision={0.1} readOnly size="small" />
-                    {(good?.reviews?.length > 0) &&
+                    {(reviews?.length > 0) &&
                         <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                        {rating} ({good.reviews?.length})
+                        {rating} ({reviews?.length})
                     </Typography>}
                 </Box>
             </CardContent>
@@ -118,8 +124,3 @@ const ProductCard = ({ good }: ProductCardProps) => {
     );
 };
 export default ProductCard;
-//    const images = [
-//         'https://ir.ozone.ru/s3/multimedia-1-4/wc350/7155132256.jpg',
-//         'https://ir.ozone.ru/s3/multimedia-1-c/wc1000/7154751816.jpg',
-//         'https://ir.ozone.ru/s3/multimedia-1-1/wc1000/7146538057.jpg',
-//     ];

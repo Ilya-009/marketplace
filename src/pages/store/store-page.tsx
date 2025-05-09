@@ -16,7 +16,7 @@ import {
     loadGoodsByStoreIdFx,
     $storeUnsecure,
     loadStoreUnsecure,
-    loadGoodsByCategoryFx, MarketplaceType
+    loadGoodsByCategoryFx, MarketplaceType, loadReviewsByGoodIds, $goodReviews
 } from "../../api";
 import {extractIdFromPath, getMarketplaceType, getMaxGoodPrice} from "../../services";
 import {useUnit} from "effector-react";
@@ -52,6 +52,7 @@ const SellerPage: React.FC = () => {
 
     const store = useUnit($storeUnsecure);
     const allStoreGoods = useUnit($storeGoods);
+    const goodsReviews = useUnit($goodReviews);
 
     useEffect(() => {
         if (storeId) {
@@ -65,6 +66,9 @@ const SellerPage: React.FC = () => {
     useEffect(() => {
         const max = getMaxGoodPrice(allStoreGoods);
         setPriceRange({startRange: priceRange.startRange, endRange: max});
+
+        const goodIds = allStoreGoods.map(good => good.id);
+        loadReviewsByGoodIds({goodIds: goodIds});
     }, [allStoreGoods]);
 
     // Применение фильтров
@@ -75,9 +79,10 @@ const SellerPage: React.FC = () => {
                 good.price <= priceRange.endRange;
 
             // Фильтр по рейтингу
+            const goodReviews = goodsReviews.filter(review => review.goodId === good.id);
             const ratingMatch = !highRatingOnly ||
-                (good.reviews &&
-                    good.reviews.reduce((acc, r) => acc + r.mark, 0) / good.reviews.length >= 4);
+                (!!goodReviews.length &&
+                    goodReviews.reduce((acc, r) => acc + r.mark, 0) / goodReviews.length >= 4);
 
             return priceMatch && ratingMatch;
         });

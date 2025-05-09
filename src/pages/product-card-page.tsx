@@ -8,8 +8,8 @@ import {
     $deliveryMethods,
     defaultStore, Good,
     loadDeliveryMethods,
-    loadGoodByIdFx,
-    loadStoreByStoreIdFx, Store
+    loadGoodByIdFx, loadLoadGoodReviewsFx,
+    loadStoreByStoreIdFx, Review, Store
 } from "../api";
 import {extractIdFromPath} from "../services";
 import {useUnit} from "effector-react";
@@ -36,6 +36,7 @@ export const ProductCardPage = () => {
 
     const [good, setGood] = useState<Good>();
     const [store, setStore] = useState<Store>(defaultStore);
+    const [reviews, setReviews] = useState<Review[]>([]);
 
     // Загружаем товар по ID при изменении match
     useEffect(() => {
@@ -45,6 +46,10 @@ export const ProductCardPage = () => {
 
                 loadStoreByStoreIdFx({storeId: res.storeId}).then(store => {
                     setStore(store);
+                });
+
+                loadLoadGoodReviewsFx({goodId: goodId as number}).then(r => {
+                    setReviews(r);
                 });
             }
         });
@@ -62,7 +67,7 @@ export const ProductCardPage = () => {
         <MainPageBox>
             <Header />
             <CardContainer>
-                <ProductCard good={good} deliveryMethods={deliveryMethods} store={store} />
+                <ProductCard good={good} reviews={reviews} deliveryMethods={deliveryMethods} store={store}/>
             </CardContainer>
             <Footer />
         </MainPageBox>

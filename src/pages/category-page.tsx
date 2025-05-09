@@ -12,7 +12,12 @@ import {
 import Header from "../components/header/header.tsx";
 import {useMatch} from "react-router-dom";
 import {useUnit} from "effector-react";
-import {$categories, findCategoryById, MarketplaceType} from "../api";
+import {
+    $categories, $goodReviews,
+    findCategoryById,
+    loadReviewsByGoodIds,
+    MarketplaceType
+} from "../api";
 import styled from "styled-components";
 import FilterSidebar from "../components/good/filter-sidebar.tsx";
 import {$goodsByCategory, loadGoodsByCategory, SortOption} from "../api";
@@ -47,6 +52,7 @@ export const CategoryPage: React.FC = () => {
 
     const [sortBy, setSortBy] = useState<SortOption>('popular');
     const goods = useUnit($goodsByCategory);
+    const goodsReviews = useUnit($goodReviews);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(0);
     const [useHighRating, setUseHighRating] = useState(false);
@@ -60,6 +66,7 @@ export const CategoryPage: React.FC = () => {
     useEffect(() => {
         setMinPrice(getMinGoodPrice(goods));
         setMaxPrice(getMaxGoodPrice(goods));
+        loadReviewsByGoodIds({goodIds: goods.map(g => g.id)});
     }, [goods]);
 
     const filteredGoods = useMemo(() => {
@@ -70,7 +77,10 @@ export const CategoryPage: React.FC = () => {
         const filteredByPrice = goods.filter(good => good.price >= minPrice && good.price <= maxPrice);
 
         if (useHighRating) {
-            return filteredByPrice.filter(good => getGoodRating(good) >= 4.5);
+            return filteredByPrice.filter(good => {
+                const r = goodsReviews.filter(r => r.goodId === good.id);
+                return getGoodRating(r) >= 4.5;
+            });
         }
 
         return goods.filter(good => good.price >= minPrice && good.price <= maxPrice);

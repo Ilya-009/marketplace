@@ -3,7 +3,7 @@ import Gallery from "./gallery.tsx";
 import ProductInfo from "./good-info.tsx";
 import PriceDelivery from "./delivery.tsx";
 import ReviewCard, {ReviewsContainer} from "./reviews.tsx";
-import {addToCart, DeliveryMethod, Good, MarketplaceType, Store} from "../../../api";
+import {addToCart, DeliveryMethod, Good, MarketplaceType, Review, Store} from "../../../api";
 import {calculatePriceBeforeDiscount, getGoodRating, getMarketplaceType} from "../../../services";
 
 const ProductCardContainer = styled(Box)(() => ({
@@ -42,9 +42,10 @@ type ProductCardProps = {
     good: Good;
     deliveryMethods: DeliveryMethod[];
     store: Store;
+    reviews: Review[];
 };
 
-const ProductCard = ({good, deliveryMethods, store}: ProductCardProps) => {
+const ProductCard = ({good, deliveryMethods, store, reviews}: ProductCardProps) => {
     const onAddToCartBtnClick = () => {
         addToCart({goodId: good.id});
     };
@@ -59,8 +60,8 @@ const ProductCard = ({good, deliveryMethods, store}: ProductCardProps) => {
             <InfoSection>
                 <ProductInfo
                     name={good.name}
-                    rating={getGoodRating(good)}
-                    reviewsCount={good.reviews?.length ?? 0}
+                    rating={getGoodRating(reviews)}
+                    reviewsCount={reviews?.length ?? 0}
                     store={store}
                     description={good.description}
                 />
@@ -84,7 +85,7 @@ const ProductCard = ({good, deliveryMethods, store}: ProductCardProps) => {
             </InfoSection>
         </MainContent>
         <ReviewsContainer>
-            {good.reviews?.map((review, index) => (
+            {reviews?.map((review, index) => (
                 <ReviewCard key={index} review={review} />
             )) ?? ''}
         </ReviewsContainer>
