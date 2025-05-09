@@ -22,6 +22,7 @@ import {MainPageBox} from "../components";
 import {findGoodById, getImageProperty} from "../services";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Footer from "../components/common/footer.tsx";
 
 const CartPage: React.FC = () => {
     const navigate = useNavigate();
@@ -229,6 +230,7 @@ const CartPage: React.FC = () => {
             }}
             payload={confirmModalPayload}
         />
+        <Footer />
     </MainPageBox>;
 };
 

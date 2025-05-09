@@ -38,6 +38,7 @@ import {
     MarketplaceType
 } from "../api";
 import {findGoodById, getImageProperty, getMarketplaceType} from "../services";
+import Footer from "../components/common/footer.tsx";
 
 type CartGood = {
     cartItem: CartItem,
@@ -272,6 +273,7 @@ const CheckoutPage: React.FC = () => {
                     </Paper>
                 </Grid>
             </Grid>
+            <Footer />
         </MainPageBox>
     );
 };

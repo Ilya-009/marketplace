@@ -15,6 +15,7 @@ import {useState} from "react";
 import {validateSignUpInputs} from "../components";
 import {registerUserFx} from "../api";
 import {useNavigate} from "react-router-dom";
+import Footer from "../components/common/footer.tsx";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -189,6 +190,7 @@ export default function SignUp() {
                         </Button>
                     </Box>
                 </Card>
+                <Footer />
             </SignUpContainer>
         </>
     );

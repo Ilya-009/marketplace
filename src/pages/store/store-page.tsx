@@ -25,6 +25,7 @@ import Header from "../../components/header/header.tsx";
 import styled from "styled-components";
 import SellerFilterSidebar from "../../components/seller/view/seller-page-sidebar.tsx";
 import ProductCard from "../../components/good/ProductCard.tsx";
+import Footer from "../../components/common/footer.tsx";
 
 const MainContainer = styled(Box)(() => ({
     display: 'flex',
@@ -174,6 +175,7 @@ const SellerPage: React.FC = () => {
                     </Container>
                 </ContentContainer>
             </MainContainer>
+            <Footer />
         </MainPageBox>
     );
 };

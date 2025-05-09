@@ -14,6 +14,7 @@ import {
 import {extractIdFromPath} from "../services";
 import {useUnit} from "effector-react";
 import {MainPageBox} from "../components";
+import Footer from "../components/common/footer.tsx";
 
 const CardContainer = styled(Box)(() => ({
     minHeight: '100vh',
@@ -63,6 +64,7 @@ export const ProductCardPage = () => {
             <CardContainer>
                 <ProductCard good={good} deliveryMethods={deliveryMethods} store={store} />
             </CardContainer>
+            <Footer />
         </MainPageBox>
     );
 };

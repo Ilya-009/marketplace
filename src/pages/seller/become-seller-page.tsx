@@ -17,6 +17,7 @@ import {getRootCategories} from "../../services";
 import {validateSellerRegister} from "../../components";
 import {useNavigate} from "react-router-dom";
 import {OrganizationType, registerStoreFx} from "../../api";
+import Footer from "../../components/common/footer.tsx";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -218,6 +219,7 @@ export default function BecomeSellerPage() {
                         </Button>
                     </Box>
                 </Card>
+                <Footer />
             </SignInContainer>
         </>
     );

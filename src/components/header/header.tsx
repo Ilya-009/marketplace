@@ -56,7 +56,6 @@ const Header: React.FC = () => {
                     {(isUserAuthenticated() && !isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER)) && (
                         <SmallLinkPassive href='/become-seller'>{t('main.header.becomeSeller')}</SmallLinkPassive>
                     )}
-                    <SmallLinkPassive>{t('main.header.help')}</SmallLinkPassive>
                     <LanguageSwitcher/>
                 </Stack>
             </Stack>

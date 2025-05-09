@@ -18,6 +18,7 @@ import {StyledFormControlLabel, validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
 import {$authError, loginUserFx} from "../api";
 import {useUnit} from "effector-react";
+import Footer from "../components/common/footer.tsx";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -210,6 +211,7 @@ export default function SignIn() {
                         </Button>
                     </Box>
                 </Card>
+                <Footer />
             </SignInContainer>
         </>
     );

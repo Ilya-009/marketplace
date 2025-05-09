@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, useEffect, useMemo, useState} from "react";
+import {ChangeEventHandler, useEffect, useMemo, useState} from "react";
 import {
     Box,
     Container,
@@ -19,6 +19,7 @@ import {$goodsByCategory, loadGoodsByCategory, SortOption} from "../api";
 import ProductCard from "../components/good/ProductCard.tsx";
 import {extractIdFromPath, getGoodRating, getMarketplaceType, getMaxGoodPrice, getMinGoodPrice} from "../services";
 import {MainPageBox} from "../components";
+import Footer from "../components/common/footer";
 
 const MainContainer = styled(Box)(() => ({
     display: 'flex',
@@ -130,6 +131,7 @@ export const CategoryPage: React.FC = () => {
                     </Container>
                 </ContentContainer>
             </MainContainer>
+            <Footer />
         </MainPageBox>
     );
 };

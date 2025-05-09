@@ -6,6 +6,7 @@ import {useUnit} from "effector-react";
 import {$isUserLoading, $loggedUser, UserRole} from "../../api";
 import {isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import {CircularLoader} from "./loader.tsx";
+import Footer from "./footer";
 
 type PageProps = {
     header: ReactElement;
@@ -51,6 +52,7 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
             {sidebar}
             <Outlet/>
         </Box>
+        <Footer />
     </MainPageBox>;
 };
 

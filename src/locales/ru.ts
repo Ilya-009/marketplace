@@ -14,7 +14,6 @@ export default {
                 goods: 'Поиск товаров',
                 services: 'Поиск услуг'
             },
-            help: 'Помощь',
             catalog: 'Каталог',
             links: {
                 login: 'Войти',
