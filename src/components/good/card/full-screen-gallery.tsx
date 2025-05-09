@@ -125,7 +125,7 @@ const FullScreenGallery: React.FC<FullScreenGalleryProps> = ({
                     {images.map((img, index) => (
                         <Thumbnail
                             key={index}
-                            src={img.image}
+                            src={`http://localhost:8080/files/images/${img.image}`}
                             onClick={() => onThumbnailClick(index)}
                             className={index === selectedImage ? 'active' : ''}
                         />
@@ -135,7 +135,7 @@ const FullScreenGallery: React.FC<FullScreenGalleryProps> = ({
                     <CloseButton onClick={onClose}>
                         <Close />
                     </CloseButton>
-                    <MainImage src={images[selectedImage]?.image} />
+                    <MainImage src={`http://localhost:8080/files/images/${images[selectedImage]?.image}`} />
                     <LeftButton onClick={onPrev}>
                         <ChevronLeft />
                     </LeftButton>
