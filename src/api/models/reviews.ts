@@ -33,6 +33,9 @@ type LoadGoodsReviews = {
 type LoadCustomerReviews = {
     customerId: number;
 };
+type LoadStorePendingReviews = {
+    storeId: number;
+};
 
 export const loadReviewsByGoodId = createEvent<LoadGoodReviews>();
 export const loadReviewsByGoodIds = createEvent<LoadGoodsReviews>();
@@ -60,6 +63,12 @@ export const loadCustomerReviewsFx = createEffect<LoadCustomerReviews, Review[],
 export const loadPendingCustomerReviewsFx = createEffect<LoadCustomerReviews, PendingReview[], AxiosError>({
     async handler({customerId}) {
         return await apiClient.get(`${baseUrl}/reviews/pending/${customerId}`).then(({ data }) => data);
+    }
+});
+
+export const loadPendingStoreReviewsFx = createEffect<LoadStorePendingReviews, Review[], AxiosError>({
+    async handler({storeId}) {
+        return await apiClient.get(`${baseUrl}/reviews/pendingOfStore/${storeId}`).then(({ data }) => data);
     }
 });
 
