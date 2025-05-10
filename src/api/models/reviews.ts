@@ -19,11 +19,19 @@ export interface ReviewReply {
     repliedAt: Date;
 }
 
+export interface PendingReview {
+    goodId: number,
+    name: string;
+}
+
 type LoadGoodReviews = {
     goodId: number;
 };
 type LoadGoodsReviews = {
     goodIds: number[];
+};
+type LoadCustomerReviews = {
+    customerId: number;
 };
 
 export const loadReviewsByGoodId = createEvent<LoadGoodReviews>();
@@ -40,6 +48,18 @@ export const loadLoadGoodsReviewsFx = createEffect<LoadGoodsReviews, Review[], A
     async handler({goodIds}) {
         const idsStr = goodIds.join(',');
         return await apiClient.get(`${baseUrl}/reviews/byGoods/${idsStr}`).then(({ data }) => data);
+    }
+});
+
+export const loadCustomerReviewsFx = createEffect<LoadCustomerReviews, Review[], AxiosError>({
+    async handler({customerId}) {
+        return await apiClient.get(`${baseUrl}/reviews/byCustomer/${customerId}`).then(({ data }) => data);
+    }
+});
+
+export const loadPendingCustomerReviewsFx = createEffect<LoadCustomerReviews, PendingReview[], AxiosError>({
+    async handler({customerId}) {
+        return await apiClient.get(`${baseUrl}/reviews/pending/${customerId}`).then(({ data }) => data);
     }
 });
 

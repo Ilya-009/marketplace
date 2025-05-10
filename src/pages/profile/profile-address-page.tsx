@@ -20,7 +20,7 @@ import {
 import {Edit, Delete, Add} from '@mui/icons-material';
 import {useUnit} from "effector-react";
 import {$customer} from "../../api";
-import {$addresses, Address, emptyAddress, loadAddresses} from "../../api/models/address.ts";
+import {$addresses, Address, emptyAddress, loadAddresses} from "../../api";
 
 const AddressTable: React.FC = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);

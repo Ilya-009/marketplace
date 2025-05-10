@@ -7,3 +7,4 @@ export * from './product-card-page';
 export * from './profile';
 export * from './not-found';
 export * from './orders-page';
+export * from './customer-reviews-page';

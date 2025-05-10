@@ -39,6 +39,7 @@ import CategoryRequestsPage from "./pages/admin/category-requests-page.tsx";
 import PaymentMethodsPage from "./pages/admin/payment-methods-page.tsx";
 import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
 import GoodRequestsPage from "./pages/admin/good-requests-page.tsx";
+import CustomerReviewsPage from "./pages/customer-reviews-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -91,6 +92,7 @@ function App() {
                             <Route path="personalInfo" element={<EditProfile/>}/>
                             <Route path="orders" element={<OrdersPage/>}/>
                             <Route path="address" element={<AddressPage/>}/>
+                            <Route path="reviews" element={<CustomerReviewsPage/>}/>
                         </Route>
                         <Route path="/admin" element={
                             <PageWithSidebar header={<Header/>}

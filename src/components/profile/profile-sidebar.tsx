@@ -44,7 +44,7 @@ const ProfileSidebar: React.FC = () => {
         {id: 'my-cart', label: t('customer.profile.tabs.myCart'), path: '/cart'},
         {id: 'my-orders', label: t('customer.profile.tabs.myOrders'), path: 'orders'},
         {id: 'address', label: t('customer.profile.tabs.myAddresses'), path: 'address'},
-        {id: 'my-reviews', label: t('customer.profile.tabs.myReviews'), path: 'my-reviews'},
+        {id: 'reviews', label: t('customer.profile.tabs.myReviews'), path: 'reviews'},
     ];
 
     return <>
