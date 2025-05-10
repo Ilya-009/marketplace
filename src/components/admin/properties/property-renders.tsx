@@ -2,11 +2,7 @@ import {Property, SettingType} from "../../../api";
 import {Avatar, Box, Button, MenuItem, Select, Switch, TextField} from "@mui/material";
 import {Image} from "@mui/icons-material";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {DatePicker} from "@mui/x-date-pickers";
 import {MuiColorInput} from "mui-color-input";
-import dayjs from "dayjs";
 import {getImagePropertyValue} from "../../../services";
 
 export const renderValueDisplay = (property: Property) => {
@@ -101,20 +97,6 @@ export const renderEditControl = (property: Property, handleValueChange: (value:
                         />
                     </Button>
                 </Box>
-            );
-        case SettingType.DATE:
-            return (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        value={property.value ? dayjs(property.value) : dayjs()}
-                        onChange={(newValue) => {
-                            if (newValue) {
-                                handleValueChange(newValue.toISOString());
-                            }
-                        }}
-                        renderInput={(params) => <TextField {...params} fullWidth />}
-                    />
-                </LocalizationProvider>
             );
         case SettingType.COLOR:
             return (

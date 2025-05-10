@@ -20,6 +20,7 @@ import {
 import {ArrowForward, AttachMoney, Inventory, LocalShipping, ShoppingCart} from '@mui/icons-material';
 import {useNavigate} from 'react-router-dom';
 import {
+    $properties,
     $store,
     Good,
     loadRandomGoodsByStoreIdFx, loadSellerOrdersFx,
@@ -32,10 +33,11 @@ import {
 import {loadStoreAnalyticsFx, StoreSummary} from "../../api/models/analytics.ts";
 import {useUnit} from "effector-react";
 import {goodStatuses, orderStatuses, supplyStatuses} from "../../constants.ts";
-import {getMarketplaceType} from "../../services";
+import {getMarketplaceType, getNumericProperty} from "../../services";
 
 const SellerMainPage: React.FC = () => {
     const store = useUnit($store);
+    const properties = useUnit($properties);
     const marketplaceType = getMarketplaceType();
 
     const [loading, setLoading] = useState(true);
@@ -49,7 +51,8 @@ const SellerMainPage: React.FC = () => {
         // Заглушка для имитации загрузки данных
         const fetchData = async () => {
             try {
-                const loadedGoods: Good[] = await loadRandomGoodsByStoreIdFx({storeId: store.id, count: 5});
+                const goodsMaxLength = getNumericProperty(properties, 'block.compilation.max.length');
+                const loadedGoods: Good[] = await loadRandomGoodsByStoreIdFx({storeId: store.id, count: goodsMaxLength});
                 const loadedSupplies: Supply[] = (await loadSuppliesFx({storeId: store.id}))
                     .filter(supply => supply.status !== SupplyStatus.COMPLETED)
                     .slice(0, 5);

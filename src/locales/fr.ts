@@ -57,8 +57,6 @@ export default {
                     },
                     orders: 'Commandes passées',
                 },
-                paymentPolicy: 'Conditions de paiement',
-                returnPolicy: 'Politique de retour',
             }
         }
     },

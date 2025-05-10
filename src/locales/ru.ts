@@ -56,8 +56,6 @@ export default {
                     },
                     orders: 'Оформлено заказов',
                 },
-                paymentPolicy: 'Условия оплаты',
-                returnPolicy: 'Условия возврата',
             }
         }
     },

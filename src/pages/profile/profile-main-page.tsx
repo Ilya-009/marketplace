@@ -1,15 +1,18 @@
 import React from 'react';
-import {Box, Typography, Card, CardContent, Grid, TextField, Button} from '@mui/material';
+import {Typography, Card, CardContent, Grid} from '@mui/material';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell} from 'recharts';
-import {EditProfileLink, SidebarPageBox} from "../../components";
-import {Link} from "react-router-dom";
-import {getMarketplaceType} from "../../services";
-import {MarketplaceType} from "../../api";
+import {SidebarPageBox} from "../../components";
+import {getBooleanProperty, getMarketplaceType} from "../../services";
+import {$properties, MarketplaceType} from "../../api";
 import {useLanguage} from "../../locales/language-context.tsx";
+import {useUnit} from "effector-react";
 
 const COLORS = ['#128a00', '#ff0000'];
 
 const ProfileMainPage: React.FC = () => {
+    const properties = useUnit($properties);
+    const showStats = getBooleanProperty(properties, 'show.stats.in.cust.profile');
+
     const marketplaceType = getMarketplaceType();
     const {t} = useLanguage();
 
@@ -70,52 +73,54 @@ const ProfileMainPage: React.FC = () => {
         </Grid>
 
         {/* Графики */}
-        <Grid container spacing={3} sx={{marginBottom: 4}}>
-            <Grid item xs={12} md={6}>
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6" color="textSecondary" gutterBottom>
-                            {t('customer.profile.myData.stats.bought.header')}
-                        </Typography>
-                        <BarChart width={500} height={300} data={purchaseData}>
-                            <CartesianGrid strokeDasharray="3 3"/>
-                            <XAxis dataKey="name"/>
-                            <YAxis/>
-                            <Tooltip/>
-                            <Bar dataKey="value" fill="#8884d8"/>
-                        </BarChart>
-                    </CardContent>
-                </Card>
+        {showStats && (
+            <Grid container spacing={3} sx={{marginBottom: 4}}>
+                <Grid item xs={12} md={6}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" color="textSecondary" gutterBottom>
+                                {t('customer.profile.myData.stats.bought.header')}
+                            </Typography>
+                            <BarChart width={500} height={300} data={purchaseData}>
+                                <CartesianGrid strokeDasharray="3 3"/>
+                                <XAxis dataKey="name"/>
+                                <YAxis/>
+                                <Tooltip/>
+                                <Bar dataKey="value" fill="#8884d8"/>
+                            </BarChart>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" color="textSecondary" gutterBottom>
+                                {t('customer.profile.myData.stats.reviews.header')}
+                            </Typography>
+                            <PieChart width={500} height={300}>
+                                <Pie
+                                    data={reviewData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    fill="#8884d8"
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                    label
+                                >
+                                    {reviewData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+                                    ))}
+                                </Pie>
+                                <Tooltip/>
+                                <Legend/>
+                            </PieChart>
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6" color="textSecondary" gutterBottom>
-                            {t('customer.profile.myData.stats.reviews.header')}
-                        </Typography>
-                        <PieChart width={500} height={300}>
-                            <Pie
-                                data={reviewData}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={80}
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="value"
-                                label
-                            >
-                                {reviewData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
-                                ))}
-                            </Pie>
-                            <Tooltip/>
-                            <Legend/>
-                        </PieChart>
-                    </CardContent>
-                </Card>
-            </Grid>
-        </Grid>
+        )}
 
         {/* Форма применения промокода */}
         {/*<Card sx={{marginBottom: 4}}>*/}
@@ -131,28 +136,6 @@ const ProfileMainPage: React.FC = () => {
         {/*        </Box>*/}
         {/*    </CardContent>*/}
         {/*</Card>*/}
-
-        {/* Условия оплаты и возврата */}
-        <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-                <Card>
-                    <CardContent>
-                        <EditProfileLink component={Link} to="payment-policy">
-                            {t('customer.profile.myData.paymentPolicy')}
-                        </EditProfileLink>
-                    </CardContent>
-                </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Card>
-                    <CardContent>
-                        <EditProfileLink component={Link} to="return-policy">
-                            {t('customer.profile.myData.returnPolicy')}
-                        </EditProfileLink>
-                    </CardContent>
-                </Card>
-            </Grid>
-        </Grid>
     </SidebarPageBox>;
 };
 

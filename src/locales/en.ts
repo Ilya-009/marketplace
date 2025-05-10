@@ -57,8 +57,6 @@ export default {
                     },
                     orders: 'Orders placed',
                 },
-                paymentPolicy: 'Payment terms',
-                returnPolicy: 'Return policy',
             }
         }
     },

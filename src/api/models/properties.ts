@@ -21,16 +21,13 @@ export enum SettingType {
     NUMBER = 'NUMBER',
     SELECT = 'SELECT',
     IMAGE = 'IMAGE',
-    DATE = 'DATE',
     COLOR = 'COLOR'
 }
 
 export enum PropertyGroup {
     MAIN = 'MAIN',
     UI = 'UI',
-    LOGIC = 'LOGIC',
-    PAYMENT = 'PAYMENT',
-    DELIVERY = 'DELIVERY'
+    LOGIC = 'LOGIC'
 }
 
 export enum MarketplaceType {

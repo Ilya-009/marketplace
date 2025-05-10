@@ -56,17 +56,6 @@ export const getImageProperty = (properties: Array<Property>, key: string) => {
     return `http://localhost:8080/files/images/${fileName}`;
 };
 
-export const getDateProperty = (properties: Array<Property>, key: string) => {
-    const property = getProperty(properties, key);
-
-    if (property == undefined || property.settingType !== SettingType.DATE) {
-        return new Date(0);
-    }
-
-    const date = new Date(property.value);
-    return isNaN(date.getTime()) ? new Date(0) : date;
-};
-
 export const getColorProperty = (properties: Array<Property>, key: string) => {
     const property = getProperty(properties, key);
 

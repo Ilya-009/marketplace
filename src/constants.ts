@@ -304,17 +304,14 @@ export const propertyTypes = new Map<SettingType, PropertyTypeData>([
     [SettingType.STRING, {name: 'Строка', defaultValue: ''}],
     [SettingType.NUMBER, {name: 'Число', defaultValue: '0'}],
     [SettingType.SELECT, {name: 'Селектор', defaultValue: ''}],
-    [SettingType.IMAGE, {name: 'Картинка', defaultValue: ''}],
-    [SettingType.DATE, {name: 'Дата', defaultValue: new Date().toISOString()}],
+    [SettingType.IMAGE, {name: 'Изображение', defaultValue: ''}],
     [SettingType.COLOR, {name: 'Цвет', defaultValue: '#000'}],
 ]);
 
 export const propertyGroups = new Map<PropertyGroup, string>([
     [PropertyGroup.MAIN, 'Основная'],
     [PropertyGroup.UI, 'Интерфейс'],
-    [PropertyGroup.LOGIC, 'Логика'],
-    [PropertyGroup.PAYMENT, 'Оплата'],
-    [PropertyGroup.DELIVERY, 'Доставка'],
+    [PropertyGroup.LOGIC, 'Логика']
 ]);
 
 export const userStatuses = new Map<UserStatus, string>([

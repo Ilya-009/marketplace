@@ -1,14 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
 import {useUnit} from "effector-react";
-import {$loggedUser, changePassword, changeUserPersonalData, loadLoggedUser} from "../../api";
+import {$loggedUser, changePassword, changeUserPersonalData} from "../../api";
 
 const EditProfile: React.FC = () => {
     const loggedUserInfo = useUnit($loggedUser);
-
-    useEffect(() => {
-        loadLoggedUser();
-    }, []);
 
     // Состояния для личных данных
     const [email, setEmail] = useState('');

@@ -5,17 +5,24 @@ import SearchIcon from '@mui/icons-material/Search';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import {SmallLinkActive, SmallLinkPassive, StyledSearchField} from "../common";
+import {SmallLinkPassive, StyledSearchField} from "../common";
 import LinkWithIcon from "./header-link.tsx";
 import {useUnit} from "effector-react";
 import {$loggedUser, $properties, $searchResults, executeSearch, MarketplaceType, UserRole} from "../../api";
-import {getImageProperty, getMarketplaceType, isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
+import {
+    getBooleanProperty,
+    getImageProperty,
+    getMarketplaceType,
+    isUserAuthenticated,
+    isUserAuthenticatedWithRole
+} from "../../services";
 import CategoryCatalog from "../catalog/catalog.tsx";
 import {AccountBox} from "@mui/icons-material";
 import StoreIcon from '@mui/icons-material/Store';
 import {SearchResultsDropdown} from "../catalog/search-dropdown.tsx";
 import LanguageSwitcher from "../common/language-change-select.tsx";
 import {useLanguage} from "../../locales/language-context.tsx";
+import CitySelector from "./city-selector.tsx";
 
 const SearchField = styled(StyledSearchField)`
     margin-left: 20px;
@@ -28,6 +35,8 @@ const Header: React.FC = () => {
     const loggedUser = useUnit($loggedUser);
     const logoImageSrc = getImageProperty(properties, 'logo.image');
     const marketplaceType = getMarketplaceType();
+    const isSelectCityEnabled = getBooleanProperty(properties, 'location.select.enabled');
+
     const {t} = useLanguage();
 
     const [open, setOpen] = useState(false);
@@ -48,9 +57,7 @@ const Header: React.FC = () => {
     return (
         <AppBar position="static" sx={{ padding: 2, borderRadius: '0 0 10px 10px', marginBottom: '2rem' }} color='transparent'>
             <Stack direction="row" spacing={1} padding='0 .5rem' alignItems="center" justifyContent='space-between'>
-                <SmallLinkActive>
-                    Вологда. Уточнить адрес
-                </SmallLinkActive>
+                {isSelectCityEnabled ? <CitySelector/> : <Box/>}
 
                 <Stack direction="row" spacing={1} alignItems="center" justifyContent='space-between'>
                     {(isUserAuthenticated() && !isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER)) && (

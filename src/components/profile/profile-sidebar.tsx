@@ -52,7 +52,7 @@ const ProfileSidebar: React.FC = () => {
             <UserInfo>
                 <UserAvatar alt="User Avatar" src="/path/to/avatar.jpg"/>
                 <UserName>{customer.firstName} {customer.lastName}</UserName>
-                <EditProfileLink component={Link} to="personalInfo">
+                <EditProfileLink component={Link} to="/profile/personalInfo">
                     {t('customer.profile.edit')}
                 </EditProfileLink>
             </UserInfo>
