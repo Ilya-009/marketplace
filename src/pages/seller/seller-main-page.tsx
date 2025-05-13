@@ -23,7 +23,8 @@ import {
     $properties,
     $store,
     Good,
-    loadRandomGoodsByStoreIdFx, loadSellerOrdersFx,
+    loadRandomGoodsByStoreIdFx,
+    loadSellerOrdersFx,
     MarketplaceType,
     Order,
     OrderStatus
@@ -102,7 +103,7 @@ const SellerMainPage: React.FC = () => {
 
         {/* Статистика */}
         <Grid container spacing={3} mb={4}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
                 <Card>
                     <CardContent>
                         <Box display="flex" alignItems="center">
@@ -117,7 +118,7 @@ const SellerMainPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={6} sm={6} md={4}>
                 <Card>
                     <CardContent>
                         <Box display="flex" alignItems="center">
@@ -145,7 +146,7 @@ const SellerMainPage: React.FC = () => {
             {/*        </CardContent>*/}
             {/*    </Card>*/}
             {/*</Grid>}*/}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
                 <Card>
                     <CardContent>
                         <Box display="flex" alignItems="center">
@@ -190,9 +191,9 @@ const SellerMainPage: React.FC = () => {
                                     <TableRow key={good.id} hover>
                                         <TableCell>
                                             <Avatar
-                                                src={good.goodImages[0]?.image}
+                                                src={`http://localhost:8080/files/images/${good.goodImages[0]?.image}`}
                                                 variant="rounded"
-                                                sx={{ width: 40, height: 40 }}
+                                                sx={{ width: 70, height: 70 }}
                                             />
                                         </TableCell>
                                         <TableCell>{good.name}</TableCell>

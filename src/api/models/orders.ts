@@ -96,6 +96,7 @@ export const loadSellerOrdersFx = createEffect<LoadSellerOrdersParam, Order[], A
         if (sellerId > 0) {
             return await apiClient.get(`${baseUrl}/orders/byStore/${sellerId}`).then(({ data }) => data);
         }
+        return [];
     }
 });
 const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({

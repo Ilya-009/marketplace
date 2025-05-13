@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Box, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
 import {$loggedUser, $store, loadStoreByUser, MarketplaceType} from "../../api";
