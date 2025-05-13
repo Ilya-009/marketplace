@@ -6,7 +6,7 @@ import {
     OrderStatus,
     SupplyStatus,
     UserRole,
-    UserStatus
+    UserStatus, MarketplaceType
 } from "./api";
 
 type GoodStatusData = {
@@ -287,6 +287,8 @@ export const goodStatuses = new Map<GoodStatus, GoodStatusData>([
 
 export const orderStatuses = new Map<OrderStatus, string>([
     [OrderStatus.CREATED, 'Создан'],
+    [OrderStatus.PAID, 'Оплачен'],
+    [OrderStatus.PROCESSING, 'В обработке'],
     [OrderStatus.DELIVERED, 'Доставлен'],
     [OrderStatus.DELIVERING, 'Доставляется'],
     [OrderStatus.REJECTED, 'Отклонен'],
@@ -319,3 +321,29 @@ export const userStatuses = new Map<UserStatus, string>([
     [UserStatus.BANNED, 'Заблокирован'],
     [UserStatus.ON_CHECK, 'На проверке']
 ]);
+
+export const getAvailableStatuses = (currentStatus: OrderStatus, marketplaceType: MarketplaceType): OrderStatus[] => {
+    if (marketplaceType === MarketplaceType.GOODS) {
+        switch(currentStatus) {
+            case OrderStatus.CREATED:
+                return [OrderStatus.PROCESSING, OrderStatus.REJECTED];
+            case OrderStatus.PROCESSING:
+                return [OrderStatus.DELIVERING, OrderStatus.REJECTED];
+            case OrderStatus.DELIVERING:
+                return [OrderStatus.DELIVERED, OrderStatus.REJECTED];
+            case OrderStatus.DELIVERED:
+                return [OrderStatus.FINISHED, OrderStatus.REJECTED];
+            default:
+                return [];
+        }
+    } else {
+        switch(currentStatus) {
+            case OrderStatus.CREATED:
+                return [OrderStatus.PROCESSING, OrderStatus.REJECTED];
+            case OrderStatus.PROCESSING:
+                return [OrderStatus.FINISHED, OrderStatus.REJECTED];
+            default:
+                return [];
+        }
+    }
+};

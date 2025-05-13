@@ -15,6 +15,8 @@ export interface Order {
 
 export enum OrderStatus {
     CREATED = 'CREATED',
+    PAID = 'PAID',
+    PROCESSING = 'PROCESSING',
     DELIVERED = 'DELIVERED',
     DELIVERING = 'DELIVERING',
     REJECTED = 'REJECTED',
@@ -74,12 +76,18 @@ type DeleteDeliveryMethodParam = {
     id: number;
 };
 
+type ChangeOrderParamParam = {
+    id: number;
+    status: OrderStatus;
+};
+
 export const $orders = createStore<Order[]>([]);
 export const $paymentMethods = createStore<PaymentMethod[]>([]);
 export const $deliveryMethods = createStore<DeliveryMethod[]>([]);
 
 export const loadCustomerOrders = createEvent<LoadCustomerOrdersParam>();
 export const createNewOrder = createEvent<CreateNewOrderParam>();
+export const changeOrderStatus = createEvent<ChangeOrderParamParam>();
 export const loadPaymentMethods = createEvent();
 export const loadDeliveryMethods = createEvent();
 export const loadSellerOrders = createEvent<LoadSellerOrdersParam>();
@@ -102,6 +110,17 @@ export const loadSellerOrdersFx = createEffect<LoadSellerOrdersParam, Order[], A
 const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({
     async handler(order) {
         await apiClient.post(`${baseUrl}/orders`, order);
+    }
+});
+
+export const changeOrderStatusFx = createEffect<ChangeOrderParamParam, void, AxiosError>({
+    async handler(param) {
+        console.log(param);
+        await apiClient.patch(`${baseUrl}/orders/${param.id}`, param.status, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(({ data }) => data);
     }
 });
 
@@ -181,4 +200,9 @@ sample({
 sample({
     clock: loadSellerOrders,
     target: loadSellerOrdersFx
+});
+
+sample({
+    clock: changeOrderStatus,
+    target: changeOrderStatusFx
 });

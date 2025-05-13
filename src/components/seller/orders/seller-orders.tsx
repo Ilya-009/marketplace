@@ -19,6 +19,7 @@ import {
     $allGoods,
     $orders,
     $store,
+    changeOrderStatus,
     loadGoodsByIds,
     loadSellerOrders,
     MarketplaceType,
@@ -28,12 +29,12 @@ import {
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from "@mui/x-date-pickers";
-import {orderStatuses} from "../../../constants.ts";
+import {getAvailableStatuses, orderStatuses} from "../../../constants.ts";
 import {useUnit} from "effector-react";
 import OrderDetailsModal from "./order-details-modal.tsx";
-import ConfirmationDialog from "../../common/confirmation-dialog.tsx";
 import {getMarketplaceType} from "../../../services";
 import {limitString} from "../../../services/type-utils.ts";
+import {OrderStatusModal} from "./change-order-status-modal.tsx";
 
 const OrdersList: React.FC = () => {
     const seller = useUnit($store);
@@ -60,8 +61,7 @@ const OrdersList: React.FC = () => {
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);  // Для открытия модального окна
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);  // Храним выбранный заказ
-    const [openConfirmationDialog, setOpenConfirmationDialog] = useState<boolean>(false); // Окно подтверждения
-    const [orderToReject, setOrderToReject] = useState<Order | null>(null); // Заказ для отклонения
+    const [statusModalOpen, setStatusModalOpen] = useState(false);
 
     useEffect(() => {
         const filtered = orders.filter((order) => {
@@ -98,23 +98,21 @@ const OrdersList: React.FC = () => {
         setOpenOrderModal(true);
     };
 
-    const handleOpenConfirmationDialog = (order: Order) => {
-        setOrderToReject(order);
-        setOpenConfirmationDialog(true);
+    // Открытие модального окна
+    const handleOpenStatusModal = (order: Order) => {
+        setSelectedOrder(order);
+        setStatusModalOpen(true);
     };
 
-    const handleRejectOrder = () => {
-        if (orderToReject) {
-            // Логика для отклонения заказа
-            console.log(`Заказ ${orderToReject.id} отклонен`);
-            setOpenConfirmationDialog(false);
-            setOrderToReject(null);
+    // Подтверждение изменения статуса
+    const handleStatusChangeConfirm = (newStatus: OrderStatus) => {
+        if (selectedOrder) {
+            changeOrderStatus({
+                id: selectedOrder.id,
+                status: newStatus
+            });
+            // console.log(selectedOrder);
         }
-    };
-
-    const handleCancelConfirmation = () => {
-        setOpenConfirmationDialog(false);
-        setOrderToReject(null);
     };
 
     return (
@@ -177,9 +175,14 @@ const OrdersList: React.FC = () => {
                                     <Button onClick={() => handleOpenOrderModal(order)} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
                                         Детали
                                     </Button>
-                                    {order.status === OrderStatus.CREATED && (
-                                        <Button onClick={() => handleOpenConfirmationDialog(order)} variant="outlined" color="error" size="small" sx={{mt: 1}}>
-                                            Отклонить
+                                    {getAvailableStatuses(order.status, marketplaceType).length > 0 && (
+                                        <Button
+                                            onClick={() => handleOpenStatusModal(order)}
+                                            variant="outlined"
+                                            color="secondary"
+                                            size="small"
+                                        >
+                                            Изменить статус
                                         </Button>
                                     )}
                                 </TableCell>
@@ -197,13 +200,15 @@ const OrdersList: React.FC = () => {
                 />
             )}
 
-            {openConfirmationDialog && orderToReject && (
-                <ConfirmationDialog
-                    open={openConfirmationDialog}
-                    title='Вы уверены, что хотите отменить заказ?'
-                    infoMessage='При отмене заказа будут начислены штрафные баллы и появляется риск снижения рейтинга магазина.'
-                    onReject={handleRejectOrder}
-                    onCancel={handleCancelConfirmation}
+            {/* Модальное окно изменения статуса */}
+            {selectedOrder && (
+                <OrderStatusModal
+                    open={statusModalOpen}
+                    order={selectedOrder}
+                    currentStatus={selectedOrder.status}
+                    onClose={() => setStatusModalOpen(false)}
+                    onConfirm={handleStatusChangeConfirm}
+                    marketplaceType={marketplaceType}
                 />
             )}
         </Box>
