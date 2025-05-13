@@ -203,10 +203,6 @@ export default function SignIn() {
                         </Typography>
 
                         <Button href='/' fullWidth variant="outlined">
-                            Войти как магазин
-                        </Button>
-
-                        <Button href='/' fullWidth variant="outlined">
                             Вернуться на главную
                         </Button>
                     </Box>

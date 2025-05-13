@@ -102,7 +102,6 @@ const CustomerReviewsPage: React.FC = () => {
                 text: reviewText
             });
 
-            // Имитация успешной отправки
             const newReview: Review = {
                 id: reviews.length + 1,
                 goodId: currentReview.goodId,
@@ -197,6 +196,7 @@ const CustomerReviewsPage: React.FC = () => {
                             ) : (
                                 reviews.map((review) => {
                                     const good = goods.find(g => g.id === review.goodId);
+                                    console.log(goods);
 
                                     return (
                                         <Card key={review.id} sx={{ mb: 3 }}>
@@ -210,7 +210,7 @@ const CustomerReviewsPage: React.FC = () => {
                                                         {good?.name}
                                                     </Avatar>
                                                     <Box>
-                                                        <Typography variant="h6">{review.goodId}</Typography>
+                                                        <Typography variant="h6">{good?.name}</Typography>
                                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                             <Rating
                                                                 value={review.mark}

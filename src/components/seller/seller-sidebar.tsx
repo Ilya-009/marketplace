@@ -34,25 +34,28 @@ const makeSections = () => {
     const marketplaceType = getMarketplaceType();
     const isGoods = marketplaceType === MarketplaceType.GOODS;
 
-    let sections = [
+    const sections = [
         {id: 'main', label: 'Главная', path: 'main'},
         {
             id: 'goods-prices',
             label: isGoods ? 'Товары и цены' : 'Услуги и цены',
             path: 'goods'
-        }
-    ];
-
-    if (isGoods) {
-        sections.push({id: 'supplies', label: 'Поставки', path: 'supplies'});
-    }
-
-    sections = [
-        ...sections,
+        },
         {id: 'orders', label: 'Заказы', path: 'orders'},
         {id: 'analytics', label: 'Аналитика', path: 'analytics'},
         {id: 'reviews', label: 'Отзывы', path: 'reviews'}
     ];
+
+    // if (isGoods) {
+    //     sections.push({id: 'supplies', label: 'Поставки', path: 'supplies'});
+    // }
+
+    // sections = [
+    //     ...sections,
+    //     {id: 'orders', label: 'Заказы', path: 'orders'},
+    //     {id: 'analytics', label: 'Аналитика', path: 'analytics'},
+    //     {id: 'reviews', label: 'Отзывы', path: 'reviews'}
+    // ];
     return sections;
 }
 

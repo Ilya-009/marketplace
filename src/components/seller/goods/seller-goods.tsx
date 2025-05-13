@@ -65,10 +65,6 @@ const SellerGoods: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        console.log(goodRequests);
-    }, [goodRequests]);
-
-    useEffect(() => {
         if (store?.id && store?.id > 0) {
             loadGoodsByStoreId({storeId: store.id});
         }

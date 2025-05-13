@@ -17,22 +17,20 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import {ArrowForward, AttachMoney, Inventory, LocalShipping, ShoppingCart} from '@mui/icons-material';
+import {ArrowForward, AttachMoney, LocalShipping, ShoppingCart} from '@mui/icons-material';
 import {useNavigate} from 'react-router-dom';
 import {
     $properties,
     $store,
     Good,
     loadRandomGoodsByStoreIdFx, loadSellerOrdersFx,
-    loadSuppliesFx, MarketplaceType,
+    MarketplaceType,
     Order,
-    OrderStatus,
-    Supply,
-    SupplyStatus
+    OrderStatus
 } from "../../api";
 import {loadStoreAnalyticsFx, StoreSummary} from "../../api/models/analytics.ts";
 import {useUnit} from "effector-react";
-import {goodStatuses, orderStatuses, supplyStatuses} from "../../constants.ts";
+import {goodStatuses, orderStatuses} from "../../constants.ts";
 import {getMarketplaceType, getNumericProperty} from "../../services";
 
 const SellerMainPage: React.FC = () => {
@@ -43,7 +41,7 @@ const SellerMainPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState<StoreSummary | null>(null);
     const [goods, setGoods] = useState<Good[]>([]);
-    const [supplies, setSupplies] = useState<Supply[]>([]);
+    // const [supplies, setSupplies] = useState<Supply[]>([]);
     const [orders, setOrders] = useState<Order[]>([]);
     const navigate = useNavigate();
 
@@ -53,17 +51,20 @@ const SellerMainPage: React.FC = () => {
             try {
                 const goodsMaxLength = getNumericProperty(properties, 'block.compilation.max.length');
                 const loadedGoods: Good[] = await loadRandomGoodsByStoreIdFx({storeId: store.id, count: goodsMaxLength});
-                const loadedSupplies: Supply[] = (await loadSuppliesFx({storeId: store.id}))
-                    .filter(supply => supply.status !== SupplyStatus.COMPLETED)
-                    .slice(0, 5);
+                // const loadedSupplies: Supply[] = (await loadSuppliesFx({storeId: store.id}))
+                //     .filter(supply => supply.status !== SupplyStatus.COMPLETED)
+                //     .slice(0, 5);
                 const loadedOrders: Order[] = await loadSellerOrdersFx({sellerId: store.id});
-                const stats = await loadStoreAnalyticsFx({
-                    storeId: store.id
-                });
+                if (store.id > 0) {
+                    const stats = await loadStoreAnalyticsFx({
+                        storeId: store.id
+                    });
 
-                setStats(stats.summary);
+                    setStats(stats.summary);
+                }
+
                 setGoods(loadedGoods);
-                setSupplies(loadedSupplies);
+                // setSupplies(loadedSupplies);
                 setOrders(loadedOrders);
                 setLoading(false);
             } catch (error) {
@@ -73,7 +74,7 @@ const SellerMainPage: React.FC = () => {
         };
 
         fetchData();
-    }, [store.id]);
+    }, [store?.id]);
 
     const getGoodById = (goodId: number): Good | undefined => {
         return goods.find(g => g.id === goodId);
@@ -129,21 +130,21 @@ const SellerMainPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </Grid>
-            {marketplaceType === MarketplaceType.GOODS && <Grid item xs={12} sm={6} md={3}>
-                <Card>
-                    <CardContent>
-                        <Box display="flex" alignItems="center">
-                            <Inventory fontSize="large" color="primary" />
-                            <Box ml={2}>
-                                <Typography color="textSecondary">Активные поставки</Typography>
-                                <Typography variant="h5">
-                                    {supplies?.filter(s => s.status !== SupplyStatus.COMPLETED).length ?? 0}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </CardContent>
-                </Card>
-            </Grid>}
+            {/*{marketplaceType === MarketplaceType.GOODS && <Grid item xs={12} sm={6} md={3}>*/}
+            {/*    <Card>*/}
+            {/*        <CardContent>*/}
+            {/*            <Box display="flex" alignItems="center">*/}
+            {/*                <Inventory fontSize="large" color="primary" />*/}
+            {/*                <Box ml={2}>*/}
+            {/*                    <Typography color="textSecondary">Активные поставки</Typography>*/}
+            {/*                    <Typography variant="h5">*/}
+            {/*                        {supplies?.filter(s => s.status !== SupplyStatus.COMPLETED).length ?? 0}*/}
+            {/*                    </Typography>*/}
+            {/*                </Box>*/}
+            {/*            </Box>*/}
+            {/*        </CardContent>*/}
+            {/*    </Card>*/}
+            {/*</Grid>}*/}
             <Grid item xs={12} sm={6} md={3}>
                 <Card>
                     <CardContent>
@@ -162,9 +163,9 @@ const SellerMainPage: React.FC = () => {
         </Grid>
 
         {/* Товары / услуги */}
-        <Grid container spacing={3} mb={4}>
+        {/*<Grid container spacing={3} mb={4}>*/}
             <Grid item xs={12} md={6}>
-                <Paper elevation={3} sx={{ p: 2 }}>
+                <Paper elevation={3}  sx={{ p: 2, mb: 4 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                         <Typography variant="h6">Ваши {marketplaceType === MarketplaceType.GOODS ? 'товары' : 'услуги'} </Typography>
                         <Button
@@ -218,62 +219,62 @@ const SellerMainPage: React.FC = () => {
             </Grid>
 
             {/* Активные поставки */}
-            {marketplaceType === MarketplaceType.GOODS && (
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 2 }}>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                            <Typography variant="h6">Активные поставки</Typography>
-                            <Button
-                                endIcon={<ArrowForward />}
-                                onClick={() => navigate('/seller/supplies')}
-                            >
-                                Все поставки
-                            </Button>
-                        </Box>
-                        <TableContainer>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Товар</TableCell>
-                                        <TableCell align="right">Количество</TableCell>
-                                        <TableCell>Статус</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {supplies
-                                        .filter(s => s.status === 'PENDING')
-                                        .slice(0, 3)
-                                        .flatMap(supply =>
-                                            supply.supplyGoods.map((item, index) => {
-                                                const good = getGoodById(item.goodId);
-                                                return (
-                                                    <TableRow key={`${supply.id}-${index}`} hover>
-                                                        <TableCell>{good?.name}</TableCell>
-                                                        <TableCell align="right">{item.quantity}</TableCell>
-                                                        <TableCell>
-                                                            <Box
-                                                                component="span"
-                                                                sx={{
-                                                                    p: 0.5,
-                                                                    borderRadius: 1,
-                                                                    bgcolor: 'warning.light',
-                                                                    color: 'common.white'
-                                                                }}
-                                                            >
-                                                                {supplyStatuses.get(supply.status)}
-                                                            </Box>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                );
-                                            })
-                                        )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </Grid>
-            )}
-        </Grid>
+            {/*{marketplaceType === MarketplaceType.GOODS && (*/}
+            {/*    <Grid item xs={12} md={6}>*/}
+            {/*        <Paper elevation={3} sx={{ p: 2 }}>*/}
+            {/*            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>*/}
+            {/*                <Typography variant="h6">Активные поставки</Typography>*/}
+            {/*                <Button*/}
+            {/*                    endIcon={<ArrowForward />}*/}
+            {/*                    onClick={() => navigate('/seller/supplies')}*/}
+            {/*                >*/}
+            {/*                    Все поставки*/}
+            {/*                </Button>*/}
+            {/*            </Box>*/}
+            {/*            <TableContainer>*/}
+            {/*                <Table size="small">*/}
+            {/*                    <TableHead>*/}
+            {/*                        <TableRow>*/}
+            {/*                            <TableCell>Товар</TableCell>*/}
+            {/*                            <TableCell align="right">Количество</TableCell>*/}
+            {/*                            <TableCell>Статус</TableCell>*/}
+            {/*                        </TableRow>*/}
+            {/*                    </TableHead>*/}
+            {/*                    <TableBody>*/}
+            {/*                        {supplies*/}
+            {/*                            .filter(s => s.status === 'PENDING')*/}
+            {/*                            .slice(0, 3)*/}
+            {/*                            .flatMap(supply =>*/}
+            {/*                                supply.supplyGoods.map((item, index) => {*/}
+            {/*                                    const good = getGoodById(item.goodId);*/}
+            {/*                                    return (*/}
+            {/*                                        <TableRow key={`${supply.id}-${index}`} hover>*/}
+            {/*                                            <TableCell>{good?.name}</TableCell>*/}
+            {/*                                            <TableCell align="right">{item.quantity}</TableCell>*/}
+            {/*                                            <TableCell>*/}
+            {/*                                                <Box*/}
+            {/*                                                    component="span"*/}
+            {/*                                                    sx={{*/}
+            {/*                                                        p: 0.5,*/}
+            {/*                                                        borderRadius: 1,*/}
+            {/*                                                        bgcolor: 'warning.light',*/}
+            {/*                                                        color: 'common.white'*/}
+            {/*                                                    }}*/}
+            {/*                                                >*/}
+            {/*                                                    {supplyStatuses.get(supply.status)}*/}
+            {/*                                                </Box>*/}
+            {/*                                            </TableCell>*/}
+            {/*                                        </TableRow>*/}
+            {/*                                    );*/}
+            {/*                                })*/}
+            {/*                            )}*/}
+            {/*                    </TableBody>*/}
+            {/*                </Table>*/}
+            {/*            </TableContainer>*/}
+            {/*        </Paper>*/}
+            {/*    </Grid>*/}
+            {/*)}*/}
+        {/*</Grid>*/}
 
         {/* Последние заказы */}
         <Paper elevation={3} sx={{ p: 2 }}>

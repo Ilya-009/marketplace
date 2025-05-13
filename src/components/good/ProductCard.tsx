@@ -1,7 +1,5 @@
 import {useEffect, useMemo, useState} from 'react';
-import {Box, Card, CardContent, Chip, IconButton, Rating, Typography} from '@mui/material';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import {Box, Card, CardContent, Chip, Rating, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import {DiscountType, Good, GoodDiscount, loadLoadGoodReviewsFx, Review} from "../../api";
 import {getGoodRating} from "../../services";
@@ -31,12 +29,12 @@ const ImageContainer = styled(Box)({
     }
 });
 
-const FavoriteButton = styled(IconButton)({
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    zIndex: 1
-});
+// const FavoriteButton = styled(IconButton)({
+//     position: 'absolute',
+//     top: 8,
+//     right: 8,
+//     zIndex: 1
+// });
 
 interface ProductCardProps {
     good: Good;
@@ -51,7 +49,7 @@ const getDiscountLabelText = (discount: GoodDiscount): string => {
 };
 
 const ProductCard = ({ good }: ProductCardProps) => {
-    const [isFavorite, setIsFavorite] = useState(false);
+    // const [isFavorite, setIsFavorite] = useState(false);
     const [reviews, setReviews] = useState<Review[]>([]);
     const navigate = useNavigate();
 
@@ -69,12 +67,12 @@ const ProductCard = ({ good }: ProductCardProps) => {
 
     return (
         <StyledCard elevation={1} onClick={onGoodCardClick}>
-            <FavoriteButton
-                onClick={() => setIsFavorite(!isFavorite)}
-                sx={{ color: isFavorite ? 'error.main' : 'grey.400' }}
-            >
-                {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            </FavoriteButton>
+            {/*<FavoriteButton*/}
+            {/*    onClick={() => setIsFavorite(!isFavorite)}*/}
+            {/*    sx={{ color: isFavorite ? 'error.main' : 'grey.400' }}*/}
+            {/*>*/}
+            {/*    {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}*/}
+            {/*</FavoriteButton>*/}
 
             <ImageContainer>
                 {good.goodImages.length !== 0
