@@ -28,8 +28,6 @@ export type CartItem = {
     quantity: number;
 };
 
-export type FavoriteGoodItem = CartItem;
-
 type AddGoodToCartParam = {
     goodId: number;
 };

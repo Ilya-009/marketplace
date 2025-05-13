@@ -22,7 +22,6 @@ import {
 } from '@mui/icons-material';
 
 interface City {
-    id: number;
     name: string;
     region?: string;
     country: string;
@@ -54,11 +53,12 @@ const CitySelector: React.FC = () => {
                 await new Promise(resolve => setTimeout(resolve, 500));
 
                 const mockCities: City[] = [
-                    { id: 1, name: 'Москва', region: 'Московская область', country: 'Россия' },
-                    { id: 2, name: 'Санкт-Петербург', region: 'Ленинградская область', country: 'Россия' },
-                    { id: 3, name: 'Новосибирск', country: 'Россия' },
-                    { id: 4, name: 'Екатеринбург', country: 'Россия' },
-                    { id: 5, name: 'Казань', country: 'Россия' },
+                    { name: 'Москва', region: 'Московская область', country: 'Россия' },
+                    { name: 'Санкт-Петербург', region: 'Ленинградская область', country: 'Россия' },
+                    { name: 'Новосибирск', country: 'Россия' },
+                    { name: 'Екатеринбург', country: 'Россия' },
+                    { name: 'Казань', country: 'Россия' },
+                    { name: 'Вологда', country: 'Россия' }
                 ].filter(city =>
                     city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     (city.region && city.region.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -171,7 +171,7 @@ const CitySelector: React.FC = () => {
                         <List sx={{ maxHeight: 400, overflow: 'auto' }}>
                             {cities.map((city) => (
                                 <ListItem
-                                    key={city.id}
+                                    key={city.name}
                                     button
                                     onClick={() => handleCitySelect(city)}
                                     sx={{

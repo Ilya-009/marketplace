@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import {useLanguage} from "../../locales/language-context.tsx";
 
 const StyledFooter = styled(Box)`
-  background-color: #1976d2;
-  color: white;
-  padding: 10px;
-  text-align: center;
+    background-color: #1976d2;
+    color: white;
+    padding: 10px;
+    margin-top: 2rem;
+    text-align: center;
 `;
 
 const Footer: React.FC = () => {

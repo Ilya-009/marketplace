@@ -1,8 +1,7 @@
-import React, {useCallback} from 'react';
-import { Box, Typography, styled } from '@mui/material';
-import {$customer, loadCustomer, Review} from "../../../api";
+import React from 'react';
+import {Box, Typography, styled, Avatar, Rating} from '@mui/material';
+import {Review} from "../../../api";
 import {formatDate} from "../../../services/type-utils.ts";
-import {useUnit} from "effector-react";
 
 export const ReviewsContainer = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -21,35 +20,27 @@ const ReviewHeader = styled(Box)({
     gap: '10px',
 });
 
-const Avatar = styled(Box)({
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    backgroundColor: 'gray',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-});
-
 interface ReviewProps {
     review: Review;
 }
 
 const ReviewCard: React.FC<ReviewProps> = ({review}) => {
-    useCallback(() => loadCustomer({userId: review.customerId}), [review]);
-    const customer = useUnit($customer);
-
     return (
         <Box sx={{ mb: 3 }}>
             {/* Блок с отзывом */}
             <Box>
                 <ReviewHeader>
-                    <Avatar>{customer?.firstName[0]}{customer?.lastName[0]}</Avatar>
-                    <Typography variant="body1">{customer?.firstName} {customer?.lastName[0]}.</Typography>
+                    <Avatar
+                        variant="rounded"
+                        sx={{ width: 40, height: 40, mr: 1 }}/>
                     <Typography variant="body2">{formatDate(new Date(review.createdAt))}</Typography>
                 </ReviewHeader>
-                <Typography variant="body1">Оценка: {review.mark}/5</Typography>
+                <Rating
+                    value={review.mark}
+                    readOnly
+                    precision={1}
+                    sx={{ mr: 1, mt: 1}}
+                />
                 <Typography variant="body1">{review.text}</Typography>
             </Box>
 
