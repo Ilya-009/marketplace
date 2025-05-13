@@ -12,13 +12,13 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import ForgotPassword from "../components/authentication/forgot-password.tsx";
 import {useState} from "react";
 import {StyledFormControlLabel, validateSignInInputs} from "../components";
 import {useNavigate} from "react-router-dom";
 import {$authError, loginUserFx} from "../api";
 import {useUnit} from "effector-react";
 import Footer from "../components/common/footer.tsx";
+import ForgotPasswordModal from "../components/authentication/forgot-password-modal.tsx";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -171,7 +171,7 @@ export default function SignIn() {
                             control={<Checkbox value="remember" color="primary" />}
                             label="Запомнить меня"
                         />
-                        <ForgotPassword open={open} handleClose={handleClose} />
+                        <ForgotPasswordModal open={open} handleClose={handleClose} />
                         <Button
                             fullWidth
                             variant="contained"

@@ -3,6 +3,7 @@ import {Avatar, Box, Card, CardContent, Grid, Link, Tab, Tabs, Typography} from 
 import {useUnit} from "effector-react";
 import {$allGoods, $customer, $properties, loadGoodsByIds, $orders, loadCustomerOrders, OrderStatus} from "../api";
 import {getStringProperty} from "../services";
+import {SidebarPageBox} from "../components";
 
 const OrdersPage: React.FC = () => {
     const [status, setStatus] = useState<OrderStatus>(OrderStatus.CREATED);
@@ -39,7 +40,7 @@ const OrdersPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ padding: 3 }}>
+        <SidebarPageBox sx={{width: '90%'}}>
             <Typography variant="h4" gutterBottom>
                 Заказы
             </Typography>
@@ -100,7 +101,7 @@ const OrdersPage: React.FC = () => {
                     </CardContent>
                 </Card>
             ))}
-        </Box>
+        </SidebarPageBox>
     );
 };
 

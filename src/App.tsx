@@ -17,7 +17,6 @@ import BecomeSellerPage from "./pages/seller/become-seller-page.tsx";
 import PageWithSidebar from "./components/common/page-with-header-sidebar.tsx";
 import ProfileSidebar from "./components/profile/profile-sidebar.tsx";
 import Header from "./components/header/header.tsx";
-import SellerHeader from "./components/header/seller-header.tsx";
 import SellerMainPage from "./pages/seller/seller-main-page.tsx";
 import SellerSidebar from "./components/seller/seller-sidebar.tsx";
 import SellerGoodsPage from "./pages/seller/goods/seller-goods-page.tsx";
@@ -39,6 +38,7 @@ import PaymentMethodsPage from "./pages/admin/payment-methods-page.tsx";
 import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
 import GoodRequestsPage from "./pages/admin/good-requests-page.tsx";
 import CustomerReviewsPage from "./pages/customer-reviews-page.tsx";
+import MiniHeader from "./components/header/mini-header.tsx";
 
 function App() {
     useEffect(() => {
@@ -64,7 +64,7 @@ function App() {
                         <Route path="/store/:id" element={<SellerPage/>}/>
 
                         <Route path="/seller" element={
-                            <PageWithSidebar header={<SellerHeader/>}
+                            <PageWithSidebar header={<MiniHeader/>}
                                              sidebar={<SellerSidebar/>}
                                              requiredRoles={[UserRole.SELLER]}/>
                         }>
@@ -94,7 +94,7 @@ function App() {
                             <Route path="reviews" element={<CustomerReviewsPage/>}/>
                         </Route>
                         <Route path="/admin" element={
-                            <PageWithSidebar header={<Header/>}
+                            <PageWithSidebar header={<MiniHeader/>}
                                              sidebar={<AdminSidebar/>}
                                              requiredRoles={[UserRole.ADMIN, UserRole.ROLE_MASTER_ADMIN]}
                                              initFunction={getLoggedUserFn}

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Box, Button,
+    Box,
+    Button,
     FormControl,
     MenuItem,
     Paper,
@@ -14,14 +15,21 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import {$orders, loadSellerOrders, MarketplaceType, Order, OrderStatus} from "../../../api";
+import {
+    $allGoods,
+    $orders,
+    $store,
+    loadGoodsByIds,
+    loadSellerOrders,
+    MarketplaceType,
+    Order,
+    OrderStatus
+} from "../../../api";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from "@mui/x-date-pickers";
 import {orderStatuses} from "../../../constants.ts";
-import {$store} from "../../../api";
 import {useUnit} from "effector-react";
-import {$allGoods, loadGoodsByIds} from "../../../api";
 import OrderDetailsModal from "./order-details-modal.tsx";
 import ConfirmationDialog from "../../common/confirmation-dialog.tsx";
 import {getMarketplaceType} from "../../../services";
@@ -47,7 +55,7 @@ const OrdersList: React.FC = () => {
     }, [orders]);
 
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-    const [selectedStatus, setSelectedStatus] = useState<OrderStatus | 'ALL'>('ALL');
+    const [selectedStatus, setSelectedStatus] = useState<OrderStatus | 'ALL'>(OrderStatus.CREATED);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);  // Для открытия модального окна
@@ -169,9 +177,11 @@ const OrdersList: React.FC = () => {
                                     <Button onClick={() => handleOpenOrderModal(order)} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
                                         Детали
                                     </Button>
-                                    <Button onClick={() => handleOpenConfirmationDialog(order)} variant="outlined" color="error" size="small">
-                                        Отклонить
-                                    </Button>
+                                    {order.status === OrderStatus.CREATED && (
+                                        <Button onClick={() => handleOpenConfirmationDialog(order)} variant="outlined" color="error" size="small" sx={{mt: 1}}>
+                                            Отклонить
+                                        </Button>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

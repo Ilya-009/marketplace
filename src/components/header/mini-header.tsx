@@ -5,7 +5,7 @@ import { $properties } from "../../api";
 import {getImageProperty} from "../../services";
 import LanguageSwitcher from "../common/language-change-select.tsx";
 
-const SellerHeader: React.FC = () => {
+const MiniHeader: React.FC = () => {
     const properties = useUnit($properties);
     const logoImageSrc = getImageProperty(properties, 'logo.image');
 
@@ -31,4 +31,4 @@ const SellerHeader: React.FC = () => {
     );
 };
 
-export default SellerHeader;
+export default MiniHeader;

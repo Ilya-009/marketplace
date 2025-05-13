@@ -11,13 +11,14 @@ import styled from 'styled-components';
 interface ForgotPasswordProps {
     open: boolean;
     handleClose: () => void;
+    handleSubmit?: () => void;
 }
 
 const EmailInput = styled(OutlinedInput)`
     color: ${({ theme }) => theme.palette.text.primary} !important;
 `;
 
-export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
+export default function ForgotPasswordModal({ open, handleClose, handleSubmit }: ForgotPasswordProps) {
     return (
         <Dialog
             open={open}
@@ -26,6 +27,9 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
                 component: 'form',
                 onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                     event.preventDefault();
+                    if (handleSubmit) {
+                        handleSubmit();
+                    }
                     handleClose();
                 },
                 sx: { backgroundImage: 'none' },
