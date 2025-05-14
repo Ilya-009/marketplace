@@ -1,5 +1,5 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {MainPage, ProductCardPage} from "./pages";
+import {MainPage, PaymentCardForm, ProductCardPage} from "./pages";
 import {useCallback, useEffect} from "react";
 import SignUp from "./pages/sign-up.tsx";
 import SignIn from "./pages/sign-in.tsx";
@@ -39,6 +39,7 @@ import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
 import GoodRequestsPage from "./pages/admin/good-requests-page.tsx";
 import CustomerReviewsPage from "./pages/customer-reviews-page.tsx";
 import MiniHeader from "./components/header/mini-header.tsx";
+import {Box} from "@mui/material";
 
 function App() {
     useEffect(() => {
@@ -107,6 +108,14 @@ function App() {
                             <Route path="paymentMethods" element={<PaymentMethodsPage/>}/>
                             <Route path="deliveryMethods" element={<DeliveryMethodsPage/>}/>
                             <Route path="users" element={<UsersManagementPage/>} />
+                        </Route>
+                        <Route path="/payment" element={
+                            <PageWithSidebar header={<Header/>}
+                                             sidebar={<Box/>}
+                                             requiredRoles={[UserRole.CUSTOMER]}
+                            />
+                        }>
+                            <Route path="credit-card" element={<PaymentCardForm/>} />
                         </Route>
                         <Route path="/" element={<MainPage/>}/>
                         <Route path="/404" element={<NotFoundPage/>}/>

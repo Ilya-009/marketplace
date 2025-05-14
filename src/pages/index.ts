@@ -8,3 +8,4 @@ export * from './profile';
 export * from './not-found';
 export * from './orders-page';
 export * from './customer-reviews-page';
+export * from './payment';

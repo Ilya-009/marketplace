@@ -23,6 +23,14 @@ export enum OrderStatus {
     FINISHED = 'FINISHED'
 }
 
+export enum PaymentMethodType {
+    CREDIT_CARD = 'CREDIT_CARD',
+    ROBOKASSA = 'ROBOKASSA',
+    U_KASSA = 'U_KASSA',
+    TINKOFF = 'TINKOFF',
+    CASH = 'CASH'
+}
+
 export interface OrderGood {
     id: number;
     quantity: number;
@@ -33,6 +41,7 @@ export interface PaymentMethod {
     id: number;
     name: string;
     isActive: boolean;
+    paymentMethodType: PaymentMethodType;
 }
 
 export interface DeliveryMethod {

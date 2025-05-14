@@ -12,7 +12,8 @@ import {
     ListItemText,
     Paper,
     Radio,
-    RadioGroup, TextField,
+    RadioGroup,
+    TextField,
     Typography,
 } from '@mui/material';
 import {MainPageBox} from "../components";
@@ -28,14 +29,14 @@ import {
     $paymentMethods,
     $properties,
     CartItem,
-    createNewOrder,
     CreateNewOrderParam,
     Good,
     loadAddresses,
     loadDeliveryMethods,
     loadGoodsByIds,
     loadPaymentMethods,
-    MarketplaceType
+    MarketplaceType,
+    PaymentMethodType
 } from "../api";
 import {findGoodById, getImageProperty, getMarketplaceType} from "../services";
 import Footer from "../components/common/footer.tsx";
@@ -134,8 +135,19 @@ const CheckoutPage: React.FC = () => {
             }, []),
             comment: orderComment
         };
-        createNewOrder(order);
-        navigate('/profile/main');
+        // createNewOrder(order);
+
+        const paymentMethod = paymentMethods
+            .find(method => method.id === paymentMethodId);
+
+        switch (paymentMethod?.paymentMethodType) {
+            case PaymentMethodType.CASH:
+                navigate('/profile/main');
+                break;
+            case PaymentMethodType.CREDIT_CARD:
+                navigate('/payment/credit-card');
+                break;
+        }
     };
 
     return (
@@ -156,7 +168,7 @@ const CheckoutPage: React.FC = () => {
                                 onChange={(e) => setPaymentMethodId(parseInt(e.target.value))}
                             >
                                 {paymentMethods
-                                    .filter(method => marketplaceType === MarketplaceType.GOODS ? true : method.name !== 'Наличные')
+                                    .filter(method => marketplaceType === MarketplaceType.GOODS ? true : method.paymentMethodType !== PaymentMethodType.CASH)
                                     .map((paymentMethod) => (
                                         <FormControlLabel
                                             key={paymentMethod.id}
@@ -252,7 +264,11 @@ const CheckoutPage: React.FC = () => {
                             sx={{ marginBottom: '20px' }}
                             onClick={handleSubmit}
                         >
-                            {marketplaceType === MarketplaceType.GOODS ? 'Оформить заказ' : 'Забронировать'}
+                            {marketplaceType === MarketplaceType.GOODS
+                                ? paymentMethods.find(m => m.id === paymentMethodId)?.paymentMethodType === PaymentMethodType.CASH
+                                    ? 'Оформить заказ'
+                                    : "Перейти к оплате"
+                                : 'Забронировать'}
                         </Button>
 
                         <Box sx={{ marginBottom: '20px' }}>
