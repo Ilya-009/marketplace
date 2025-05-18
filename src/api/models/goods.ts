@@ -18,6 +18,7 @@ export interface Good {
     durationUnit?: DurationUnit;
     isOnline?: boolean;
     serviceSlots?: ServiceSlot[];
+    stockQuantity?: number;
 }
 export enum GoodStatus {
     DRAFT = 'DRAFT',
@@ -165,6 +166,10 @@ export type ChangeGoodStatusParam = {
     id: number;
     status: GoodStatus;
 };
+export type ChangeGoodQuantityParam = {
+    id: number;
+    stockQuantity: number;
+};
 
 export const loadGoodsByCategoryFx = createEffect<LoadAllGoodsByCategoryParam, LoadGoodsByCategoryResult, AxiosError>({
     async handler({categoryId}) {
@@ -276,6 +281,15 @@ export const changeGoodStatusFx = createEffect<ChangeGoodStatusParam, void, Axio
     async handler(param) {
         const payload = {
             status: param.status
+        };
+        await apiClient.patch(`${baseUrl}/goods/${param.id}`, payload);
+    }
+});
+
+export const changeGoodQuantityFx = createEffect<ChangeGoodQuantityParam, void, AxiosError>({
+    async handler(param) {
+        const payload = {
+            stockQuantity: param.stockQuantity
         };
         await apiClient.patch(`${baseUrl}/goods/${param.id}`, payload);
     }

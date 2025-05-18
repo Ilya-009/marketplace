@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
     Box,
     Button,
@@ -74,6 +74,20 @@ const OrdersList: React.FC = () => {
         setFilteredOrders(filtered);
     }, [selectedStatus, startDate, endDate, orders]);
 
+    const statuses = useMemo(() => {
+        if (marketplaceType === MarketplaceType.GOODS) {
+            return orderStatuses;
+        }
+
+        return new Map<OrderStatus, string>([
+            [OrderStatus.CREATED, 'Создан'],
+            [OrderStatus.PAID, 'Оплачен'],
+            [OrderStatus.PROCESSING, 'В обработке'],
+            [OrderStatus.REJECTED, 'Отклонен'],
+            [OrderStatus.FINISHED, 'Завершен']
+        ]);
+     }, [marketplaceType]);
+
     const handleStatusChange = (event: any) => {
         setSelectedStatus(event.target.value as OrderStatus | 'ALL');
     };
@@ -124,7 +138,7 @@ const OrdersList: React.FC = () => {
                 <FormControl>
                     <Select value={selectedStatus} onChange={handleStatusChange} variant='outlined'>
                         <MenuItem value="ALL">Все</MenuItem>
-                        {[...orderStatuses.entries()].map(entry => (
+                        {[...statuses.entries()].map(entry => (
                             <MenuItem key={entry[0]} value={entry[0]}>{entry[1]}</MenuItem>
                         ))}
                     </Select>

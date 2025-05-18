@@ -24,7 +24,7 @@ import {
     $goodRequests,
     $properties,
     $store,
-    $storeGoods,
+    $storeGoods, changeGoodQuantityFx,
     DiscountType,
     getGoodRequestsFx,
     Good,
@@ -105,6 +105,22 @@ const SellerGoods: React.FC = () => {
         navigate('/seller/goods/new');
     };
 
+    const handleStockChange = async (goodId: number, newValue: number) => {
+        try {
+            // Вызываем эффект для обновления количества на сервере
+            await changeGoodQuantityFx({id: goodId, stockQuantity: newValue});
+
+            // Обновляем локальное состояние
+            const updatedGoods = goods.map(good =>
+                good.id === goodId ? { ...good, stockQuantity: newValue } : good
+            );
+            setFilteredGoods(updatedGoods);
+        } catch (error) {
+            console.error('Ошибка при обновлении остатков:', error);
+            // Можно добавить уведомление об ошибке
+        }
+    };
+
     const paginatedGoods = filteredGoods.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
     return (
@@ -156,6 +172,9 @@ const SellerGoods: React.FC = () => {
                                 <TableCell>Причина</TableCell>
                             )}
                             <TableCell>Цена</TableCell>
+                            {marketplaceType === MarketplaceType.GOODS && (
+                                <TableCell>Остаток</TableCell>
+                            )}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -185,6 +204,29 @@ const SellerGoods: React.FC = () => {
                                             : good.price - good.discount.discountValue
                                         : good.price}
                                 </TableCell>
+                                {marketplaceType === MarketplaceType.GOODS && (
+                                    <TableCell>
+                                        <TextField
+                                            type="number"
+                                            size="small"
+                                            variant="outlined"
+                                            value={good.stockQuantity || 0}
+                                            onChange={(e) => {
+                                                const value = parseInt(e.target.value);
+                                                if (!isNaN(value) && value >= 0) {
+                                                    handleStockChange(good.id, value);
+                                                }
+                                            }}
+                                            inputProps={{
+                                                min: 0,
+                                                style: {
+                                                    width: '80px',
+                                                    textAlign: 'center'
+                                                }
+                                            }}
+                                        />
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>
