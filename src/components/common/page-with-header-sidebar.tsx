@@ -1,12 +1,13 @@
-import React, {ReactElement, useEffect, useMemo} from "react";
+import React, {ReactElement, useEffect, useMemo, useState} from "react";
 import {MainPageBox} from "./box-components.tsx";
-import {Box} from "@mui/material";
+import {Box, Drawer, IconButton, useMediaQuery, useTheme} from "@mui/material";
 import {Outlet, useNavigate} from "react-router-dom";
 import {useUnit} from "effector-react";
 import {$isUserLoading, $loggedUser, UserRole} from "../../api";
 import {isUserAuthenticated, isUserAuthenticatedWithRole} from "../../services";
 import {CircularLoader} from "./loader.tsx";
 import Footer from "./footer";
+import {MenuOpen} from "@mui/icons-material";
 
 type PageProps = {
     header: ReactElement;
@@ -18,6 +19,9 @@ type PageProps = {
 const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, initFunction}: PageProps) => {
     const [loggedUser, isUserLoading] = useUnit([$loggedUser, $isUserLoading]);
     const navigate = useNavigate();
+    const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const hasAccess = useMemo(() => {
         if (isUserLoading) return true;
@@ -31,7 +35,6 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
     }, [initFunction]);
 
     useEffect(() => {
-        // Выполняем редирект только после загрузки данных
         if (!isUserAuthenticated()) {
             navigate('/signIn');
         } else {
@@ -41,19 +44,78 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
         }
     }, [hasAccess, isUserLoading, navigate]);
 
-    // Показываем лоадер или ничего, пока данные загружаются
+    const toggleMobileSidebar = () => {
+        setMobileSidebarOpen(!isMobileSidebarOpen);
+    };
+
     if (isUserLoading) {
         return <CircularLoader/>;
     }
 
-    return hasAccess && <MainPageBox>
-        {header}
-        <Box sx={{display: 'flex'}}>
-            {sidebar}
-            <Outlet/>
-        </Box>
-        <Footer />
-    </MainPageBox>;
+    return hasAccess && (
+        <MainPageBox>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {header}
+            </Box>
+
+            {isMobile && (
+                <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={toggleMobileSidebar}
+                    sx={{ mr: 2 }}
+                >
+                    <MenuOpen />
+                </IconButton>
+            )}
+
+            <Box sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                minHeight: 'calc(100vh - 120px)'
+            }}>
+                {isMobile ? (
+                    <Drawer
+                        variant="temporary"
+                        open={isMobileSidebarOpen}
+                        onClose={toggleMobileSidebar}
+                        ModalProps={{ keepMounted: true }}
+                        sx={{
+                            display: { xs: 'block', md: 'none' },
+                            '& .MuiDrawer-paper': {
+                                boxSizing: 'border-box',
+                                width: 280
+                            },
+                        }}
+                    >
+                        {sidebar}
+                    </Drawer>
+                ) : (
+                    <Box sx={{
+                        width: { md: 240 },
+                        flexShrink: { md: 0 }
+                    }}>
+                        {sidebar}
+                    </Box>
+                )}
+
+                {/* Основное содержимое */}
+                <Box
+                    component="main"
+                    sx={{
+                        flexGrow: 1,
+                        p: { xs: 2, md: 3 },
+                        width: { xs: '100%', md: `calc(100% - 240px)` }
+                    }}
+                >
+                    <Outlet/>
+                </Box>
+            </Box>
+
+            <Footer sx={{ mt: 'auto' }} />
+        </MainPageBox>
+    );
 };
 
 export default PageWithSidebar;
