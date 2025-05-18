@@ -22,7 +22,8 @@ export default {
                 myStore: 'Ma boutique',
                 cart: 'Panier',
             },
-            becomeSeller: 'Devenir vendeur'
+            becomeSeller: 'Devenir vendeur',
+            becomeSellerC2C: 'Commencez à vendre'
         },
         control: {
             close: 'Fermer'

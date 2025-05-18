@@ -21,7 +21,8 @@ export default {
                 myStore: 'Мой магазин',
                 cart: 'Корзина',
             },
-            becomeSeller: 'Стать продавцом'
+            becomeSeller: 'Стать продавцом',
+            becomeSellerC2C: 'Начать продавать'
         },
         control: {
             close: 'Закрыть'

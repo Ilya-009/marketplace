@@ -22,7 +22,8 @@ export default {
                 myStore: 'My store',
                 cart: 'Cart',
             },
-            becomeSeller: 'Become a seller'
+            becomeSeller: 'Become a seller',
+            becomeSellerC2C: 'Start selling'
         },
         control: {
             close: 'Close'

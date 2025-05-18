@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import styled from 'styled-components';
 import {AppBar, Box, Button, IconButton, Link, Stack} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -12,7 +12,7 @@ import {$loggedUser, $properties, $searchResults, executeSearch, MarketplaceType
 import {
     getBooleanProperty,
     getImageProperty,
-    getMarketplaceType,
+    getMarketplaceType, getSelectProperty,
     isUserAuthenticated,
     isUserAuthenticatedWithRole
 } from "../../services";
@@ -36,6 +36,8 @@ const Header: React.FC = () => {
     const logoImageSrc = getImageProperty(properties, 'logo.image');
     const marketplaceType = getMarketplaceType();
     const isSelectCityEnabled = getBooleanProperty(properties, 'location.select.enabled');
+    const businessModel = getSelectProperty(properties, 'business.model');
+    const isB2CModel = useMemo(() => businessModel === 'B2C', [businessModel]);
 
     const {t} = useLanguage();
 
@@ -61,7 +63,9 @@ const Header: React.FC = () => {
 
                 <Stack direction="row" spacing={1} alignItems="center" justifyContent='space-between'>
                     {(isUserAuthenticated() && !isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER)) && (
-                        <SmallLinkPassive href='/become-seller'>{t('main.header.becomeSeller')}</SmallLinkPassive>
+                        <SmallLinkPassive href='/become-seller'>{
+                            isB2CModel ? t('main.header.becomeSeller') : t('main.header.becomeSellerC2C')
+                        }</SmallLinkPassive>
                     )}
                     <LanguageSwitcher/>
                 </Stack>

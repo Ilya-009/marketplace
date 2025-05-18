@@ -44,6 +44,7 @@ type LoadStoreByStoreIdParam = {
 type RegisterStoreParam = {
     name: string;
     country: string;
+    city: string;
     organizationType: OrganizationType;
     userId: number;
     mainCategoryId: number;

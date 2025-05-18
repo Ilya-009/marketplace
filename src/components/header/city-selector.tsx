@@ -20,18 +20,13 @@ import {
     Close as CloseIcon,
     LocationOn as LocationIcon
 } from '@mui/icons-material';
-
-interface City {
-    name: string;
-    region?: string;
-    country: string;
-}
+import {allCities, City} from "../../constants.ts";
 
 const CitySelector: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [cities, setCities] = useState<City[]>([]);
-    const [selectedCity, setSelectedCity] = useState<City | null>(null);
+    const [selectedCity, setSelectedCity] = useState<City>(allCities.find(c => c.name === 'Вологда') as City);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -52,14 +47,7 @@ const CitySelector: React.FC = () => {
                 // Заглушка с имитацией задержки
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                const mockCities: City[] = [
-                    { name: 'Москва', region: 'Московская область', country: 'Россия' },
-                    { name: 'Санкт-Петербург', region: 'Ленинградская область', country: 'Россия' },
-                    { name: 'Новосибирск', country: 'Россия' },
-                    { name: 'Екатеринбург', country: 'Россия' },
-                    { name: 'Казань', country: 'Россия' },
-                    { name: 'Вологда', country: 'Россия' }
-                ].filter(city =>
+                const mockCities: City[] = allCities.filter(city =>
                     city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     (city.region && city.region.toLowerCase().includes(searchQuery.toLowerCase()))
                 );

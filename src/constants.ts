@@ -20,6 +20,12 @@ type PropertyTypeData = {
     defaultValue: string;
 };
 
+export interface City {
+    name: string;
+    region?: string;
+    country: string;
+}
+
 export const countries: string[] = [
     "Россия",
     "Китай",
@@ -259,6 +265,15 @@ export const countries: string[] = [
     "Япония"
 ];
 
+export const allCities: City[] = [
+    { name: 'Москва', region: 'Московская область', country: 'Россия' },
+    { name: 'Санкт-Петербург', region: 'Ленинградская область', country: 'Россия' },
+    { name: 'Новосибирск', country: 'Россия' },
+    { name: 'Екатеринбург', country: 'Россия' },
+    { name: 'Казань', country: 'Россия' },
+    { name: 'Вологда', country: 'Россия' }
+];
+
 export const organizationTypes = new Map<OrganizationType, string>([
     [OrganizationType.IP, 'ИП'],
     [OrganizationType.SELF_EMPLOYED, 'Самозанятый'],
@@ -347,3 +362,4 @@ export const getAvailableStatuses = (currentStatus: OrderStatus, marketplaceType
         }
     }
 };
+

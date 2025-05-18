@@ -10,10 +10,10 @@ import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import {useMemo, useState} from "react";
 import {MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
-import {countries, organizationTypes} from "../../constants.ts";
+import {allCities, countries, organizationTypes} from "../../constants.ts";
 import {useUnit} from "effector-react";
-import {$categories, $loggedUser, findCategoryById, GoodCategory} from "../../api";
-import {getRootCategories} from "../../services";
+import {$categories, $loggedUser, $properties, findCategoryById, GoodCategory} from "../../api";
+import {getRootCategories, getSelectProperty} from "../../services";
 import {validateSellerRegister} from "../../components";
 import {useNavigate} from "react-router-dom";
 import {OrganizationType, registerStoreFx} from "../../api";
@@ -63,11 +63,17 @@ const SignInContainer = styled(Stack)(({theme}) => ({
 
 export default function BecomeSellerPage() {
     const categories = useUnit($categories);
+    const properties = useUnit($properties);
     const loggedUser = useUnit($loggedUser);
     const navigate = useNavigate();
+    const businessModel = getSelectProperty(properties, 'business.model');
+    const isB2CModel = useMemo(() => businessModel === 'B2C', [businessModel]);
 
     const [country, setCountry] = useState<string>('Россия');
     const [countryError, setCountryError] = useState<boolean>(false);
+
+    const [city, setCity] = useState<string>('Вологда');
+    const [cityError, setCityError] = useState<boolean>(false);
 
     const [organizationType, setOrganizationType] = useState<OrganizationType>();
     const [organizationTypeError, setOrganizationTypeError] = useState<boolean>(false);
@@ -84,6 +90,10 @@ export default function BecomeSellerPage() {
 
     const handleCountryChange = (event: SelectChangeEvent) => {
         setCountry(event.target.value as string);
+    };
+
+    const handleCityChange = (event: SelectChangeEvent) => {
+        setCity(event.target.value as string);
     };
 
     const handleOrganizationTypeChange = (event: SelectChangeEvent) => {
@@ -104,6 +114,8 @@ export default function BecomeSellerPage() {
         const newStore = {
             country: country,
             setCountryErr: setCountryError,
+            city: city,
+            setCityErr: setCityError,
             organizationType: organizationType,
             setOrganizationTypeErr: setOrganizationTypeError,
             storeName: shopName,
@@ -119,6 +131,7 @@ export default function BecomeSellerPage() {
             registerStoreFx({
                 name: shopName,
                 country: country,
+                city: city,
                 organizationType: organizationType as OrganizationType,
                 userId: loggedUser.id,
                 mainCategoryId: productCategory?.id as number
@@ -167,6 +180,22 @@ export default function BecomeSellerPage() {
                             </Select>
                         </FormControl>
                         <FormControl>
+                            <FormLabel>Город</FormLabel>
+                            <Select
+                                required
+                                variant='outlined'
+                                value={city}
+                                onChange={handleCityChange}
+                                color={cityError ? 'error' : 'primary'}
+                                error={cityError}
+                                sx={{ marginBottom: '20px' }}
+                            >
+                                {allCities.map((city) => (
+                                    <MenuItem key={city.name} value={city.name}>{city.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        {isB2CModel && <FormControl>
                             <FormLabel>Тип организации</FormLabel>
                             <Select
                                 variant='outlined'
@@ -175,15 +204,16 @@ export default function BecomeSellerPage() {
                                 error={organizationTypeError}
                                 color={organizationTypeError ? 'error' : 'primary'}
                                 onChange={handleOrganizationTypeChange}
-                                sx={{ marginBottom: '20px' }}
+                                sx={{marginBottom: '20px'}}
                             >
                                 {[...organizationTypes.entries()].map((entry) => (
                                     <MenuItem key={entry[0]} value={entry[0]}>{entry[1]}</MenuItem>
                                 ))}
                             </Select>
-                        </FormControl>
+                        </FormControl>}
+
                         <FormControl>
-                            <FormLabel>Название магазина</FormLabel>
+                            <FormLabel>Название {isB2CModel ? 'магазина' : 'профиля'}</FormLabel>
                             <TextField
                                 required
                                 variant="outlined"

@@ -29,6 +29,9 @@ type RegisterStoreProps = {
     country: string;
     setCountryErr: UseStateSetterBooleanType;
 
+    city: string;
+    setCityErr: UseStateSetterBooleanType;
+
     organizationType?: OrganizationType;
     setOrganizationTypeErr: UseStateSetterBooleanType;
 
@@ -99,18 +102,21 @@ export const validateSignUpInputs = ({email, password, phone, setEmailError, set
 
 export const validateSellerRegister = ({
                                            country, setCountryErr,
+                                           city, setCityErr,
                                            organizationType, setOrganizationTypeErr,
                                            storeName, setStoreNameErr,
                                            mainGoodCategory, setMainGoodCategoryErr}: RegisterStoreProps) => {
     const isCountryValid = !!country;
+    const isCityValid = !!city;
     const isOrganizationTypeValid = !!organizationType;
     const isStoreNameValid = !!storeName;
     const isMainGoodCategoryValid = !!mainGoodCategory;
 
     setCountryErr(!isCountryValid);
+    setCityErr(!isCityValid);
     setOrganizationTypeErr(!isOrganizationTypeValid);
     setStoreNameErr(!isStoreNameValid);
     setMainGoodCategoryErr(!isMainGoodCategoryValid);
 
-    return isCountryValid && isOrganizationTypeValid &&  isStoreNameValid && isMainGoodCategoryValid;
+    return isCountryValid && isCityValid && isOrganizationTypeValid &&  isStoreNameValid && isMainGoodCategoryValid;
 };
