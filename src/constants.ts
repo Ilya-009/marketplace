@@ -274,6 +274,12 @@ export const allCities: City[] = [
     { name: 'Вологда', country: 'Россия' }
 ];
 
+export const currencies = new Map<string, string>([
+    ['ru', '₽'],
+    ['en', '$'],
+    ['fr', '€'],
+]);
+
 export const organizationTypes = new Map<OrganizationType, string>([
     [OrganizationType.IP, 'ИП'],
     [OrganizationType.SELF_EMPLOYED, 'Самозанятый'],

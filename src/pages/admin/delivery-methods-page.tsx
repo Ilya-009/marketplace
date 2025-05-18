@@ -29,8 +29,11 @@ import {
     updateDeliveryMethodFx
 } from "../../api";
 import {SidebarPageBox} from "../../components";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const DeliveryMethodsPage: React.FC = () => {
+    const {currency} = useLanguage();
+
     const [methods, setMethods] = useState<DeliveryMethod[]>([]);
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
@@ -168,8 +171,8 @@ const DeliveryMethodsPage: React.FC = () => {
                             {methods.map((method) => (
                                 <TableRow key={method.id}>
                                     <TableCell>{method.name}</TableCell>
-                                    <TableCell align="right">{method.price} ₽</TableCell>
-                                    <TableCell align="right">{method.minOrderSum} ₽</TableCell>
+                                    <TableCell align="right">{method.price} {currency}</TableCell>
+                                    <TableCell align="right">{method.minOrderSum} {currency}</TableCell>
                                     <TableCell align="center">
                                         <IconButton onClick={() => handleOpenEditDialog(method)}>
                                             <Edit />

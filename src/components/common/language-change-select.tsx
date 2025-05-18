@@ -9,9 +9,9 @@ const LanguageSwitcher = () => {
             value={language}
             onChange={(e) => setLanguage(e.target.value as 'en' | 'ru' | 'fr')}
         >
-            <MenuItem value="ru">Русский</MenuItem>
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="fr">Français</MenuItem>
+            <MenuItem value="ru">Русский | ₽</MenuItem>
+            <MenuItem value="en">English | $</MenuItem>
+            <MenuItem value="fr">Français | €</MenuItem>
         </Select>
     );
 };

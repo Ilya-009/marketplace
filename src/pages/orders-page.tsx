@@ -4,8 +4,11 @@ import {useUnit} from "effector-react";
 import {$allGoods, $customer, $properties, loadGoodsByIds, $orders, loadCustomerOrders, OrderStatus} from "../api";
 import {getStringProperty} from "../services";
 import {SidebarPageBox} from "../components";
+import {useLanguage} from "../locales/language-context.tsx";
 
 const OrdersPage: React.FC = () => {
+    const {currency} = useLanguage();
+
     const [status, setStatus] = useState<OrderStatus>(OrderStatus.CREATED);
     const properties = useUnit($properties);
     const customer = useUnit($customer);
@@ -63,7 +66,7 @@ const OrdersPage: React.FC = () => {
                             <Grid item xs={4} sx={{ textAlign: 'right' }}>
                                 <Typography variant="h6">
                                     {/* Предположим, что сумма заказа рассчитывается как-то иначе */}
-                                    {order.orderGoods.reduce((sum, item) => sum + item.quantity * 1000, 0)} ₽
+                                    {order.orderGoods.reduce((sum, item) => sum + item.quantity * 1000, 0)} {currency}
                                 </Typography>
                             </Grid>
 

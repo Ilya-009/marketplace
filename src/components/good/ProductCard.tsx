@@ -4,6 +4,7 @@ import {styled} from '@mui/material/styles';
 import {DiscountType, Good, GoodDiscount, loadLoadGoodReviewsFx, Review} from "../../api";
 import {getGoodRating} from "../../services";
 import {useNavigate} from "react-router-dom";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const StyledCard = styled(Card)(() => ({
     height: '100%',
@@ -52,6 +53,7 @@ const ProductCard = ({ good }: ProductCardProps) => {
     // const [isFavorite, setIsFavorite] = useState(false);
     const [reviews, setReviews] = useState<Review[]>([]);
     const navigate = useNavigate();
+    const {currency} = useLanguage();
 
     const onGoodCardClick = () => {
         navigate(`/goods/${good.id}`);
@@ -96,7 +98,7 @@ const ProductCard = ({ good }: ProductCardProps) => {
                     )}
                 </Box>
                 <Typography variant="h6" component="div" sx={{ fontWeight: 500 }}>
-                    {good.price} ₽
+                    {good.price} {currency}
                 </Typography>
                 <Typography
                     variant="body2"

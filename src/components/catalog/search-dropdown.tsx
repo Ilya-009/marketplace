@@ -2,8 +2,11 @@ import React from "react";
 import {Box, Link} from "@mui/material";
 import {SearchResult, SearchResultType} from "../../api";
 import {Segment} from "@mui/icons-material";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 export const SearchResultsDropdown: React.FC<{ results: SearchResult[] }> = ({ results }) => {
+    const {currency} = useLanguage();
+
     return (
         <Box
             sx={{
@@ -41,7 +44,7 @@ export const SearchResultsDropdown: React.FC<{ results: SearchResult[] }> = ({ r
                         <Box>
                             <Box sx={{ fontSize: '14px', fontWeight: '500' }}>{result.data.name}</Box>
                             {'price' in result.data && (
-                                <Box sx={{ fontSize: '12px', color: 'gray' }}>{result.data.price} ₽</Box>
+                                <Box sx={{ fontSize: '12px', color: 'gray' }}>{result.data.price} {currency}</Box>
                             )}
                         </Box>
                     </Link>

@@ -11,6 +11,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers";
 import DialogActions from "@mui/material/DialogActions";
 import dayjs, { Dayjs } from 'dayjs';
+import {useLanguage} from "../../../locales/language-context.tsx";
 
 const PriceDeliveryContainer = styled(Box)(({theme}) => ({
     display: 'flex',
@@ -149,6 +150,7 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
                                                      }) => {
     const navigate = useNavigate();
     const marketplaceType = getMarketplaceType();
+    const {currency} = useLanguage();
     const [slotModalOpen, setSlotModalOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState<ServiceSlot | null>(null);
 
@@ -171,8 +173,8 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
     return (
         <PriceDeliveryContainer>
             <Box sx={{ display: 'flex' }}>
-                <Price>{price} ₽</Price>
-                {oldPrice && <OldPrice>{oldPrice} ₽</OldPrice>}
+                <Price>{price} {currency}</Price>
+                {oldPrice && <OldPrice>{oldPrice} {currency}</OldPrice>}
             </Box>
 
             {isService && selectedSlot && (

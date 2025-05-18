@@ -44,6 +44,7 @@ import {goodStatuses} from "../../../constants.ts";
 import AddIcon from "@mui/icons-material/Add";
 import CreateCategoryRequestModal from "../../../components/good/create-category-request-modal.tsx";
 import ServiceSlotsEditor from "../../../components/seller/goods/service-slots-editor.tsx";
+import {useLanguage} from "../../../locales/language-context.tsx";
 
 const StyledDropzone = styled.div`
   border: 2px dashed #ccc;
@@ -137,6 +138,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
     const match = useMatch('/seller/goods/:id');
     const goodId = extractIdFromPath(match);
     const navigate = useNavigate();
+    const {currency} = useLanguage();
     const marketplaceType = getMarketplaceType();
 
     const categoriesStore = useUnit($categories);
@@ -386,7 +388,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
                                         value={good.price}
                                         onChange={handleInputChange}
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+                                            endAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
                                             inputProps: { min: 0 }
                                         }}
                                         required
@@ -568,7 +570,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">
-                                                            {discount.discountType === DiscountType.PERCENTAGE ? '%' : '₽'}
+                                                            {discount.discountType === DiscountType.PERCENTAGE ? '%' : currency}
                                                         </InputAdornment>
                                                     ),
                                                     inputProps: {
@@ -582,13 +584,13 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
                                             <Divider sx={{ my: 1 }} />
                                             <Typography variant="subtitle1">Итоговая цена:</Typography>
                                             <Typography variant="h5" color="primary">
-                                                {calculateFinalPrice().toFixed(2)} ₽
+                                                {calculateFinalPrice().toFixed(2)} {currency}
                                             </Typography>
                                             {hasDiscount && (
                                                 <Typography variant="caption" color="textSecondary">
                                                     {discount.discountType === DiscountType.PERCENTAGE ?
                                                         `${discount.discountValue}% скидка` :
-                                                        `${discount.discountValue} ₽ скидка`}
+                                                        `${discount.discountValue} ${currency} скидка`}
                                                 </Typography>
                                             )}
                                         </Grid>

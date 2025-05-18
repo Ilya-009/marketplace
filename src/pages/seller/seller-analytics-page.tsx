@@ -37,9 +37,11 @@ import {loadStoreAnalyticsFx, StoreAnalytics} from "../../api/models/analytics.t
 import {useUnit} from "effector-react";
 import {$store, MarketplaceType} from "../../api";
 import {getMarketplaceType} from "../../services";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const AnalyticsPage: React.FC = () => {
     const store = useUnit($store);
+    const {currency} = useLanguage();
     const marketplaceType = getMarketplaceType();
 
     const [loading, setLoading] = useState(true);
@@ -121,7 +123,7 @@ const AnalyticsPage: React.FC = () => {
                                 Общая выручка
                             </Typography>
                             <Typography variant="h5">
-                                {data.summary.totalRevenue.toLocaleString()} ₽
+                                {data.summary.totalRevenue.toLocaleString()} {currency}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -133,7 +135,7 @@ const AnalyticsPage: React.FC = () => {
                                 Средний чек
                             </Typography>
                             <Typography variant="h5">
-                                {data.summary.avgOrderValue.toLocaleString()} ₽
+                                {data.summary.avgOrderValue.toLocaleString()} {currency}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -156,7 +158,7 @@ const AnalyticsPage: React.FC = () => {
                         <Tooltip />
                         <Legend />
                         <Area type="monotone" dataKey="sales" name="Продажи" stackId="1" stroke="#8884d8" fill="#8884d8" />
-                        <Area type="monotone" dataKey="revenue" name="Выручка (₽)" stackId="2" stroke="#82ca9d" fill="#82ca9d" />
+                        <Area type="monotone" dataKey="revenue" name={`Выручка (${currency})`} stackId="2" stroke="#82ca9d" fill="#82ca9d" />
                     </AreaChart>
                 </ResponsiveContainer>
             </Paper>
@@ -177,7 +179,7 @@ const AnalyticsPage: React.FC = () => {
                         <YAxis dataKey="name" type="category" width={150} />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="revenue" name="Выручка (₽)" fill="#ffc658" />
+                        <Bar dataKey="revenue" name={`Выручка (${currency})`} fill="#ffc658" />
                     </BarChart>
                 </ResponsiveContainer>
             </Paper>
@@ -193,7 +195,7 @@ const AnalyticsPage: React.FC = () => {
                             <TableRow>
                                 <TableCell>Товар</TableCell>
                                 <TableCell align="right">Продажи</TableCell>
-                                <TableCell align="right">Выручка (₽)</TableCell>
+                                <TableCell align="right">Выручка ({currency})</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

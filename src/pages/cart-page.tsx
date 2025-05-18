@@ -23,9 +23,11 @@ import {findGoodById, getImageProperty} from "../services";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Footer from "../components/common/footer.tsx";
+import {useLanguage} from "../locales/language-context.tsx";
 
 const CartPage: React.FC = () => {
     const navigate = useNavigate();
+    const {currency} = useLanguage();
 
     const cart = useUnit($cart);
     const allGoods = useUnit($allGoods);
@@ -161,10 +163,10 @@ const CartPage: React.FC = () => {
                                         <Grid item xs={3}>
                                             <Typography variant="body1"
                                                         sx={{textDecoration: 'line-through', color: 'gray'}}>
-                                                {good.price} ₽
+                                                {good.price} {currency}
                                             </Typography>
                                             <Typography variant="body1" sx={{fontWeight: 'bold'}}>
-                                                {discountedPrice} ₽
+                                                {discountedPrice} {currency}
                                             </Typography>
                                         </Grid>
 
@@ -208,7 +210,7 @@ const CartPage: React.FC = () => {
                     <Typography variant="h6">
                         Итого:{' '}
                         {totalSum}{' '}
-                        ₽
+                        {currency}
                     </Typography>
                     <Button variant="contained" color="primary" sx={{marginTop: 2}} onClick={navigateToCheckout}>
                         Оформить заказ

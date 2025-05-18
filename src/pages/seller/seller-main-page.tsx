@@ -33,11 +33,13 @@ import {loadStoreAnalyticsFx, StoreSummary} from "../../api/models/analytics.ts"
 import {useUnit} from "effector-react";
 import {goodStatuses, orderStatuses} from "../../constants.ts";
 import {getMarketplaceType, getNumericProperty} from "../../services";
+import {useLanguage} from "../../locales/language-context.tsx";
 
 const SellerMainPage: React.FC = () => {
     const store = useUnit($store);
     const properties = useUnit($properties);
     const marketplaceType = getMarketplaceType();
+    const {currency} = useLanguage();
 
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState<StoreSummary | null>(null);
@@ -111,7 +113,7 @@ const SellerMainPage: React.FC = () => {
                             <Box ml={2}>
                                 <Typography color="textSecondary">Общая выручка</Typography>
                                 <Typography variant="h5">
-                                    {stats?.totalRevenue?.toLocaleString() ?? 0} ₽
+                                    {stats?.totalRevenue?.toLocaleString() ?? 0} {currency}
                                 </Typography>
                             </Box>
                         </Box>
@@ -197,7 +199,7 @@ const SellerMainPage: React.FC = () => {
                                             />
                                         </TableCell>
                                         <TableCell>{good.name}</TableCell>
-                                        <TableCell align="right">{good.price.toLocaleString()} ₽</TableCell>
+                                        <TableCell align="right">{good.price.toLocaleString()} {currency}</TableCell>
                                         <TableCell>
                                             <Box
                                                 component="span"
@@ -310,7 +312,7 @@ const SellerMainPage: React.FC = () => {
                                         {new Date(order.createdAt).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell align="right">
-                                        {calculateOrderTotal(order).toLocaleString()} ₽
+                                        {calculateOrderTotal(order).toLocaleString()} {currency}
                                     </TableCell>
                                     <TableCell>
                                         <Box
