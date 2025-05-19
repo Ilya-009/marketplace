@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Box, Button, Chip,  Grid, styled, Typography} from '@mui/material';
+import {Alert, Box, Button, Chip, Grid, Snackbar, styled, Typography} from '@mui/material';
 import {DeliveryMethod, DurationUnit, MarketplaceType, ServiceSlot} from "../../../api";
 import {useNavigate} from "react-router-dom";
 import {getMarketplaceType} from "../../../services";
@@ -153,11 +153,17 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
     const {currency} = useLanguage();
     const [slotModalOpen, setSlotModalOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState<ServiceSlot | null>(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const deliveryMethodsStr = useMemo(() =>
             deliveryMethods.map(d => d.name).join(', '),
         [deliveryMethods]
     );
+
+    const handleAddToCart = () => {
+        addToCart();
+        setSnackbarOpen(true);
+    };
 
     const handleBuyOneClick = () => {
         addToCart();
@@ -189,7 +195,7 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
             <ButtonsContainer>
                 {marketplaceType === MarketplaceType.GOODS ? (
                     <>
-                        <Button variant="contained" onClick={addToCart}>
+                        <Button variant="contained" onClick={handleAddToCart}>
                             Добавить в корзину
                         </Button>
                         <Button variant="outlined" onClick={handleBuyOneClick}>
@@ -230,6 +236,17 @@ const PriceDelivery: React.FC<PriceDeliveryProps> = ({
                 slots={serviceSlots}
                 durationUnit={durationUnit}
             />
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert severity="success" onClose={() => setSnackbarOpen(false)} sx={{ width: '100%' }}>
+                    Товар добавлен в корзину
+                </Alert>
+            </Snackbar>
         </PriceDeliveryContainer>
     );
 };
