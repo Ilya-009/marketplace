@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useState} from 'react';
 import {Box, Card, CardContent, Chip, Rating, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
-import {DiscountType, Good, GoodDiscount, loadLoadGoodReviewsFx, Review} from "../../api";
+import {DiscountType, Good, GoodDiscount, loadGoodReviewsFx, Review} from "../../api";
 import {getGoodRating} from "../../services";
 import {useNavigate} from "react-router-dom";
 import {useLanguage} from "../../locales/language-context.tsx";
@@ -60,7 +60,7 @@ const ProductCard = ({ good }: ProductCardProps) => {
     };
 
     useEffect(() => {
-        loadLoadGoodReviewsFx({goodId: good.id}).then(response => {
+        loadGoodReviewsFx({goodId: good.id}).then(response => {
             setReviews(response);
         });
     }, [good]);

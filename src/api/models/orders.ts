@@ -124,7 +124,6 @@ const createNewOrderFx = createEffect<CreateNewOrderParam, void, AxiosError>({
 
 export const changeOrderStatusFx = createEffect<ChangeOrderParamParam, void, AxiosError>({
     async handler(param) {
-        console.log(param);
         await apiClient.patch(`${baseUrl}/orders/${param.id}`, param.status, {
             headers: {
                 'Content-Type': 'application/json'

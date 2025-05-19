@@ -36,6 +36,33 @@ export const formatDateTime = (
         .replace('ss', seconds);
 };
 
+// Формат 14.05.2025 18:39
+export function isDateValid(dateStr: string, validDays: number): boolean {
+    // Ожидается формат: "14.05.2025 18:39"
+    const dateTimeRegex = /^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/;
+    const match = dateStr.match(dateTimeRegex);
+
+    if (!match) {
+        throw new Error("Неверный формат даты. Ожидается 'DD.MM.YYYY HH:mm'");
+    }
+
+    const [_, day, month, year, hours, minutes] = match.map(Number);
+
+    // В JS месяцы начинаются с 0 (январь — 0, декабрь — 11)
+    const parsedDate = new Date(year, month - 1, day, hours, minutes);
+
+    if (isNaN(parsedDate.getTime())) {
+        throw new Error("Не удалось распарсить дату");
+    }
+
+    const now = new Date();
+    const expirationDate = new Date(parsedDate);
+    expirationDate.setDate(expirationDate.getDate() + validDays);
+
+    return now <= expirationDate;
+}
+
+
 export const limitString = (str: string, limitChars: number = 20): string => {
     if (str == null) {
         return '';

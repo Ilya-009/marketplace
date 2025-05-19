@@ -6,6 +6,6 @@ export * from './sign-in';
 export * from './product-card-page';
 export * from './profile';
 export * from './not-found';
-export * from './orders-page';
-export * from './customer-reviews-page';
+export * from './profile/orders-page.tsx';
+export * from './profile/customer-reviews-page.tsx';
 export * from './payment';

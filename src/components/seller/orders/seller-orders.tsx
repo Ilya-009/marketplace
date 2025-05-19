@@ -125,7 +125,6 @@ const OrdersList: React.FC = () => {
                 id: selectedOrder.id,
                 status: newStatus
             });
-            // console.log(selectedOrder);
         }
     };
 

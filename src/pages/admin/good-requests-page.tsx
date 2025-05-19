@@ -101,7 +101,6 @@ const GoodRequestsPage: React.FC = () => {
     };
 
     const updateStatus = async (newStatus: GoodRequestStatus, reason?: string) => {
-        console.log(selectedRequest);
         if (!selectedRequest) return;
 
         try {

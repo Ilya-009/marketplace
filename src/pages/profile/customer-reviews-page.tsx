@@ -21,7 +21,7 @@ import {
     Store as StoreIcon,
     Close as CloseIcon
 } from '@mui/icons-material';
-import {SidebarPageBox} from "../components";
+import {SidebarPageBox} from "../../components";
 import {
     $allGoods,
     $customer,
@@ -30,9 +30,9 @@ import {
     loadPendingCustomerReviewsFx,
     PendingReview,
     Review
-} from "../api";
+} from "../../api";
 import {useUnit} from "effector-react";
-import {formatDate} from "../services/type-utils.ts";
+import {formatDate} from "../../services/type-utils.ts";
 
 const CustomerReviewsPage: React.FC = () => {
     const customer = useUnit($customer);
@@ -196,7 +196,6 @@ const CustomerReviewsPage: React.FC = () => {
                             ) : (
                                 reviews.map((review) => {
                                     const good = goods.find(g => g.id === review.goodId);
-                                    console.log(goods);
 
                                     return (
                                         <Card key={review.id} sx={{ mb: 3 }}>

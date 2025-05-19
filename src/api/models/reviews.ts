@@ -42,7 +42,7 @@ export const loadReviewsByGoodIds = createEvent<LoadGoodsReviews>();
 
 export const $goodReviews = createStore<Review[]>([]);
 
-export const loadLoadGoodReviewsFx = createEffect<LoadGoodReviews, Review[], AxiosError>({
+export const loadGoodReviewsFx = createEffect<LoadGoodReviews, Review[], AxiosError>({
     async handler({goodId}) {
         return await apiClient.get(`${baseUrl}/reviews/byGood/${goodId}`).then(({ data }) => data);
     }
@@ -74,7 +74,7 @@ export const loadPendingStoreReviewsFx = createEffect<LoadStorePendingReviews, R
 
 sample({
     clock: loadReviewsByGoodId,
-    target: loadLoadGoodReviewsFx
+    target: loadGoodReviewsFx
 });
 sample({
     clock: loadReviewsByGoodIds,
@@ -82,6 +82,6 @@ sample({
     target: loadLoadGoodsReviewsFx
 });
 sample({
-    clock: [loadLoadGoodReviewsFx.doneData, loadLoadGoodsReviewsFx.doneData],
+    clock: [loadGoodReviewsFx.doneData, loadLoadGoodsReviewsFx.doneData],
     target: $goodReviews
 });

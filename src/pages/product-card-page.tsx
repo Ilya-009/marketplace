@@ -8,7 +8,7 @@ import {
     $deliveryMethods,
     defaultStore, Good,
     loadDeliveryMethods,
-    loadGoodByIdFx, loadLoadGoodReviewsFx,
+    loadGoodByIdFx, loadGoodReviewsFx,
     loadStoreByStoreIdFx, Review, Store
 } from "../api";
 import {extractIdFromPath} from "../services";
@@ -48,7 +48,7 @@ export const ProductCardPage = () => {
                     setStore(store);
                 });
 
-                loadLoadGoodReviewsFx({goodId: goodId as number}).then(r => {
+                loadGoodReviewsFx({goodId: goodId as number}).then(r => {
                     setReviews(r);
                 });
             }

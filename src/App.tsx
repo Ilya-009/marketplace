@@ -9,7 +9,7 @@ import {NotFoundPage} from "./pages";
 import ProfileMainPage from "./pages/profile/profile-main-page.tsx";
 import EditProfile from "./pages/profile/personal-info-page.tsx";
 import CartPage from "./pages/cart-page.tsx";
-import OrdersPage from "./pages/orders-page.tsx";
+import OrdersPage from "./pages/profile/orders-page.tsx";
 import SettingsManagementPage from "./pages/admin/properties-page.tsx";
 import CheckoutPage from "./pages/checkout.tsx";
 import AddressPage from "./pages/profile/profile-address-page.tsx";
@@ -37,7 +37,7 @@ import CategoryRequestsPage from "./pages/admin/category-requests-page.tsx";
 import PaymentMethodsPage from "./pages/admin/payment-methods-page.tsx";
 import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
 import GoodRequestsPage from "./pages/admin/good-requests-page.tsx";
-import CustomerReviewsPage from "./pages/customer-reviews-page.tsx";
+import CustomerReviewsPage from "./pages/profile/customer-reviews-page.tsx";
 import MiniHeader from "./components/header/mini-header.tsx";
 import {Box} from "@mui/material";
 
