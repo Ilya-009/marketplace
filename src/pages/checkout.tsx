@@ -40,6 +40,7 @@ import {
 } from "../api";
 import {findGoodById, getImageProperty, getMarketplaceType} from "../services";
 import Footer from "../components/common/footer.tsx";
+import {useLanguage} from "../locales/language-context.tsx";
 
 type CartGood = {
     cartItem: CartItem,
@@ -49,6 +50,7 @@ type CartGood = {
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const {currency} = useLanguage();
     const marketplaceType = getMarketplaceType();
 
     const properties = useUnit($properties);
@@ -67,6 +69,7 @@ const CheckoutPage: React.FC = () => {
     const selectedGoodIds = useMemo(() =>
         searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? cart.map(c => c.goodId),
         [searchParams, cart]);
+    console.log(paymentMethods);
 
     useEffect(() => {
         if (marketplaceType === MarketplaceType.GOODS) {
@@ -168,7 +171,9 @@ const CheckoutPage: React.FC = () => {
                                 onChange={(e) => setPaymentMethodId(parseInt(e.target.value))}
                             >
                                 {paymentMethods
-                                    .filter(method => marketplaceType === MarketplaceType.GOODS ? true : method.paymentMethodType !== PaymentMethodType.CASH)
+                                    .filter(method =>
+                                        (marketplaceType === MarketplaceType.GOODS ? true : method.paymentMethodType !== PaymentMethodType.CASH)
+                                    && method.isActive)
                                     .map((paymentMethod) => (
                                         <FormControlLabel
                                             key={paymentMethod.id}
@@ -235,18 +240,25 @@ const CheckoutPage: React.FC = () => {
                         <List>
                             {cartGoods.map((cartElem) => {
                                 return (
-                                    <ListItem key={cartElem.good.id}>
+                                    <ListItem key={cartElem.good.id} alignItems="flex-start">
                                         <ListItemAvatar>
                                             <Grid item xs={2}>
                                                 <img
                                                     src={cartElem.good.goodImages[0]?.image ? `http://localhost:8080/files/images/${cartElem.good.goodImages[0]?.image}` : emptyImage}
                                                     alt={cartElem.good.name}
-                                                    style={{ width: 50, height: 50, marginRight: 10 }}
+                                                    style={{ width: 100, height: 100, marginRight: 10 }}
                                                 />
                                             </Grid>
                                         </ListItemAvatar>
-                                        <ListItemText primary={cartElem.good.name} secondary={`${cartElem.good.price} руб.`} />
-                                        <ListItemText primary={`${cartElem.cartItem.quantity} шт.`} />
+                                        <ListItemText
+                                            primary={cartElem.good.name}
+                                            secondary={
+                                                <>
+                                                    {`${cartElem.good.price} ${currency}`}<br />
+                                                    {`${cartElem.cartItem.quantity} шт.`}
+                                                </>
+                                            }
+                                        />
                                     </ListItem>
                                 );
                             })}
@@ -274,16 +286,16 @@ const CheckoutPage: React.FC = () => {
                         <Box sx={{ marginBottom: '20px' }}>
                             {marketplaceType === MarketplaceType.GOODS &&
                                 <Typography variant="body1">
-                                    Сумма: {totalProductsCost} руб.
+                                    Сумма: {totalProductsCost} {currency}.
                                 </Typography>
                             }
                             {deliveryCost > 0 && (
                                 <Typography variant="body1">
-                                    Стоимость доставки: {deliveryCost} руб.
+                                    Стоимость доставки: {deliveryCost} {currency}.
                                 </Typography>
                             )}
                             <Typography variant="h6" sx={{ marginTop: '10px' }}>
-                                Итого: {totalCost} руб.
+                                Итого: {totalCost} {currency}.
                             </Typography>
                         </Box>
                     </Paper>

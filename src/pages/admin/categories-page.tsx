@@ -139,8 +139,8 @@ const CategoryManagement: React.FC = () => {
             }, []);
         };
 
+        addChangedCategory(categories, selectedCategory.id, GoodCategoryChangeType.DELETE);
         const updatedCategories = deleteCategory(categories, selectedCategory.id, deleteWithChildren);
-        addChangedCategory(updatedCategories, selectedCategory.id, GoodCategoryChangeType.DELETE);
 
         setCategories(updatedCategories);
         setDeleteDialogOpen(false);
@@ -417,13 +417,13 @@ const CategoryManagement: React.FC = () => {
                                 >
                                     Добавить подкатегорию
                                 </Button>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => handleOpenFilterDialog(selectedCategory)}
-                                    style={{ marginTop: '16px', marginLeft: '16px' }}
-                                >
-                                    Управление фильтрами
-                                </Button>
+                                {/*<Button*/}
+                                {/*    variant="outlined"*/}
+                                {/*    onClick={() => handleOpenFilterDialog(selectedCategory)}*/}
+                                {/*    style={{ marginTop: '16px', marginLeft: '16px' }}*/}
+                                {/*>*/}
+                                {/*    Управление фильтрами*/}
+                                {/*</Button>*/}
                             </>
                         ) : (
                             <Typography variant="body1">Выберите категорию или создайте новую</Typography>

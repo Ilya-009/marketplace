@@ -333,7 +333,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box sx={{width: '90%', padding: '20px'}} component="form" onSubmit={handleSubmit}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                 <Typography variant="h4">
                     {(isCreate
