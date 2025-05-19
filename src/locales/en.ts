@@ -40,6 +40,7 @@ export default {
                 personalData: 'My data',
                 myCart: 'My cart',
                 myOrders: 'My orders',
+                myReturns: 'My returns',
                 myAddresses: 'My addresses',
                 myReviews: 'My reviews',
             },

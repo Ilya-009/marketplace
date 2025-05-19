@@ -4,3 +4,4 @@ export * from './seller-analytics-page';
 export * from './goods';
 export * from './seller-orders-page';
 export * from './seller-reviews-page';
+export * from './seller-returns-page';

@@ -1,11 +1,12 @@
 import React from 'react';
-import {Box, List, ListItem, ListItemButton, ListItemText, Avatar, Typography} from '@mui/material';
+import {Avatar, Box, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material';
 import {Link, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import {EditProfileLink} from "../common";
-import {$customer, logOut} from "../../api";
+import {$customer, logOut, MarketplaceType} from "../../api";
 import {useUnit} from "effector-react";
 import {useLanguage} from "../../locales/language-context.tsx";
+import {getMarketplaceType} from "../../services";
 
 const Sidebar = styled(Box)`
     width: 250px;
@@ -37,6 +38,7 @@ const UserName = styled(Typography)`
 const ProfileSidebar: React.FC = () => {
     const location = useLocation();
     const customer = useUnit($customer);
+    const marketplaceType = getMarketplaceType();
     const {t} = useLanguage();
 
     const sections = [
@@ -46,6 +48,10 @@ const ProfileSidebar: React.FC = () => {
         {id: 'address', label: t('customer.profile.tabs.myAddresses'), path: 'address'},
         {id: 'reviews', label: t('customer.profile.tabs.myReviews'), path: 'reviews'},
     ];
+
+    if (marketplaceType === MarketplaceType.GOODS) {
+        sections.push({id: 'my-returns', label: t('customer.profile.tabs.myReturns'), path: 'returns'});
+    }
 
     return <>
         <Sidebar>

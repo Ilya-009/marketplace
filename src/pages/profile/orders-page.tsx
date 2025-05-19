@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import {
     Box, Button, Card, CardContent, Grid, Typography, Tabs, Tab,
     Avatar, Link
@@ -15,12 +15,10 @@ import {
     OrderStatus,
     ReturnReason
 } from "../../api";
-import {getStringProperty} from "../../services";
+import {getNumericProperty, getStringProperty} from "../../services";
 import {ReturnRequestModal} from "../../components/profile";
 import {SidebarPageBox} from "../../components";
 import {isDateValid} from "../../services/type-utils.ts";
-
-const RETURN_PERIOD_DAYS = 14;
 
 const OrdersPage: React.FC = () => {
     const { currency } = useLanguage();
@@ -33,6 +31,7 @@ const OrdersPage: React.FC = () => {
     const orders = useUnit($orders);
     const goods = useUnit($allGoods);
     const emptyImage = useMemo(() => getStringProperty(properties, 'no.images.img'), [properties]);
+    const returnPeriodDays = getNumericProperty(properties, 'return.max.days.enabled');
 
     useEffect(() => {
         if (customer?.id !== -1) {
@@ -52,9 +51,9 @@ const OrdersPage: React.FC = () => {
         [orders, status]
     );
 
-    const isReturnAvailable = (order: Order) => {
-        return isDateValid(order.createdAt, RETURN_PERIOD_DAYS);
-    };
+    const isReturnAvailable = useCallback((order: Order) => {
+        return isDateValid(order.createdAt, returnPeriodDays);
+    }, [returnPeriodDays]);
 
     const handleSubmitReturn = async (data: {
         goodId: number;

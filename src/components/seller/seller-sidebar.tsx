@@ -46,9 +46,10 @@ const makeSections = () => {
         {id: 'reviews', label: 'Отзывы', path: 'reviews'}
     ];
 
-    // if (isGoods) {
-    //     sections.push({id: 'supplies', label: 'Поставки', path: 'supplies'});
-    // }
+    if (isGoods) {
+        // sections.push({id: 'supplies', label: 'Поставки', path: 'supplies'});
+        sections.push({id: 'returns', label: 'Заявки на возврат', path: 'returns'});
+    }
 
     // sections = [
     //     ...sections,

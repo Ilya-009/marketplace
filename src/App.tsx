@@ -39,7 +39,9 @@ import DeliveryMethodsPage from "./pages/admin/delivery-methods-page.tsx";
 import GoodRequestsPage from "./pages/admin/good-requests-page.tsx";
 import CustomerReviewsPage from "./pages/profile/customer-reviews-page.tsx";
 import MiniHeader from "./components/header/mini-header.tsx";
+import CustomerReturnsPage from "./pages/profile/customer-returns-page.tsx";
 import {Box} from "@mui/material";
+import SellerReturnsPage from "./pages/seller/seller-returns-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -77,6 +79,7 @@ function App() {
                             {/*<Route path="supplies" element={<SuppliesList/>}/>*/}
                             <Route path="supplies/new" element={<CreateSupply/>}/>
                             <Route path="orders" element={<SellerOrdersPage/>}/>
+                            <Route path="returns" element={<SellerReturnsPage/>}/>
                             <Route path="analytics" element={<SellerAnalyticsPage/>}/>
                             <Route path="reviews" element={<SellerReviewsPage/>}/>
                         </Route>
@@ -91,6 +94,7 @@ function App() {
                             <Route path="main" element={<ProfileMainPage/>}/>
                             <Route path="personalInfo" element={<EditProfile/>}/>
                             <Route path="orders" element={<OrdersPage/>}/>
+                            <Route path="returns" element={<CustomerReturnsPage/>}/>
                             <Route path="address" element={<AddressPage/>}/>
                             <Route path="reviews" element={<CustomerReviewsPage/>}/>
                         </Route>

@@ -1,24 +1,25 @@
-import {createEffect} from "effector";
+import {createEffect, createEvent, createStore, sample} from "effector";
 import {AxiosError} from "axios";
 import {apiClient, baseUrl} from "../lib";
 
 export interface ReturnRequest {
     id: number;
-    orderGoodId: number;
-    customerId: number;
-    storeId: number;
+    goodName: string;
+    goodId: number;
     returnStatus: ReturnStatus;
     returnReason: ReturnReason;
     comment: string;
     sellerComment: string;
     requestDate: Date;
     resolutionDate: Date;
+    photoUrls: string[]
 }
 
 export enum ReturnStatus {
     REQUESTED = 'REQUESTED',
     APPROVED = 'APPROVED',
     REJECTED = 'REJECTED',
+    CANCELLED = 'CANCELLED',
     COMPLETED = 'COMPLETED'
 }
 
@@ -32,6 +33,10 @@ type LoadCustomerReturnsParam = {
     customerId: number;
 };
 
+type LoadSellerReturnsParam = {
+    sellerId: number;
+};
+
 type CreateNewReturnParam = {
     orderGoodId: number;
     customerId: number;
@@ -40,9 +45,29 @@ type CreateNewReturnParam = {
     photos: File[];
 };
 
+type CancelReturnParam = {
+    returnId: number;
+};
+
+export const loadCustomerReturns = createEvent<LoadCustomerReturnsParam>();
+export const cancelReturn = createEvent<CancelReturnParam>();
+export const $returns = createStore<ReturnRequest[]>([]);
+
 export const loadCustomerReturnsFx = createEffect<LoadCustomerReturnsParam, ReturnRequest[], AxiosError>({
     async handler({customerId}) {
         return await apiClient.get(`${baseUrl}/returns/customer/${customerId}`).then(({ data }) => data);
+    }
+});
+
+export const loadSellerReturnsFx = createEffect<LoadSellerReturnsParam, ReturnRequest[], AxiosError>({
+    async handler({sellerId}) {
+        return await apiClient.get(`${baseUrl}/returns/seller/${sellerId}`).then(({ data }) => data);
+    }
+});
+
+export const cancelReturnFx = createEffect<CancelReturnParam, void, AxiosError>({
+    async handler({returnId}) {
+        await apiClient.delete(`${baseUrl}/returns/customer/${returnId}`);
     }
 });
 
@@ -65,3 +90,17 @@ export const createNewReturnRequestFx = createEffect<CreateNewReturnParam, void,
         });
     }
 });
+
+sample({
+    clock: loadCustomerReturns,
+    target: loadCustomerReturnsFx
+});
+sample({
+    clock: loadCustomerReturnsFx.doneData,
+    target: $returns
+});
+
+sample({
+    clock: cancelReturn,
+    target: cancelReturnFx
+})

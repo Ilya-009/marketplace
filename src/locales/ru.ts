@@ -39,6 +39,7 @@ export default {
                 personalData: 'Мои данные',
                 myCart: 'Моя корзина',
                 myOrders: 'Мои заказы',
+                myReturns: 'Мои возвраты',
                 myAddresses: 'Мои адреса',
                 myReviews: 'Мои отзывы',
             },

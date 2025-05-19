@@ -6,7 +6,7 @@ import {
     OrderStatus,
     SupplyStatus,
     UserRole,
-    UserStatus, MarketplaceType
+    UserStatus, MarketplaceType, ReturnStatus, ReturnReason
 } from "./api";
 
 type GoodStatusData = {
@@ -341,6 +341,20 @@ export const userStatuses = new Map<UserStatus, string>([
     [UserStatus.ACTIVE, 'Активный'],
     [UserStatus.BANNED, 'Заблокирован'],
     [UserStatus.ON_CHECK, 'На проверке']
+]);
+
+export const returnStatuses = new Map<ReturnStatus, string>([
+    [ReturnStatus.REQUESTED, 'Ожидает'],
+    [ReturnStatus.APPROVED, 'Одобрен'],
+    [ReturnStatus.REJECTED, 'Отклонён'],
+    [ReturnStatus.CANCELLED, 'Отменен'],
+    [ReturnStatus.COMPLETED, 'Завершён'],
+]);
+
+export const returnReasons = new Map<ReturnReason, string>([
+    [ReturnReason.DEFECT, 'Брак'],
+    [ReturnReason.WRONG_ITEM, 'Неверный товар'],
+    [ReturnReason.CHANGE_MIND, 'Передумал'],
 ]);
 
 export const getAvailableStatuses = (currentStatus: OrderStatus, marketplaceType: MarketplaceType): OrderStatus[] => {
