@@ -40,8 +40,8 @@ const MainImageContainer = styled(Box)({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '800px', // Фиксированная ширина контейнера
-    height: '600px', // Фиксированная высота контейнера
+    width: '60%', // Фиксированная ширина контейнера
+    height: '80%', // Фиксированная высота контейнера
     backgroundColor: '#fff', // Фон для контейнера (опционально)
     borderRadius: '10px',
     overflow: 'hidden', // Чтобы изображение не выходило за границы

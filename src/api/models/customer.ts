@@ -55,11 +55,27 @@ type LoadCustomerParam = {
     userId: number;
 };
 
+type UpdateCustomerPersonalInfoParam = {
+    id: number;
+    firstName: string;
+    lastName: string;
+};
+
 export const $customer = createStore<Customer>(defaultCustomer);
 export const loadCustomer = createEvent<LoadCustomerParam>();
 const loadCustomerFx = createEffect<LoadCustomerParam, Customer, AxiosError>({
     async handler({userId}) {
         return await apiClient.get(`${baseUrl}/customers/byUser/${userId}`).then(({ data }) => data);
+    }
+});
+
+export const updateCustomerPersonalInfoFx = createEffect<UpdateCustomerPersonalInfoParam, void, AxiosError>({
+    async handler(param) {
+        const payload = {
+            firstName: param.firstName,
+            lastName: param.lastName
+        };
+        await apiClient.patch(`${baseUrl}/customers/${param.id}`, payload);
     }
 });
 

@@ -1,16 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
 import {useUnit} from "effector-react";
-import {$loggedUser, changePassword, changeUserPersonalData} from "../../api";
+import {$customer, $loggedUser, changePassword, changeUserPersonalData, updateCustomerPersonalInfoFx} from "../../api";
 
 const EditProfile: React.FC = () => {
     const loggedUserInfo = useUnit($loggedUser);
+    const customer = useUnit($customer);
 
     // Состояния для личных данных
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
+    // const [nameError, setNameError] = useState('');
+    // const [surnameError, setSurnameError] = useState('');
 
     // Состояния для смены пароля
     const [oldPassword, setOldPassword] = useState('');
@@ -24,6 +29,11 @@ const EditProfile: React.FC = () => {
         setEmail(loggedUserInfo.email);
         setPhone(loggedUserInfo.phone);
     }, [loggedUserInfo]);
+
+    useEffect(() => {
+        setName(customer.firstName);
+        setSurname(customer.lastName);
+    }, [customer]);
 
     // Валидация email
     const validateEmail = (email: string) => {
@@ -94,7 +104,7 @@ const EditProfile: React.FC = () => {
         }
     };
 
-    // Обработчик отправки личных данных
+    // Обработчик отправки контактных данных
     const handleProfileSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const isEmailValid = validateEmail(email);
@@ -103,6 +113,12 @@ const EditProfile: React.FC = () => {
         if (isEmailValid && isPhoneValid) {
             changeUserPersonalData({email: email, phone: phone});
         }
+    };
+
+    // Обработчик отправки личных данных
+    const handlePersonalInfoChangeSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        updateCustomerPersonalInfoFx({id: customer.id, firstName: name, lastName: surname});
     };
 
     // Обработчик смены пароля
@@ -127,7 +143,7 @@ const EditProfile: React.FC = () => {
             <Card sx={{ marginBottom: 4 }}>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        Личная информация
+                        Контактные данные
                     </Typography>
                     <form onSubmit={handleProfileSubmit}>
                         <Grid container spacing={3}>
@@ -151,6 +167,41 @@ const EditProfile: React.FC = () => {
                                     onBlur={() => validatePhone(phone)}
                                     error={!!phoneError}
                                     helperText={phoneError}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="primary">
+                                    Сохранить изменения
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </CardContent>
+            </Card>
+
+            {/* Форма для личных данных */}
+            <Card sx={{ marginBottom: 4 }}>
+                <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                        Личные данные
+                    </Typography>
+                    <form onSubmit={handlePersonalInfoChangeSubmit}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Имя"
+                                    fullWidth
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Фамилия"
+                                    fullWidth
+                                    value={surname}
+                                    onChange={(e) => setSurname(e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={12}>

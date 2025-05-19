@@ -135,9 +135,9 @@ const SellerPage: React.FC = () => {
                                     <Box display="flex" justifyContent="center" mb={2}>
                                         <CardMedia
                                             component="img"
-                                            height="200"
+                                            height="400"
                                             image={`http://localhost:8080/files/images/${store.logoImage}`}
-                                            sx={{ objectFit: "contain" }}
+                                            sx={{ objectFit: "fill" }}
                                         />
                                     </Box>
                                 </Grid>

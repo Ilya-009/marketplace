@@ -28,10 +28,10 @@ const ThumbnailList = styled(Box)(({ theme }) => ({
 }));
 
 const Thumbnail = styled('img')({
-    width: '50px',
-    height: '50px',
+    width: '100px',
+    height: '100px',
     cursor: 'pointer',
-    objectFit: 'cover',
+    objectFit: 'contain',
 });
 
 const MainImageContainer = styled(Box)({
@@ -43,9 +43,10 @@ const MainImageContainer = styled(Box)({
 
 const MainImage = styled('img')({
     maxWidth: '100%',
-    maxHeight: '400px',
+    minWidth: '60%',
+    maxHeight: '70vh',
     cursor: 'pointer',
-    objectFit: 'contain',
+    objectFit: 'contain'
 });
 
 interface GalleryProps {

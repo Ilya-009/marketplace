@@ -21,6 +21,7 @@ import {Edit, Delete, Add} from '@mui/icons-material';
 import {useUnit} from "effector-react";
 import {$customer} from "../../api";
 import {$addresses, Address, emptyAddress, loadAddresses} from "../../api";
+import {SidebarPageBox} from "../../components";
 
 const AddressTable: React.FC = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -86,7 +87,7 @@ const AddressTable: React.FC = () => {
     };
 
     return (
-        <Box sx={{width: '85%'}}>
+        <SidebarPageBox sx={{ width: '90%' }}>
             <Typography variant="h4" gutterBottom>
                 Управление адресами доставки
             </Typography>
@@ -199,7 +200,7 @@ const AddressTable: React.FC = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </SidebarPageBox>
     );
 };
 

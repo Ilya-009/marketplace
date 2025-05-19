@@ -28,7 +28,7 @@ import {
     $deliveryMethods,
     $paymentMethods,
     $properties,
-    CartItem,
+    CartItem, createNewOrder,
     CreateNewOrderParam,
     Good,
     loadAddresses,
@@ -135,7 +135,7 @@ const CheckoutPage: React.FC = () => {
             }, []),
             comment: orderComment
         };
-        // createNewOrder(order);
+        createNewOrder(order);
 
         const paymentMethod = paymentMethods
             .find(method => method.id === paymentMethodId);
