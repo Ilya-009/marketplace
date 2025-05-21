@@ -26,6 +26,7 @@ const sections = [
     {id: 'goodRequests', label: 'Запросы на создание и изменение товаров', path: 'goodRequests'},
     {id: 'paymentMethods', label: 'Способы оплаты', path: 'paymentMethods'},
     {id: 'deliveryMethods', label: 'Способы доставки', path: 'deliveryMethods'},
+    {id: 'profit', label: 'Прибыль маркетплейса', path: 'profit'},
     {id: 'users', label: 'Пользователи и роли', path: 'users'}
 ];
 

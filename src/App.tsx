@@ -42,6 +42,7 @@ import MiniHeader from "./components/header/mini-header.tsx";
 import CustomerReturnsPage from "./pages/profile/customer-returns-page.tsx";
 import {Box} from "@mui/material";
 import SellerReturnsPage from "./pages/seller/seller-returns-page.tsx";
+import ProfitAnalyticsPage from "./pages/admin/profit-analytics-page.tsx";
 
 function App() {
     useEffect(() => {
@@ -111,6 +112,7 @@ function App() {
                             <Route path="goodRequests" element={<GoodRequestsPage/>}/>
                             <Route path="paymentMethods" element={<PaymentMethodsPage/>}/>
                             <Route path="deliveryMethods" element={<DeliveryMethodsPage/>}/>
+                            <Route path="profit" element={<ProfitAnalyticsPage/>}/>
                             <Route path="users" element={<UsersManagementPage/>} />
                         </Route>
                         <Route path="/payment" element={
