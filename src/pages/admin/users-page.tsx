@@ -33,7 +33,11 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {userRoles, userStatuses} from "../../constants.ts";
 
-const UsersManagementPage: React.FC = () => {
+type UsersManagementPageParams = {
+    isMasterAdmin: boolean;
+};
+
+const UsersManagementPage: React.FC<UsersManagementPageParams> = ({isMasterAdmin}) => {
     const [loggedUser, isUserLoading] = useUnit([$loggedUser, $isUserLoading]);
     const navigate = useNavigate();
 
@@ -206,9 +210,9 @@ const UsersManagementPage: React.FC = () => {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    <IconButton onClick={() => handleEditClick(user)}>
-                                        <EditIcon />
-                                    </IconButton>
+                                    {isMasterAdmin && <IconButton onClick={() => handleEditClick(user)}>
+                                        <EditIcon/>
+                                    </IconButton>}
                                     <IconButton onClick={() => handleStatusClick(user)}>
                                         <Settings />
                                     </IconButton>

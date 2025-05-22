@@ -101,8 +101,20 @@ function App() {
                         </Route>
                         <Route path="/admin" element={
                             <PageWithSidebar header={<MiniHeader/>}
-                                             sidebar={<AdminSidebar/>}
-                                             requiredRoles={[UserRole.ADMIN, UserRole.ROLE_MASTER_ADMIN]}
+                                             sidebar={<AdminSidebar isMasterAdmin={false} />}
+                                             requiredRoles={[UserRole.ADMIN]}
+                                             initFunction={getLoggedUserFn}
+                            />
+                        }>
+                            <Route path="categories" element={<CategoriesPage/>}/>
+                            <Route path="categoryRequests" element={<CategoryRequestsPage/>}/>
+                            <Route path="goodRequests" element={<GoodRequestsPage/>}/>
+                            <Route path="users" element={<UsersManagementPage isMasterAdmin={false}/>} />
+                        </Route>
+                        <Route path="/masterAdmin" element={
+                            <PageWithSidebar header={<MiniHeader/>}
+                                             sidebar={<AdminSidebar isMasterAdmin={true} />}
+                                             requiredRoles={[UserRole.ROLE_MASTER_ADMIN]}
                                              initFunction={getLoggedUserFn}
                             />
                         }>
@@ -113,7 +125,7 @@ function App() {
                             <Route path="paymentMethods" element={<PaymentMethodsPage/>}/>
                             <Route path="deliveryMethods" element={<DeliveryMethodsPage/>}/>
                             <Route path="profit" element={<ProfitAnalyticsPage/>}/>
-                            <Route path="users" element={<UsersManagementPage/>} />
+                            <Route path="users" element={<UsersManagementPage isMasterAdmin={true}/>} />
                         </Route>
                         <Route path="/payment" element={
                             <PageWithSidebar header={<Header/>}

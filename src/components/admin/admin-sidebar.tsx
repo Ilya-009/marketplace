@@ -19,7 +19,7 @@ const UserInfo = styled(Box)`
     margin-bottom: 20px;
 `;
 
-const sections = [
+const masterAdminSections = [
     {id: 'properties', label: 'Настройки', path: 'properties'},
     {id: 'categories', label: 'Категории', path: 'categories'},
     {id: 'categoryRequests', label: 'Запросы на добавление категорий', path: 'categoryRequests'},
@@ -30,8 +30,20 @@ const sections = [
     {id: 'users', label: 'Пользователи и роли', path: 'users'}
 ];
 
-const AdminSidebar: React.FC = () => {
+const adminSections = [
+    {id: 'categories', label: 'Категории', path: 'categories'},
+    {id: 'categoryRequests', label: 'Запросы на добавление категорий', path: 'categoryRequests'},
+    {id: 'goodRequests', label: 'Запросы на создание и изменение товаров', path: 'goodRequests'},
+    {id: 'users', label: 'Пользователи и роли', path: 'users'}
+];
+
+type SellerSidebarProps = {
+    isMasterAdmin: boolean;
+};
+
+const AdminSidebar: React.FC<SellerSidebarProps> = ({isMasterAdmin}: SellerSidebarProps) => {
     const location = useLocation();
+    const sections = isMasterAdmin ? masterAdminSections : adminSections;
 
     return <>
         <Sidebar>

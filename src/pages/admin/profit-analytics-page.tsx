@@ -109,7 +109,7 @@ const ProfitAnalyticsPage: React.FC = () => {
                             <TableRow key={profit.id}>
                                 <TableCell>{profit.orderId}</TableCell>
                                 <TableCell>{profit.orderTotal.toLocaleString()}</TableCell>
-                                <TableCell>{profit.marketplaceFeeRate.toLocaleString()}</TableCell>
+                                <TableCell>{profit.marketplaceFeeRate * 100} %</TableCell>
                                 <TableCell>{profit.marketplaceProfit.toLocaleString()}</TableCell>
                                 <TableCell>{new Date(profit.createdAt).toLocaleString()}</TableCell>
                             </TableRow>
