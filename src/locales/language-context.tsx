@@ -35,9 +35,11 @@ export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ childr
 
     const t = (path: string) => {
         const parts = path.split('.');
-        let result: any = translations[language];
+        let result: unknown = translations[language];
 
         for (const part of parts) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             result = result[part];
             if (result === undefined) return path;
         }

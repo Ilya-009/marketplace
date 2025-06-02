@@ -39,7 +39,7 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
             navigate('/signIn');
         } else {
             if (!isUserLoading && !hasAccess) {
-                navigate('/4o4');
+                navigate('/403');
             }
         }
     }, [hasAccess, isUserLoading, navigate]);
@@ -53,7 +53,7 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
     }
 
     return hasAccess && (
-        <MainPageBox>
+        <Box sx={isMobile ? {marginLeft: '15px', marginRight: '15px'} : {marginLeft: '80px', marginRight: '80px'}}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 {header}
             </Box>
@@ -105,7 +105,8 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
                     component="main"
                     sx={{
                         flexGrow: 1,
-                        p: { xs: 2, md: 3 },
+                        padding: 3,
+                        paddingRight: 0,
                         width: { xs: '100%', md: `calc(100% - 240px)` }
                     }}
                 >
@@ -114,7 +115,7 @@ const PageWithSidebar: React.FC<PageProps> = ({header, sidebar, requiredRoles, i
             </Box>
 
             <Footer sx={{ mt: 'auto' }} />
-        </MainPageBox>
+        </Box>
     );
 };
 

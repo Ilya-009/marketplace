@@ -69,7 +69,6 @@ const CheckoutPage: React.FC = () => {
     const selectedGoodIds = useMemo(() =>
         searchParams.get('goodIds')?.split(',')?.map(id => parseInt(id)) ?? cart.map(c => c.goodId),
         [searchParams, cart]);
-    console.log(paymentMethods);
 
     useEffect(() => {
         if (marketplaceType === MarketplaceType.GOODS) {

@@ -167,10 +167,10 @@ export default function SignIn() {
                                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
                             />
                         </FormControl>
-                        <StyledFormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Запомнить меня"
-                        />
+                        {/*<StyledFormControlLabel*/}
+                        {/*    control={<Checkbox value="remember" color="primary" />}*/}
+                        {/*    label="Запомнить меня"*/}
+                        {/*/>*/}
                         <ForgotPasswordModal open={open} handleClose={handleClose} />
                         <Button
                             fullWidth

@@ -55,7 +55,7 @@ const SettingsManagementPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(10);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
     const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
     const [newPropertyDialogOpen, setNewPropertyDialogOpen] = useState<boolean>(false);
@@ -356,8 +356,8 @@ const SettingsManagementPage: React.FC = () => {
                 onChange={handleItemsPerPageChange}
                 sx={{ marginBottom: '20px' }}
             >
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={30}>30</MenuItem>
             </Select>
 
             {/* Панель фильтрации и поиска */}

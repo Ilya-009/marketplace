@@ -13,7 +13,6 @@ export interface Good {
     categoryId: number;
     goodImages: Array<GoodImage>;
     discount?: GoodDiscount;
-    isService?: boolean;
     duration?: number;
     durationUnit?: DurationUnit;
     isOnline?: boolean;
@@ -145,7 +144,6 @@ export type ModifyGoodType = {
     price: number;
     status?: GoodStatus;
     categoryId: number;
-    isService?: boolean;
     duration?: number;
     durationUnit?: DurationUnit;
     isOnline?: boolean;

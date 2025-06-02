@@ -7,7 +7,7 @@ export const MainPageBox = styled(Box)`
 `;
 
 export const SidebarPageBox = styled(Box)`
-    padding: 20px;
+    padding: 20px 0 20px 20px;
 `;
 
 export const PageRoundedContainer = styled(Box)`

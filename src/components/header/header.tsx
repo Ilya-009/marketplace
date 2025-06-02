@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import styled from 'styled-components';
-import {AppBar, Box, Button, IconButton, Link, Stack} from '@mui/material';
+import {AppBar, Box, Button, IconButton, Link, Stack, useMediaQuery, useTheme} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -38,6 +38,8 @@ const Header: React.FC = () => {
     const isSelectCityEnabled = getBooleanProperty(properties, 'location.select.enabled');
     const businessModel = getSelectProperty(properties, 'business.model');
     const isB2CModel = useMemo(() => businessModel === 'B2C', [businessModel]);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const {t} = useLanguage();
 
@@ -57,41 +59,85 @@ const Header: React.FC = () => {
     };
 
     return (
-        <AppBar position="static" sx={{ padding: 2, borderRadius: '0 0 10px 10px', marginBottom: '2rem' }} color='transparent'>
-            <Stack direction="row" spacing={1} padding='0 .5rem' alignItems="center" justifyContent='space-between'>
-                {isSelectCityEnabled ? <CitySelector/> : <Box/>}
+        <AppBar
+            position="static"
+            sx={{
+                padding: isMobile ? 1 : 2,
+                borderRadius: '0 0 10px 10px',
+                marginBottom: '2rem',
+            }}
+            color="transparent"
+        >
+            <Stack
+                direction={isMobile ? 'column' : 'row'}
+                spacing={isMobile ? 1 : 2}
+                padding="0 .5rem"
+                alignItems="center"
+                justifyContent="space-between"
+            >
+                {isSelectCityEnabled ? <CitySelector /> : <Box />}
 
-                <Stack direction="row" spacing={1} alignItems="center" justifyContent='space-between'>
-                    {(isUserAuthenticated() && !isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER)) && (
-                        <SmallLinkPassive href='/become-seller'>{
-                            isB2CModel ? t('main.header.becomeSeller') : t('main.header.becomeSellerC2C')
-                        }</SmallLinkPassive>
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="space-between"
+                >
+                    {isUserAuthenticated() && (
+                        <SmallLinkPassive href="/become-seller">
+                            {isB2CModel
+                                ? t('main.header.becomeSeller')
+                                : t('main.header.becomeSellerC2C')}
+                        </SmallLinkPassive>
                     )}
-                    <LanguageSwitcher/>
+                    <LanguageSwitcher />
                 </Stack>
             </Stack>
 
-            <Stack direction="row" sx={{ paddingTop: '1rem' }} spacing={1} alignItems="center" justifyContent='space-around'>
-                <Link href='/'>
-                    <Box
-                        component="img"
-                        sx={{
-                            maxHeight: 44,
-                            maxWidth: 200
-                        }}
-                        alt="Лого"
-                        src={logoImageSrc}
-                    />
-                </Link>
+            <Stack
+                direction={isMobile ? 'column' : 'row'}
+                spacing={2}
+                sx={{ paddingTop: '1rem' }}
+                alignItems="center"
+                justifyContent={isMobile ? 'center' : 'space-around'}
+            >
+                <Stack
+                    direction={'row'}
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent={isMobile ? 'center' : 'space-around'}
+                >
+                    <Link href="/">
+                        <Box
+                            component="img"
+                            sx={{
+                                maxHeight: isMobile ? 36 : 44,
+                                maxWidth: isMobile ? 150 : 200,
+                            }}
+                            alt="Лого"
+                            src={logoImageSrc}
+                        />
+                    </Link>
 
-                <Button variant="contained" startIcon={<ListAltIcon />} onClick={handleClickOpen}>
-                    {t('main.header.catalog')}
-                </Button>
-                <Box sx={{ position: 'relative', flexGrow: 2 }}>
+                    <Button
+                        variant="contained"
+                        startIcon={<ListAltIcon />}
+                        onClick={handleClickOpen}
+                        size={isMobile ? 'small' : 'medium'}
+                    >
+                        {t('main.header.catalog')}
+                    </Button>
+                </Stack>
+
+                <Box sx={{ position: 'relative', width: isMobile ? '100%' : 'auto', flexGrow: 2 }}>
                     <SearchField
                         variant="outlined"
                         sx={{ width: '100%' }}
-                        placeholder={marketplaceType === MarketplaceType.GOODS ? t('main.header.search.goods') : t('main.header.search.services')}
+                        placeholder={
+                            marketplaceType === MarketplaceType.GOODS
+                                ? t('main.header.search.goods')
+                                : t('main.header.search.services')
+                        }
                         size="small"
                         onChange={handleSearchChange}
                         InputProps={{
@@ -104,16 +150,42 @@ const Header: React.FC = () => {
                     />
                     {searchResults.length > 0 && <SearchResultsDropdown results={searchResults} />}
                 </Box>
-                <Stack direction="row" spacing={2} alignItems="center" justifyContent='space-around'>
-                    {isUserAuthenticated()
-                        ? <LinkWithIcon icon={<AccountBox />} label={t('main.header.links.profile')} href='/profile/main' />
-                        : <LinkWithIcon icon={<LoginIcon />} label={t('main.header.links.login')} href='/signIn' />
-                    }
-                    {isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER) && (
-                        <LinkWithIcon icon={<StoreIcon />} label={t('main.header.links.myStore')} href='/seller/main' />
+
+                <Stack
+                    direction="row"
+                    spacing={isMobile ? 1 : 2}
+                    alignItems="center"
+                    justifyContent="center"
+                    flexWrap={isMobile ? 'wrap' : 'nowrap'}
+                >
+                    {isUserAuthenticated() ? (
+                        <LinkWithIcon
+                            icon={<AccountBox />}
+                            label={t('main.header.links.profile')}
+                            href="/profile/main"
+                        />
+                    ) : (
+                        <LinkWithIcon
+                            icon={<LoginIcon />}
+                            label={t('main.header.links.login')}
+                            href="/signIn"
+                        />
                     )}
+
+                    {isUserAuthenticatedWithRole(loggedUser, UserRole.SELLER) && (
+                        <LinkWithIcon
+                            icon={<StoreIcon />}
+                            label={t('main.header.links.myStore')}
+                            href="/seller/main"
+                        />
+                    )}
+
                     {marketplaceType === MarketplaceType.GOODS && (
-                        <LinkWithIcon icon={<ShoppingCartIcon />} label={t('main.header.links.cart')} href='/cart' />
+                        <LinkWithIcon
+                            icon={<ShoppingCartIcon />}
+                            label={t('main.header.links.cart')}
+                            href="/cart"
+                        />
                     )}
                 </Stack>
             </Stack>

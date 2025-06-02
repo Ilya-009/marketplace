@@ -195,22 +195,38 @@ export default function BecomeSellerPage() {
                                 ))}
                             </Select>
                         </FormControl>
-                        {isB2CModel && <FormControl>
-                            <FormLabel>Тип организации</FormLabel>
-                            <Select
-                                variant='outlined'
-                                required
-                                value={organizationType}
-                                error={organizationTypeError}
-                                color={organizationTypeError ? 'error' : 'primary'}
-                                onChange={handleOrganizationTypeChange}
-                                sx={{marginBottom: '20px'}}
-                            >
-                                {[...organizationTypes.entries()].map((entry) => (
-                                    <MenuItem key={entry[0]} value={entry[0]}>{entry[1]}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>}
+                        {isB2CModel && (
+                            <>
+                                <FormControl>
+                                    <FormLabel>Тип организации</FormLabel>
+                                    <Select
+                                        variant='outlined'
+                                        required
+                                        value={organizationType}
+                                        error={organizationTypeError}
+                                        color={organizationTypeError ? 'error' : 'primary'}
+                                        onChange={handleOrganizationTypeChange}
+                                        sx={{marginBottom: '20px'}}
+                                    >
+                                        {[...organizationTypes.entries()].map((entry) => (
+                                            <MenuItem key={entry[0]} value={entry[0]}>{entry[1]}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl>
+                                    <FormLabel>ИНН</FormLabel>
+                                    <TextField
+                                        required
+                                        variant="outlined"
+                                        color={shopNameError ? 'error' : 'primary'}
+                                        error={shopNameError}
+                                        value={shopName}
+                                        onChange={(e) => setShopName(e.target.value)}
+                                        sx={{ marginBottom: '20px' }}
+                                    />
+                                </FormControl>
+                            </>
+                        )}
 
                         <FormControl>
                             <FormLabel>Название {isB2CModel ? 'магазина' : 'профиля'}</FormLabel>

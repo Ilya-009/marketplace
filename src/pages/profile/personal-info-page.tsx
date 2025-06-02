@@ -14,14 +14,12 @@ const EditProfile: React.FC = () => {
     const [surname, setSurname] = useState('');
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
-    // const [nameError, setNameError] = useState('');
-    // const [surnameError, setSurnameError] = useState('');
 
     // Состояния для смены пароля
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [oldPasswordError, setOldPasswordError] = useState('');
+    const [oldPasswordError, setOldPasswordError] = useState('Введен неверный пароль!');
     const [newPasswordError, setNewPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
@@ -129,12 +127,12 @@ const EditProfile: React.FC = () => {
         const isConfirmPasswordValid = validateConfirmPassword(confirmPassword, newPassword);
 
         if (isOldPasswordValid && isNewPasswordValid && isConfirmPasswordValid) {
-            changePassword({oldPassword: oldPassword, newPassword: newPassword });
+            // changePassword({oldPassword: oldPassword, newPassword: newPassword });
         }
     };
 
     return (
-        <Box sx={{ padding: 3 }}>
+        <Box sx={{ padding: 3, paddingRight: 0, paddingTop: 0 }}>
             <Typography variant="h4" gutterBottom>
                 Изменение личных данных
             </Typography>

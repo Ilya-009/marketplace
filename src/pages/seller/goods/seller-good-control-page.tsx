@@ -151,7 +151,6 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
         description: '',
         price: 0,
         categoryId: -1,
-        isService: marketplaceType === MarketplaceType.SERVICES,
         duration: 1,
         durationUnit: DurationUnit.HOURS,
         isOnline: false,
@@ -180,7 +179,6 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
                     price: good.price,
                     status: good.status,
                     categoryId: good.categoryId,
-                    isService: good.isService,
                     duration: good.duration,
                     durationUnit: good.durationUnit,
                     isOnline: good.isOnline,
@@ -297,7 +295,6 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
             userId: loggedUser.id,
             images: images.map(img => img.file as File),
             discount: hasDiscount ? discount : undefined,
-            isService: marketplaceType === MarketplaceType.SERVICES,
             duration: good.duration,
             durationUnit: good.durationUnit,
             isOnline: good.isOnline,
@@ -478,7 +475,7 @@ const CreateGoodPage: React.FC<CreateGoodPageProps> = ({ isCreate }: CreateGoodP
                                         'Перетащите изображения или нажмите для выбора файлов'}
                                 </Typography>
                                 <Typography variant="caption" color="textSecondary">
-                                    Поддерживаются форматы JPG, PNG. Максимальный размер файла 5MB.
+                                    Поддерживаются форматы JPG, PNG. Максимальный размер файла 100MB.
                                 </Typography>
                             </StyledDropzone>
 

@@ -122,7 +122,6 @@ export const CategoryPage: React.FC = () => {
                                     value={sortBy}
                                     onChange={handleSortChange}>
                                     <MenuItem value="popular">Популярные</MenuItem>
-                                    <MenuItem value="newest">Новинки</MenuItem>
                                     <MenuItem value="priceAsc">Цена: Дешевле</MenuItem>
                                     <MenuItem value="priceDesc">Цена: Дороже</MenuItem>
                                     <MenuItem value="ratingHigh">С большим рейтингом</MenuItem>

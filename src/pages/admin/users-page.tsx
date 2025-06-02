@@ -243,6 +243,13 @@ const UsersManagementPage: React.FC<UsersManagementPageParams> = ({isMasterAdmin
                             onChange={handleInputChange}
                             fullWidth
                         />
+                        <TextField
+                            label="ИНН"
+                            name="phone"
+                            value={'9729219090'}
+                            onChange={handleInputChange}
+                            fullWidth
+                        />
                         <Typography variant="subtitle1">Роли</Typography>
                         {[UserRole.ADMIN, UserRole.SELLER, UserRole.CUSTOMER].map(role => (
                             <FormControlLabel

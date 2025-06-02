@@ -1,6 +1,18 @@
 import React from 'react';
-import {Typography, Card, CardContent, Grid} from '@mui/material';
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell} from 'recharts';
+import {Typography, Card, CardContent, Grid, useMediaQuery, useTheme} from '@mui/material';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    PieChart,
+    Pie,
+    Cell,
+    ResponsiveContainer
+} from 'recharts';
 import {SidebarPageBox} from "../../components";
 import {getBooleanProperty, getMarketplaceType} from "../../services";
 import {$properties, MarketplaceType} from "../../api";
@@ -12,6 +24,8 @@ const COLORS = ['#128a00', '#ff0000'];
 const ProfileMainPage: React.FC = () => {
     const properties = useUnit($properties);
     const showStats = getBooleanProperty(properties, 'show.stats.in.cust.profile');
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const marketplaceType = getMarketplaceType();
     const {t} = useLanguage();
@@ -36,17 +50,16 @@ const ProfileMainPage: React.FC = () => {
         </Typography>
 
         {/* Карточки с общей информацией */}
-        <Grid container spacing={3} sx={{marginBottom: 4}}>
+        <Grid container spacing={3} sx={{ marginBottom: 4 }}>
             <Grid item xs={12} md={4}>
                 <Card>
                     <CardContent>
                         <Typography variant="h6" color="textSecondary">
                             {marketplaceType === MarketplaceType.GOODS
                                 ? t('customer.profile.myData.stats.bought.goods')
-                                : t('customer.profile.myData.stats.bought.services')
-                            }
+                                : t('customer.profile.myData.stats.bought.services')}
                         </Typography>
-                        <Typography variant="h4">142</Typography>
+                        <Typography variant="h4">14</Typography>
                     </CardContent>
                 </Card>
             </Grid>
@@ -56,7 +69,7 @@ const ProfileMainPage: React.FC = () => {
                         <Typography variant="h6" color="textSecondary">
                             {t('customer.profile.myData.stats.reviews.brief')}
                         </Typography>
-                        <Typography variant="h4">23</Typography>
+                        <Typography variant="h4">2</Typography>
                     </CardContent>
                 </Card>
             </Grid>
@@ -66,7 +79,7 @@ const ProfileMainPage: React.FC = () => {
                         <Typography variant="h6" color="textSecondary">
                             {t('customer.profile.myData.stats.orders')}
                         </Typography>
-                        <Typography variant="h4">56</Typography>
+                        <Typography variant="h4">3</Typography>
                     </CardContent>
                 </Card>
             </Grid>
@@ -74,48 +87,55 @@ const ProfileMainPage: React.FC = () => {
 
         {/* Графики */}
         {showStats && (
-            <Grid container spacing={3} sx={{marginBottom: 4}}>
+            <Grid container spacing={3} sx={{ marginBottom: 4 }}>
                 <Grid item xs={12} md={6}>
-                    <Card>
-                        <CardContent>
+                    <Card sx={{ height: isMobile ? 300 : 400 }}>
+                        <CardContent sx={{ height: '100%' }}>
                             <Typography variant="h6" color="textSecondary" gutterBottom>
                                 {t('customer.profile.myData.stats.bought.header')}
                             </Typography>
-                            <BarChart width={500} height={300} data={purchaseData}>
-                                <CartesianGrid strokeDasharray="3 3"/>
-                                <XAxis dataKey="name"/>
-                                <YAxis/>
-                                <Tooltip/>
-                                <Bar dataKey="value" fill="#8884d8"/>
-                            </BarChart>
+                            <ResponsiveContainer width="100%" height="90%">
+                                <BarChart data={purchaseData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="value" fill="#8884d8" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <Card>
-                        <CardContent>
+                    <Card sx={{ height: isMobile ? 300 : 400 }}>
+                        <CardContent sx={{ height: '100%' }}>
                             <Typography variant="h6" color="textSecondary" gutterBottom>
                                 {t('customer.profile.myData.stats.reviews.header')}
                             </Typography>
-                            <PieChart width={500} height={300}>
-                                <Pie
-                                    data={reviewData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    fill="#8884d8"
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                    label
-                                >
-                                    {reviewData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
-                                    ))}
-                                </Pie>
-                                <Tooltip/>
-                                <Legend/>
-                            </PieChart>
+                            <ResponsiveContainer width="100%" height="90%">
+                                <PieChart>
+                                    <Pie
+                                        data={reviewData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                        label
+                                    >
+                                        {reviewData.map((entry, index) => (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={COLORS[index % COLORS.length]}
+                                            />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
                         </CardContent>
                     </Card>
                 </Grid>
