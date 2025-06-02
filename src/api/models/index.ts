@@ -12,3 +12,4 @@ export * from './store-unsecure';
 export * from './user';
 export * from './returns';
 export * from './marketplace-profit';
+export * from './audit';

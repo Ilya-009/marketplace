@@ -42,6 +42,7 @@ import CustomerReturnsPage from "./pages/profile/customer-returns-page.tsx";
 import {Box} from "@mui/material";
 import SellerReturnsPage from "./pages/seller/seller-returns-page.tsx";
 import ProfitAnalyticsPage from "./pages/admin/profit-analytics-page.tsx";
+import {AuditEventsPage} from "./pages/admin";
 
 function App() {
     useEffect(() => {
@@ -125,6 +126,7 @@ function App() {
                             <Route path="deliveryMethods" element={<DeliveryMethodsPage/>}/>
                             <Route path="profit" element={<ProfitAnalyticsPage/>}/>
                             <Route path="users" element={<UsersManagementPage isMasterAdmin={true}/>} />
+                            <Route path="audit" element={<AuditEventsPage/>} />
                         </Route>
                         <Route path="/payment" element={
                             <PageWithSidebar header={<Header/>}

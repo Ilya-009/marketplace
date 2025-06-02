@@ -27,7 +27,8 @@ const masterAdminSections = [
     {id: 'paymentMethods', label: 'Способы оплаты', path: 'paymentMethods'},
     {id: 'deliveryMethods', label: 'Способы доставки', path: 'deliveryMethods'},
     {id: 'profit', label: 'Прибыль маркетплейса', path: 'profit'},
-    {id: 'users', label: 'Пользователи и роли', path: 'users'}
+    {id: 'users', label: 'Пользователи и роли', path: 'users'},
+    {id: 'audit', label: 'Аудит', path: 'audit'}
 ];
 
 const adminSections = [

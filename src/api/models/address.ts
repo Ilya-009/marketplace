@@ -27,6 +27,17 @@ type LoadAddressParam = {
    addressIds: number[];
 };
 
+type CreateAddressParam = {
+    customerId: number;
+    country: string;
+    city: string;
+    street: string;
+    houseNumber: string;
+    entranceNumber: string;
+    flatNumber: string;
+    postNumber: string;
+};
+
 export const loadAddresses = createEvent<LoadAddressParam>();
 export const $addresses = createStore<Address[]>([]);
 
@@ -37,6 +48,14 @@ const loadAddressesFx = createEffect<LoadAddressParam, Address[], AxiosError>({
             .then(({ data }) => data);
     }
 });
+
+// const createAddressFx = createEffect<CreateAddressParam, void, AxiosError>({
+//     async handler(param) {
+//         const ids = addressIds.join(',');
+//         return await apiClient.post(`${baseUrl}/addresses/by-ids?ids=${ids}`)
+//             .then(({ data }) => data);
+//     }
+// });
 
 sample({
     clock: loadAddresses,
